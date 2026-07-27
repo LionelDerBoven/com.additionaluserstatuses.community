@@ -52,10 +52,14 @@ way to find out why one of them is unexpectedly false.
 
 ```bash
 npm install
+npm test               # logic checks, no Homey or network needed
 npm run lint
 homey app validate --level publish
-homey app run          # live on your Homey Pro, logs the user list at startup
+homey app run --remote # live on your Homey Pro, logs the user list at startup
 ```
+
+`npm test` covers the parts worth getting right: null statuses, disabled
+accounts, the settings exclusions, the empty set, and the request caching.
 
 Store images are generated from the same geometry as `assets/icon.svg`:
 
