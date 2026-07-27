@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { HomeyAPI } = require('homey-api');
+const HomeyUsersApi = require('./lib/HomeyUsersApi');
 const UserStatus = require('./lib/UserStatus');
 
 /**
@@ -15,7 +15,7 @@ const UserStatus = require('./lib/UserStatus');
 class AdditionalUserStatusesApp extends Homey.App {
 
   async onInit() {
-    this.apiPromise = null;
+    this.api = null;
 
     this.userStatus = new UserStatus({
       homey: this.homey,
@@ -42,19 +42,15 @@ class AdditionalUserStatusesApp extends Homey.App {
    * API instead. Needs the homey:manager:api permission, which is read-only for
    * apps: everything this app does is a read, so that is enough.
    *
-   * The instance is created once and reused. A failed attempt is not cached, so
-   * a Homey that was not ready yet gets retried on the next card evaluation.
+   * Constructing the client is synchronous and cannot fail - it defers the token
+   * until the first actual request - so there is nothing to retry here.
    */
   async getApi() {
-    if (!this.apiPromise) {
-      this.apiPromise = HomeyAPI.createAppAPI({ homey: this.homey })
-        .catch((err) => {
-          this.apiPromise = null;
-          throw new Error(`Could not reach the Homey Web API: ${err.message}`);
-        });
+    if (!this.api) {
+      this.api = new HomeyUsersApi({ homey: this.homey });
     }
 
-    return this.apiPromise;
+    return this.api;
   }
 
   async logUsersOnce() {

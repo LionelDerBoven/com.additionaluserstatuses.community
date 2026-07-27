@@ -24,6 +24,11 @@ or removing a housemate never means editing a Flow.
 The permission grants read-only Web API access. This app only ever reads the user
 list; it never changes a user, a device or a Flow.
 
+It ships with **no runtime dependencies**. The one Homey Web API call it needs is
+made in `lib/HomeyUsersApi.js` using the platform's own `fetch`, rather than
+pulling in the `homey-api` package and its socket.io stack for realtime events
+this app never subscribes to.
+
 ## Settings
 
 The app settings page lists every Homey user with a tick box. Ticked users count
