@@ -11,17 +11,24 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+const http = require('node:http');
 
 const HomeyUsersApi = require('../lib/HomeyUsersApi');
 
-const USERS = { u1: { id: 'u1', name: 'Ann', present: true, asleep: false } };
+const USERS = {
+  u1: {
+    id: 'u1', name: 'Ann', present: true, asleep: false,
+  },
+};
 
 /**
  * @param {Array<object|Function>} responses One per expected fetch call.
  */
 function harness(responses, { tokenFails = false } = {}) {
-  const calls = { token: 0, url: 0, fetch: 0, authHeaders: [] };
-  let remaining = [...responses];
+  const calls = {
+    token: 0, url: 0, fetch: 0, authHeaders: [],
+  };
+  const remaining = [...responses];
 
   const homey = {
     api: {
@@ -54,13 +61,9 @@ function harness(responses, { tokenFails = false } = {}) {
   return { api, calls };
 }
 
+/** Matches what request() resolves to: a status and an unparsed body string. */
 function response(status, body) {
-  return {
-    status,
-    ok: status >= 200 && status < 300,
-    statusText: String(status),
-    json: async () => body,
-  };
+  return { status, body: JSON.stringify(body) };
 }
 
 test('returns the user list on a normal 200', async () => {
@@ -107,6 +110,11 @@ test('a server error is reported, not retried', async () => {
   assert.strictEqual(calls.fetch, 1);
 });
 
+test('a malformed body is reported clearly rather than crashing the card', async () => {
+  const { api } = harness([{ status: 200, body: '<html>not json</html>' }]);
+  await assert.rejects(() => api.getUsers(), /unreadable user list/);
+});
+
 test('the token is fetched once and reused across calls', async () => {
   const { api, calls } = harness([response(200, USERS), response(200, USERS), response(200, USERS)]);
 
@@ -118,10 +126,72 @@ test('the token is fetched once and reused across calls', async () => {
   assert.strictEqual(calls.token, 1, 'no needless session churn');
 });
 
+/**
+ * The tests above stub request() away, which is what let a real auth bug ship:
+ * the client sent the bare token and Homey answered 401 "Invalid Session".
+ * These drive the genuine node:http path against a throwaway local server.
+ */
+test('the real request presents the token as a Bearer credential', async () => {
+  const seen = {};
+
+  const server = http.createServer((req, res) => {
+    seen.auth = req.headers.authorization;
+    seen.url = req.url;
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(USERS));
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address();
+
+  try {
+    const homey = {
+      api: {
+        getOwnerApiToken: async () => 'abc123',
+        getLocalUrl: async () => `http://127.0.0.1:${port}`,
+      },
+    };
+
+    const api = new HomeyUsersApi({ homey });
+    assert.deepStrictEqual(await api.getUsers(), USERS);
+
+    assert.strictEqual(seen.auth, 'Bearer abc123', 'a bare token is rejected by Homey as "Invalid Session"');
+    assert.strictEqual(seen.url, '/api/manager/users/user');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('the real request surfaces a non-2xx status from the server', async () => {
+  const server = http.createServer((req, res) => {
+    res.writeHead(500);
+    res.end('{}');
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address();
+
+  try {
+    const api = new HomeyUsersApi({
+      homey: {
+        api: {
+          getOwnerApiToken: async () => 'abc123',
+          getLocalUrl: async () => `http://127.0.0.1:${port}`,
+        },
+      },
+    });
+    await assert.rejects(() => api.getUsers(), /500/);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
 test('a failed session is not cached, so the next call retries', async () => {
   const homey = {
     api: {
-      getOwnerApiToken: async () => { throw new Error('Homey not ready'); },
+      getOwnerApiToken: async () => {
+        throw new Error('Homey not ready');
+      },
       getLocalUrl: async () => 'http://127.0.0.1:80',
     },
   };
