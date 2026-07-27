@@ -1,0 +1,12 @@
+{
+  "unnamed_user": "Unnamed user",
+  "settings": {
+    "title": "Which users count as \"everyone\"?",
+    "intro": "The \"Everyone is at home\" and \"Everyone is asleep\" Flow cards look at the users ticked below, live, every time a Flow runs. A new Homey user is counted automatically, so you never have to edit a Flow after someone joins the household. Untick anyone who should not hold the whole house back — a guest account, or a phone that never reports presence. Accounts disabled in Homey are always ignored.",
+    "everyone_home": "Everyone is at home",
+    "everyone_asleep": "Everyone is asleep",
+    "save": "Save",
+    "refresh": "Refresh",
+    "saved": "Saved."
+  }
+}

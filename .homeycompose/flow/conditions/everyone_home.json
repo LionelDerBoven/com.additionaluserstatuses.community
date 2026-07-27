@@ -1,0 +1,9 @@
+{
+  "id": "everyone_home",
+  "title": {
+    "en": "!{{Everyone is at home|Not everyone is at home}}"
+  },
+  "hint": {
+    "en": "True when every counted Homey user is marked as at home. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose presence has never been set counts as not at home, because Homey does not know where they are. If no users are counted at all, this card is false."
+  }
+}

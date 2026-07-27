@@ -1,0 +1,61 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.extrauserstatuses.community",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Extra User Statuses"
+  },
+  "description": {
+    "en": "Adds the household-wide presence and sleep condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'. The cards read your Homey users live, so adding or removing a housemate never means editing a Flow. Unofficial community app."
+  },
+  "brandColor": "#3D5A96",
+  "category": [
+    "tools"
+  ],
+  "permissions": [
+    "homey:manager:api"
+  ],
+  "images": {
+    "small": "assets/images/small.png",
+    "large": "assets/images/large.png",
+    "xlarge": "assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "LDB Technology",
+    "email": "homey@ldbtechnology.be"
+  },
+  "api": {
+    "getUsers": {
+      "method": "get",
+      "path": "/users"
+    }
+  },
+  "flow": {
+    "conditions": [
+      {
+        "id": "everyone_asleep",
+        "title": {
+          "en": "!{{Everyone is asleep|Not everyone is asleep}}"
+        },
+        "hint": {
+          "en": "True when every counted Homey user is marked as asleep. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose sleep status has never been set counts as awake, because Homey does not know. If no users are counted at all, this card is false."
+        }
+      },
+      {
+        "id": "everyone_home",
+        "title": {
+          "en": "!{{Everyone is at home|Not everyone is at home}}"
+        },
+        "hint": {
+          "en": "True when every counted Homey user is marked as at home. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose presence has never been set counts as not at home, because Homey does not know where they are. If no users are counted at all, this card is false."
+        }
+      }
+    ]
+  }
+}

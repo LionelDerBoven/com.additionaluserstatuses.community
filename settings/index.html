@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 10px;
+      margin: 0;
+      color: #222;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 0 0 6px 0;
+    }
+
+    p.intro {
+      font-size: 13px;
+      color: #555;
+      margin: 0 0 18px 0;
+      line-height: 1.5;
+    }
+
+    .status-card {
+      background: #f4f6f9;
+      border-left: 4px solid #3D5A96;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 3px 0;
+    }
+
+    .status-row .label {
+      font-weight: 600;
+    }
+
+    .verdict-true {
+      color: #17803D;
+      font-weight: 600;
+    }
+
+    .verdict-false {
+      color: #9A3A3A;
+      font-weight: 600;
+    }
+
+    .counted-line {
+      font-size: 12px;
+      color: #777;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #e0e4ea;
+    }
+
+    ul.users {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 15px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    ul.users li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    ul.users li:last-child {
+      border-bottom: none;
+    }
+
+    ul.users li.is-disabled {
+      background: #fafafa;
+      color: #999;
+    }
+
+    .user-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-meta {
+      font-size: 12px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: #eef1f6;
+      color: #4a5568;
+      margin-left: 6px;
+    }
+
+    .badge.home {
+      background: #e3f3e8;
+      color: #17803D;
+    }
+
+    .badge.asleep {
+      background: #e7e5f5;
+      color: #4b3f96;
+    }
+
+    .badge.unknown {
+      background: #f7ece0;
+      color: #8a5a20;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-save {
+      background-color: #3D5A96;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-save:hover {
+      background-color: #2c4373;
+    }
+
+    .btn-refresh {
+      background-color: #f4f6f9;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-refresh:hover {
+      background-color: #e2e8f0;
+    }
+
+    .saved-note {
+      font-size: 13px;
+      color: #17803D;
+      font-weight: 600;
+    }
+
+    .error-card {
+      background: #fdf0f0;
+      border-left: 4px solid #9A3A3A;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #6b2a2a;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 data-i18n="settings.title">Which users count as "everyone"?</h2>
+  <p class="intro" data-i18n="settings.intro">
+    The "Everyone is at home" and "Everyone is asleep" Flow cards look at the users ticked below,
+    live, every time a Flow runs. A new Homey user is counted automatically, so you never have to
+    edit a Flow after someone joins the household. Untick anyone who should not hold the whole house
+    back &mdash; a guest account, or a phone that never reports presence. Accounts disabled in Homey
+    are always ignored.
+  </p>
+
+  <div id="error" class="error-card" style="display: none;"></div>
+
+  <div class="status-card">
+    <div class="status-row">
+      <span class="label" data-i18n="settings.everyone_home">Everyone is at home</span>
+      <span id="verdict-home">&mdash;</span>
+    </div>
+    <div class="status-row">
+      <span class="label" data-i18n="settings.everyone_asleep">Everyone is asleep</span>
+      <span id="verdict-asleep">&mdash;</span>
+    </div>
+    <div class="counted-line" id="counted-line"></div>
+  </div>
+
+  <ul class="users" id="users"></ul>
+
+  <div class="button-group">
+    <button class="btn-save" id="save" data-i18n="settings.save">Save</button>
+    <button class="btn-refresh" id="refresh" data-i18n="settings.refresh">Refresh</button>
+    <span class="saved-note" id="saved-note" style="display: none;" data-i18n="settings.saved">Saved.</span>
+  </div>
+
+  <script type="text/javascript" src="index.js"></script>
+</body>
+</html>
