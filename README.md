@@ -1,4 +1,4 @@
-# Extra User Statuses
+# Additional User Statuses
 
 A Homey Pro app that adds the two household-wide Flow condition cards Homey does
 not have:

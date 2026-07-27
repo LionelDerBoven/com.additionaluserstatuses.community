@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Homey App Store images for Extra User Statuses.
+"""Generate the Homey App Store images for Additional User Statuses.
 
 The three store images are the same original mark as assets/icon.svg - a house
 with two people cut out of it - drawn on the app's brand colour. Redraw them

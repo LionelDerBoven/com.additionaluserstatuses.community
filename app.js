@@ -5,14 +5,14 @@ const { HomeyAPI } = require('homey-api');
 const UserStatus = require('./lib/UserStatus');
 
 /**
- * Extra User Statuses
+ * Additional User Statuses
  *
  * Homey ships presence and sleep Flow cards per user ("John is at home"), but no
  * household-wide ones. This app adds the two missing AND cards. They read the
  * Homey user list at evaluation time, so a household that gains or loses a user
  * never has to edit a Flow.
  */
-class ExtraUserStatusesApp extends Homey.App {
+class AdditionalUserStatusesApp extends Homey.App {
 
   async onInit() {
     this.apiPromise = null;
@@ -30,7 +30,7 @@ class ExtraUserStatusesApp extends Homey.App {
       this.error(`Could not read the Homey users at startup: ${err.message}`);
     });
 
-    this.log('Extra User Statuses initialised.');
+    this.log('Additional User Statuses initialised.');
   }
 
   // ---------------------------------------------------------------------------
@@ -88,4 +88,4 @@ class ExtraUserStatusesApp extends Homey.App {
 
 }
 
-module.exports = ExtraUserStatusesApp;
+module.exports = AdditionalUserStatusesApp;
