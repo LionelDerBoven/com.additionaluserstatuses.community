@@ -56,8 +56,8 @@ way to find out why one of them is unexpectedly false.
 ## Development
 
 ```bash
-git clone https://github.com/LionelDerBoven/homey-additional-user-statuses.git
-cd homey-additional-user-statuses
+git clone https://github.com/LionelDerBoven/com.additionaluserstatuses.community.git
+cd com.additionaluserstatuses.community
 npm install
 npm test               # logic checks, no Homey or network needed
 npm run lint
