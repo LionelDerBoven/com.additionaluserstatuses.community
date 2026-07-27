@@ -2,9 +2,6 @@
   "name": "com.additionaluserstatuses.community",
   "version": "1.0.0",
   "main": "app.js",
-  "name": "com.additionaluserstatuses.community",
-  "version": "1.0.0",
-  "main": "app.js",
   "license": "GPL-3.0-or-later",
   "engines": {
     "node": ">=16.0.0"
