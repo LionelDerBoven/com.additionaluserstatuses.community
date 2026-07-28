@@ -2,6 +2,7 @@
   "unnamed_user": "Unnamed user",
   "any_user": "Any user",
   "device": {
+    "name_prefix": "Vacation",
     "user_gone": "This Homey user no longer exists."
   },
   "settings": {

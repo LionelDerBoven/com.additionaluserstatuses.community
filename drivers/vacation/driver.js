@@ -21,7 +21,10 @@ class VacationDriver extends Homey.Driver {
     return users
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((user) => ({
-        name: user.name,
+        // "Vacation" leads so it survives a narrow tile truncating the label, and
+        // so every vacation device sorts together in a long device list. A bare
+        // user name gives no clue what the toggle does.
+        name: `${this.homey.__('device.name_prefix')} ${user.name}`,
         data: { id: user.id },
       }));
   }
