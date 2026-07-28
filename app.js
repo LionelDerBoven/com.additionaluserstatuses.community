@@ -180,7 +180,7 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.watcher.on('arrived', ({ id, name }) => {
       // Coming home is taken as evidence the holiday is over. Opt-out, because
       // some households will want vacation to end only when a Flow says so.
-      if (!this.vacation.isEnabled() || !this.vacation.isAutoReturnEnabled()) return;
+      if (!this.vacation.isAutoReturnEnabled()) return;
       if (!this.vacation.isOnVacation(id)) return;
 
       this.log(`${name} came home while on vacation; clearing their vacation status.`);

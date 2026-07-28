@@ -32,7 +32,6 @@ function renderVerdicts(overview) {
   setVerdict('verdict-asleep', overview.everyoneAsleep);
   setVerdict('verdict-home-asleep', overview.everyoneHomeAsleep);
 
-  document.getElementById('vacation-enabled').checked = overview.vacationEnabled;
   document.getElementById('vacation-auto-return').checked = overview.autoReturnEnabled;
 
   const line = document.getElementById('counted-line');
@@ -142,7 +141,6 @@ function save() {
     })
     .map((user) => user.id);
 
-  const enabled = document.getElementById('vacation-enabled').checked;
   const autoReturn = document.getElementById('vacation-auto-return').checked;
 
   Homey.set('excluded_user_ids', excluded, (err) => {
@@ -151,16 +149,14 @@ function save() {
       return;
     }
 
-    Homey.set('vacation_enabled', enabled, () => {
-      Homey.set('vacation_auto_return', autoReturn, () => {
-        const note = document.getElementById('saved-note');
-        note.style.display = 'inline';
-        setTimeout(() => {
-          note.style.display = 'none';
-        }, 2500);
+    Homey.set('vacation_auto_return', autoReturn, () => {
+      const note = document.getElementById('saved-note');
+      note.style.display = 'inline';
+      setTimeout(() => {
+        note.style.display = 'none';
+      }, 2500);
 
-        load();
-      });
+      load();
     });
   });
 }

@@ -4,8 +4,8 @@
  * Checks for VacationStore and the vacation-aware parts of UserStatus.
  *
  * The interesting behaviour is not "can we store an id" but how vacation
- * interacts with the existing 'everyone' cards, and that the two feature toggles
- * really do switch it off without losing what was stored.
+ * interacts with the existing 'everyone' cards - who gets excluded, and what the
+ * cards answer at the edges (nobody eligible, everybody away).
  */
 
 const test = require('node:test');
@@ -82,22 +82,15 @@ test('a change emits exactly once, listing what moved', async () => {
   assert.deepStrictEqual(events[0].removed, []);
 });
 
-test('disabling the feature hides the ids but does not lose them', async () => {
-  const homey = fakeHomey();
-  const store = new VacationStore({ homey });
-  await store.set('a', true);
-
-  homey._store.vacation_enabled = false;
-  assert.deepStrictEqual(store.getActiveIds(), [], 'nothing counts while disabled');
-  assert.deepStrictEqual(store.getStoredIds(), ['a'], 'but the id survives');
-
-  homey._store.vacation_enabled = true;
-  assert.deepStrictEqual(store.getActiveIds(), ['a'], 'and comes back when re-enabled');
+test('a garbled stored value does not take the app down', () => {
+  // Settings can hold whatever was last written, including from an older version.
+  const store = new VacationStore({ homey: fakeHomey({ vacation_user_ids: 'not-an-array' }) });
+  assert.deepStrictEqual(store.getIds(), []);
+  assert.strictEqual(store.isOnVacation('a'), false);
 });
 
-test('both toggles default to on', () => {
+test('auto-return defaults to on', () => {
   const store = new VacationStore({ homey: fakeHomey() });
-  assert.strictEqual(store.isEnabled(), true);
   assert.strictEqual(store.isAutoReturnEnabled(), true);
 });
 
@@ -107,7 +100,7 @@ test('pruneUnknown drops ids for users who no longer exist', async () => {
   await store.setMany(['a', 'ghost'], []);
 
   await store.pruneUnknown(['a']);
-  assert.deepStrictEqual(store.getStoredIds(), ['a']);
+  assert.deepStrictEqual(store.getIds(), ['a']);
 });
 
 // ---------------------------------------------------------------------------
@@ -128,7 +121,7 @@ test('a user on vacation is left out of "everyone is at home"', async () => {
   assert.strictEqual(await status.isEveryoneHome(), true);
 });
 
-test('turning the feature off restores the literal reading', async () => {
+test('clearing vacation restores the literal reading', async () => {
   const homey = fakeHomey();
   const { status, vacation } = makeStatus(homey, users(
     { id: 'a', present: true },
@@ -137,7 +130,9 @@ test('turning the feature off restores the literal reading', async () => {
   await vacation.set('b', true);
   assert.strictEqual(await status.isEveryoneHome(), true);
 
-  homey._store.vacation_enabled = false;
+  // Nobody on vacation is the whole "off switch" the feature needs: nothing is
+  // excluded, so the cards read exactly as they did before vacation existed.
+  await vacation.set('b', false);
   assert.strictEqual(await status.isEveryoneHome(), false);
 });
 
@@ -261,6 +256,5 @@ test('the overview reports vacation flags and the feature toggles', async () => 
   assert.strictEqual(byId('a').counted, true);
   assert.strictEqual(overview.countedCount, 1);
   assert.strictEqual(overview.everyoneHomeAsleep, true);
-  assert.strictEqual(overview.vacationEnabled, true);
   assert.strictEqual(overview.autoReturnEnabled, true);
 });

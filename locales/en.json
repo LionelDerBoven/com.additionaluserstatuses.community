@@ -12,7 +12,6 @@
     "everyone_home_asleep": "Everyone at home is asleep",
     "vacation_title": "Vacation",
     "vacation_intro": "A user on vacation is left out of the \"everyone\" cards, so those keep working for whoever is still around. Vacation can also be set from a Flow, or from the user's vacation device.",
-    "vacation_enabled": "Enable vacation statuses",
     "vacation_auto_return": "Clear vacation automatically when someone comes home",
     "save": "Save",
     "refresh": "Refresh",
