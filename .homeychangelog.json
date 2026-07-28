@@ -13,5 +13,8 @@
   },
   "1.3.1": {
     "en": "Fixes 'The last person at home goes to the status asleep' firing when the last awake person simply left the house - nobody had gone to bed. It now requires somebody to actually fall asleep. Both sleep triggers now carry a User tag naming who woke up first, or went to sleep last."
+  },
+  "1.3.2": {
+    "en": "Housekeeping: vacation statuses for users who have since been deleted from Homey are now cleared away at startup instead of lingering in the app settings."
   }
 }

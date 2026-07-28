@@ -79,6 +79,11 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   async logUsersOnce() {
     const { users, countedCount } = await this.userStatus.getOverview();
+
+    // Someone deleted from Homey while on vacation would otherwise leave their
+    // id in settings for ever. Done here rather than on a timer, so a Homey we
+    // briefly could not read is never mistaken for "these users are all gone".
+    await this.vacation.pruneUnknown(users.map((user) => user.id));
     const described = users
       .map((user) => {
         const notes = [];

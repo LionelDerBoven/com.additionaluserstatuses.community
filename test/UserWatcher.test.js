@@ -286,3 +286,23 @@ test('fires again the next morning', async () => {
 
   assert.deepStrictEqual(events.firstAwake, ['a', 'a']);
 });
+
+test('two overlapping checks do not report the same transition twice', async () => {
+  // The 15s poll and a realtime-prompted check can land together. This holds
+  // because every read of the previous snapshot happens after the last await,
+  // making check-emit-record atomic. Adding an await inside that block would
+  // break it silently, so the property is pinned here.
+  const status = fakeStatus([user('a', true, false)]);
+  status.fetchUsers = async function slowRead() {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    return this.users;
+  };
+  const { watcher, events } = makeWatcher(status);
+
+  await watcher.check({ silent: true });
+  status.users = [user('a', true, true)];
+
+  await Promise.all([watcher.check(), watcher.check()]);
+
+  assert.strictEqual(events.asleep, 1, 'one bedtime must not run the Flow twice');
+});
