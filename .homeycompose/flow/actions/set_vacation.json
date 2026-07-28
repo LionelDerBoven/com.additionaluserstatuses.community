@@ -1,10 +1,10 @@
 {
   "id": "set_vacation",
   "title": {
-    "en": "Set vacation status"
+    "en": "Set user status to vacation"
   },
   "titleFormatted": {
-    "en": "Set [[user]] vacation to [[state]]"
+    "en": "Set [[user]] status to [[state]]"
   },
   "hint": {
     "en": "Marks a user as on vacation, or clears it. While a user is on vacation they are left out of the 'everyone' cards, so those keep working for whoever is still around."
@@ -24,19 +24,19 @@
       "name": "state",
       "type": "dropdown",
       "title": {
-        "en": "Vacation"
+        "en": "Status"
       },
       "values": [
         {
           "id": "on",
           "title": {
-            "en": "on"
+            "en": "on vacation"
           }
         },
         {
           "id": "off",
           "title": {
-            "en": "off"
+            "en": "returned"
           }
         }
       ]
