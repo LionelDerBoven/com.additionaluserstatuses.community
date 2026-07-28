@@ -16,10 +16,9 @@ const UserWatcher = require('../lib/UserWatcher');
 /**
  * A UserStatus stand-in whose answers the test controls directly.
  */
-function fakeStatus(initialUsers, initialHomeAsleep = false) {
+function fakeStatus(initialUsers) {
   return {
     users: initialUsers,
-    homeAsleep: initialHomeAsleep,
     async fetchUsers() {
       return this.users;
     },
@@ -28,8 +27,11 @@ function fakeStatus(initialUsers, initialHomeAsleep = false) {
     async getCountedUsers() {
       return this.users;
     },
+    // Derived from the users rather than set by hand, so a test cannot describe
+    // a household state that could never actually occur.
     async isEveryoneHomeAsleep() {
-      return this.homeAsleep;
+      const atHome = this.users.filter((u) => u.present);
+      return atHome.length > 0 && atHome.every((u) => u.asleep);
     },
   };
 }
@@ -50,10 +52,13 @@ function makeWatcher(status) {
   };
 
   const watcher = new UserWatcher({ homey, userStatus: status });
-  const events = { arrived: [], asleep: 0, firstAwake: [] };
+  const events = {
+    arrived: [], asleep: 0, asleepWho: [], firstAwake: [],
+  };
   watcher.on('arrived', (user) => events.arrived.push(user.id));
-  watcher.on('everyone-home-asleep', () => {
+  watcher.on('everyone-home-asleep', (user) => {
     events.asleep += 1;
+    events.asleepWho.push(user.id);
   });
   watcher.on('first-home-awake', (user) => events.firstAwake.push(user.id));
 
@@ -65,7 +70,7 @@ const user = (id, present, asleep = false) => ({
 });
 
 test('the first check only seeds, so starting the app fires nothing', async () => {
-  const status = fakeStatus([user('a', true)], true);
+  const status = fakeStatus([user('a', true, true)]);
   const { watcher, events } = makeWatcher(status);
 
   await watcher.check({ silent: true });
@@ -75,11 +80,11 @@ test('the first check only seeds, so starting the app fires nothing', async () =
 });
 
 test('everyone-home-asleep fires once on the transition, not on every check', async () => {
-  const status = fakeStatus([user('a', true)], false);
+  const status = fakeStatus([user('a', true, false)]);
   const { watcher, events } = makeWatcher(status);
   await watcher.check({ silent: true });
 
-  status.homeAsleep = true;
+  status.users = [user('a', true, true)];
   await watcher.check();
   assert.strictEqual(events.asleep, 1);
 
@@ -90,18 +95,69 @@ test('everyone-home-asleep fires once on the transition, not on every check', as
 });
 
 test('it can fire again after everyone wakes up', async () => {
-  const status = fakeStatus([user('a', true)], false);
+  const status = fakeStatus([user('a', true, false)]);
   const { watcher, events } = makeWatcher(status);
   await watcher.check({ silent: true });
 
-  status.homeAsleep = true;
+  status.users = [user('a', true, true)];
   await watcher.check();
-  status.homeAsleep = false;
+  status.users = [user('a', true, false)];
   await watcher.check();
-  status.homeAsleep = true;
+  status.users = [user('a', true, true)];
   await watcher.check();
 
   assert.strictEqual(events.asleep, 2);
+});
+
+// ---------------------------------------------------------------------------
+// The last person at home to fall asleep — the mirror of "first to wake"
+// ---------------------------------------------------------------------------
+
+test('does not fire when the last awake person simply goes out', async () => {
+  // a is asleep at home, b is awake at home, then b leaves. "Everyone at home is
+  // asleep" flips false->true, but nobody went to bed, so this must stay silent.
+  const status = fakeStatus([user('a', true, true), user('b', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', false, false)];
+  await watcher.check();
+
+  assert.strictEqual(events.asleep, 0, 'leaving the house is not going to bed');
+});
+
+test('does not fire when the first of two goes to sleep', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', true, false)];
+  await watcher.check();
+
+  assert.strictEqual(events.asleep, 0, 'b is still awake');
+});
+
+test('fires when the last awake person really falls asleep, naming them', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', true, true)];
+  await watcher.check();
+
+  assert.strictEqual(events.asleep, 1);
+  assert.deepStrictEqual(events.asleepWho, ['b'], 'b was last to bed, not a');
+});
+
+test('does not fire when an empty house gains a sleeping user', async () => {
+  const status = fakeStatus([user('a', false, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true)];
+  await watcher.check();
+
+  assert.strictEqual(events.asleep, 0, 'arriving asleep is not falling asleep');
 });
 
 test('arrival is reported only for someone who was actually away', async () => {

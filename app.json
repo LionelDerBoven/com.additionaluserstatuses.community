@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -54,10 +54,22 @@
           "fr": "La dernière personne à la maison passe au statut endormi"
         },
         "hint": {
-          "en": "Fires at the moment everyone who is at home has the status asleep, having not had it a moment earlier. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored, so this still fires when somebody is out for the evening. It does not fire when the house is empty.",
-          "nl": "Gaat af op het moment dat iedereen die thuis is de status slaapt heeft, terwijl dat even daarvoor nog niet zo was. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd, dus dit gaat ook af als er iemand een avondje weg is. Bij een leeg huis gaat het niet af.",
-          "fr": "Se déclenche au moment où toutes les personnes présentes ont le statut endormi, alors que ce n'était pas le cas juste avant. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés : la carte se déclenche donc aussi quand quelqu'un est sorti pour la soirée. Elle ne se déclenche pas si la maison est vide."
-        }
+          "en": "Fires when somebody who was at home and awake goes to the status asleep while everyone else at home is already asleep, so nobody at home is awake any more. It does not fire when the last awake person simply leaves the house, because nobody went to bed. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored, so this still fires when somebody is out for the evening. It does not fire when the house is empty. The User tag says who was last to fall asleep.",
+          "nl": "Gaat af wanneer iemand die thuis en wakker was naar de status slaapt gaat terwijl de rest thuis al slaapt, zodat er niemand thuis nog wakker is. Gaat niet af wanneer de laatste wakkere persoon gewoon het huis verlaat, want dan is er niemand gaan slapen. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd, dus dit gaat ook af als er iemand een avondje weg is. Bij een leeg huis gaat het niet af. De tag Gebruiker zegt wie als laatste is gaan slapen.",
+          "fr": "Se déclenche lorsqu'une personne qui était à la maison et éveillée passe au statut endormi alors que tous les autres présents dorment déjà, si bien que plus personne n'est éveillé à la maison. Ne se déclenche pas lorsque la dernière personne éveillée quitte simplement la maison, car personne ne s'est couché. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés : la carte se déclenche donc aussi quand quelqu'un est sorti pour la soirée. Elle ne se déclenche pas si la maison est vide. Le tag Utilisateur indique qui s'est endormi en dernier."
+        },
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          }
+        ]
       },
       {
         "id": "everyone_vacation_ended",

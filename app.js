@@ -176,9 +176,9 @@ class AdditionalUserStatusesApp extends Homey.App {
   // ---------------------------------------------------------------------------
 
   wireWatcher() {
-    this.watcher.on('everyone-home-asleep', () => {
-      this.log('Everyone who is at home is now asleep.');
-      this.triggerEveryoneHomeAsleep.trigger().catch((err) => this.error(err.message));
+    this.watcher.on('everyone-home-asleep', ({ name }) => {
+      this.log(`${name} was the last person at home to fall asleep.`);
+      this.triggerEveryoneHomeAsleep.trigger({ user: name }).catch((err) => this.error(err.message));
     });
 
     this.watcher.on('first-home-awake', ({ name }) => {
