@@ -1,9 +1,13 @@
 {
   "id": "everyone_home",
   "title": {
-    "en": "!{{Everyone is at home|Not everyone is at home}}"
+    "en": "!{{Everyone is at home|Not everyone is at home}}",
+    "nl": "!{{Iedereen is thuis|Niet iedereen is thuis}}",
+    "fr": "!{{Tout le monde est à la maison|Tout le monde n'est pas à la maison}}"
   },
   "hint": {
-    "en": "True when every counted Homey user is marked as at home. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose presence has never been set counts as not at home, because Homey does not know where they are. If no users are counted at all, this card is false."
+    "en": "True when every counted Homey user is marked as at home. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose presence has never been set counts as not at home, because Homey does not know where they are. If no users are counted at all, this card is false.",
+    "nl": "Waar wanneer elke meegetelde Homey-gebruiker als thuis is gemarkeerd. Gebruikers die je in de instellingen van deze app hebt uitgezet worden genegeerd, net als uitgeschakelde accounts. Een gebruiker van wie de aanwezigheid nooit is ingesteld telt als niet thuis, omdat Homey niet weet waar diegene is. Als er helemaal geen gebruikers meetellen, is deze kaart onwaar.",
+    "fr": "Vrai lorsque chaque utilisateur Homey pris en compte est marqué comme présent. Les utilisateurs désactivés dans les réglages de cette app sont ignorés, tout comme les comptes désactivés dans Homey. Un utilisateur dont la présence n'a jamais été définie compte comme absent, car Homey ignore où il se trouve. Si aucun utilisateur n'est pris en compte, cette carte est fausse."
   }
 }

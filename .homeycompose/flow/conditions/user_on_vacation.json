@@ -1,23 +1,33 @@
 {
   "id": "user_on_vacation",
   "title": {
-    "en": "A user is !{{on vacation|not on vacation}}"
+    "en": "A user is !{{on vacation|not on vacation}}",
+    "nl": "Een gebruiker is !{{op vakantie|niet op vakantie}}",
+    "fr": "Un utilisateur est !{{en vacances|pas en vacances}}"
   },
   "titleFormatted": {
-    "en": "[[user]] is !{{on vacation|not on vacation}}"
+    "en": "[[user]] is !{{on vacation|not on vacation}}",
+    "nl": "[[user]] is !{{op vakantie|niet op vakantie}}",
+    "fr": "[[user]] est !{{en vacances|pas en vacances}}"
   },
   "hint": {
-    "en": "Checks the vacation status this app keeps for the chosen Homey user. Vacation is set by the 'Set vacation' action, by the user's vacation device, or on the app's settings page."
+    "en": "Checks the vacation status this app keeps for the chosen Homey user. Vacation is set by the 'Set vacation' action, by the user's vacation device, or on the app's settings page.",
+    "nl": "Controleert de vakantiestatus die deze app voor de gekozen Homey-gebruiker bijhoudt. Vakantie stel je in met de actiekaart, met het vakantie-apparaat van die gebruiker, of op de instellingenpagina van de app.",
+    "fr": "Vérifie le statut de vacances que cette app conserve pour l'utilisateur Homey choisi. Les vacances se définissent avec la carte d'action, avec l'appareil de vacances de cet utilisateur, ou depuis la page de réglages de l'app."
   },
   "args": [
     {
       "name": "user",
       "type": "autocomplete",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "placeholder": {
-        "en": "Choose a user…"
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
       }
     }
   ]

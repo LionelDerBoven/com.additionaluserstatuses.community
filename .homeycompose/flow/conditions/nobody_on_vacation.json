@@ -1,9 +1,13 @@
 {
   "id": "nobody_on_vacation",
   "title": {
-    "en": "!{{Nobody is on vacation|Someone is on vacation}}"
+    "en": "!{{Nobody is on vacation|Someone is on vacation}}",
+    "nl": "!{{Niemand is op vakantie|Iemand is op vakantie}}",
+    "fr": "!{{Personne n'est en vacances|Quelqu'un est en vacances}}"
   },
   "hint": {
-    "en": "True when no counted Homey user is on vacation. Invert it to ask whether at least one person is away on vacation."
+    "en": "True when no counted Homey user is on vacation. Invert it to ask whether at least one person is away on vacation.",
+    "nl": "Waar wanneer geen enkele meegetelde Homey-gebruiker op vakantie is. Draai de kaart om als je wilt weten of er minstens één iemand op vakantie is.",
+    "fr": "Vrai lorsqu'aucun utilisateur Homey pris en compte n'est en vacances. Inversez la carte pour savoir si au moins une personne est en vacances."
   }
 }

@@ -1,23 +1,33 @@
 {
   "id": "vacation_started",
   "title": {
-    "en": "A user goes on vacation"
+    "en": "A user goes on vacation",
+    "nl": "Een gebruiker gaat op vakantie",
+    "fr": "Un utilisateur part en vacances"
   },
   "titleFormatted": {
-    "en": "[[user]] goes on vacation"
+    "en": "[[user]] goes on vacation",
+    "nl": "[[user]] gaat op vakantie",
+    "fr": "[[user]] part en vacances"
   },
   "hint": {
-    "en": "Fires when a user is marked as on vacation, by a Flow, their vacation device, or the app's settings page. Choose 'Any user' to fire for everybody and read the User tag to tell who."
+    "en": "Fires when a user is marked as on vacation, by a Flow, their vacation device, or the app's settings page. Choose 'Any user' to fire for everybody and read the User tag to tell who.",
+    "nl": "Gaat af wanneer een gebruiker als op vakantie wordt gemarkeerd, via een Flow, via het vakantie-apparaat of via de instellingenpagina van de app. Kies 'Elke gebruiker' om voor iedereen af te gaan en lees de tag Gebruiker om te zien wie het is.",
+    "fr": "Se déclenche lorsqu'un utilisateur est marqué comme en vacances, via un Flow, via son appareil de vacances ou depuis la page de réglages de l'app. Choisissez « Tout utilisateur » pour se déclencher pour chacun et lisez le tag Utilisateur pour savoir de qui il s'agit."
   },
   "args": [
     {
       "name": "user",
       "type": "autocomplete",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "placeholder": {
-        "en": "Any user"
+        "en": "Any user",
+        "nl": "Elke gebruiker",
+        "fr": "Tout utilisateur"
       }
     }
   ],
@@ -26,7 +36,9 @@
       "name": "user",
       "type": "string",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "example": "Alex"
     }

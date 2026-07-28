@@ -1,42 +1,58 @@
 {
   "id": "set_vacation",
   "title": {
-    "en": "Set user status to vacation"
+    "en": "Set user status to vacation",
+    "nl": "Gebruikersstatus op vakantie zetten",
+    "fr": "Définir le statut d'un utilisateur sur vacances"
   },
   "titleFormatted": {
-    "en": "Set [[user]] status to [[state]]"
+    "en": "Set [[user]] status to [[state]]",
+    "nl": "Zet status van [[user]] op [[state]]",
+    "fr": "Définir le statut de [[user]] sur [[state]]"
   },
   "hint": {
-    "en": "Marks a user as on vacation, or clears it. While a user is on vacation they are left out of the 'everyone' cards, so those keep working for whoever is still around."
+    "en": "Marks a user as on vacation, or clears it. While a user is on vacation they are left out of the 'everyone' cards, so those keep working for whoever is still around.",
+    "nl": "Markeert een gebruiker als op vakantie, of wist dat weer. Zolang iemand op vakantie is telt die niet mee in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is.",
+    "fr": "Marque un utilisateur comme en vacances, ou efface ce statut. Tant qu'une personne est en vacances, elle n'est pas prise en compte dans les cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là."
   },
   "args": [
     {
       "name": "user",
       "type": "autocomplete",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "placeholder": {
-        "en": "Choose a user…"
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
       }
     },
     {
       "name": "state",
       "type": "dropdown",
       "title": {
-        "en": "Status"
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
       },
       "values": [
         {
           "id": "on",
           "title": {
-            "en": "on vacation"
+            "en": "on vacation",
+            "nl": "op vakantie",
+            "fr": "en vacances"
           }
         },
         {
           "id": "off",
           "title": {
-            "en": "returned"
+            "en": "returned",
+            "nl": "terug",
+            "fr": "de retour"
           }
         }
       ]

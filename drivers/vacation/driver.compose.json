@@ -1,6 +1,8 @@
 {
   "name": {
-    "en": "Vacation status"
+    "en": "Vacation status",
+    "nl": "Vakantiestatus",
+    "fr": "Statut de vacances"
   },
   "class": "other",
   "capabilities": [
@@ -9,13 +11,19 @@
   "capabilitiesOptions": {
     "onoff": {
       "title": {
-        "en": "On vacation"
+        "en": "On vacation",
+        "nl": "Op vakantie",
+        "fr": "En vacances"
       },
       "insightsTitleTrue": {
-        "en": "Went on vacation"
+        "en": "Went on vacation",
+        "nl": "Ging op vakantie",
+        "fr": "Parti en vacances"
       },
       "insightsTitleFalse": {
-        "en": "Returned from vacation"
+        "en": "Returned from vacation",
+        "nl": "Kwam terug van vakantie",
+        "fr": "Revenu de vacances"
       }
     }
   },

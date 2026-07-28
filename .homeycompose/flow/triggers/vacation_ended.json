@@ -1,23 +1,33 @@
 {
   "id": "vacation_ended",
   "title": {
-    "en": "A user returns from vacation"
+    "en": "A user returns from vacation",
+    "nl": "Een gebruiker komt terug van vakantie",
+    "fr": "Un utilisateur revient de vacances"
   },
   "titleFormatted": {
-    "en": "[[user]] returns from vacation"
+    "en": "[[user]] returns from vacation",
+    "nl": "[[user]] komt terug van vakantie",
+    "fr": "[[user]] revient de vacances"
   },
   "hint": {
-    "en": "Fires when a user's vacation status is cleared, whether by a Flow, their vacation device, the settings page, or automatically because Homey saw them come home. Choose 'Any user' to fire for everybody and read the User tag to tell who."
+    "en": "Fires when a user's vacation status is cleared, whether by a Flow, their vacation device, the settings page, or automatically because Homey saw them come home. Choose 'Any user' to fire for everybody and read the User tag to tell who.",
+    "nl": "Gaat af wanneer de vakantiestatus van een gebruiker wordt gewist, via een Flow, via het vakantie-apparaat, via de instellingenpagina, of automatisch omdat Homey zag dat diegene thuiskwam. Kies 'Elke gebruiker' om voor iedereen af te gaan en lees de tag Gebruiker om te zien wie het is.",
+    "fr": "Se déclenche lorsque le statut de vacances d'un utilisateur est effacé, via un Flow, via son appareil de vacances, depuis la page de réglages, ou automatiquement parce que Homey l'a vu rentrer. Choisissez « Tout utilisateur » pour se déclencher pour chacun et lisez le tag Utilisateur pour savoir de qui il s'agit."
   },
   "args": [
     {
       "name": "user",
       "type": "autocomplete",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "placeholder": {
-        "en": "Any user"
+        "en": "Any user",
+        "nl": "Elke gebruiker",
+        "fr": "Tout utilisateur"
       }
     }
   ],
@@ -26,7 +36,9 @@
       "name": "user",
       "type": "string",
       "title": {
-        "en": "User"
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
       },
       "example": "Alex"
     }

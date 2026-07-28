@@ -1,9 +1,13 @@
 {
   "id": "everyone_vacation_started",
   "title": {
-    "en": "Everyone is on vacation"
+    "en": "Everyone is on vacation",
+    "nl": "Iedereen is op vakantie",
+    "fr": "Tout le monde est en vacances"
   },
   "hint": {
-    "en": "Fires at the moment the last counted user is marked as on vacation, so the whole household is away. Use it for holiday mode: heating down, presence simulation on."
+    "en": "Fires at the moment the last counted user is marked as on vacation, so the whole household is away. Use it for holiday mode: heating down, presence simulation on.",
+    "nl": "Gaat af op het moment dat de laatste meegetelde gebruiker als op vakantie wordt gemarkeerd, zodat het hele huishouden weg is. Handig voor vakantiemodus: verwarming lager, aanwezigheidssimulatie aan.",
+    "fr": "Se déclenche au moment où le dernier utilisateur pris en compte est marqué comme en vacances, donc tout le foyer est absent. Pratique pour un mode vacances : chauffage réduit, simulation de présence activée."
   }
 }

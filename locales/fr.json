@@ -1,0 +1,21 @@
+{
+  "unnamed_user": "Utilisateur sans nom",
+  "any_user": "Tout utilisateur",
+  "device": {
+    "name_prefix": "Vacances",
+    "user_gone": "Cet utilisateur Homey n'existe plus."
+  },
+  "settings": {
+    "title": "Quels utilisateurs comptent comme « tout le monde » ?",
+    "intro": "Les cartes « tout le monde » consultent en direct les utilisateurs cochés ci-dessous, à chaque exécution d'un Flow. Un nouvel utilisateur Homey est pris en compte automatiquement : vous n'avez donc jamais à modifier un Flow lorsque quelqu'un rejoint le foyer. Décochez toute personne qui ne doit pas bloquer toute la maison — un compte invité, ou un téléphone qui ne signale jamais sa présence. Les comptes désactivés dans Homey sont toujours ignorés.",
+    "everyone_home": "Tout le monde est à la maison",
+    "everyone_asleep": "Tout le monde dort",
+    "everyone_home_asleep": "Tout le monde à la maison dort",
+    "vacation_title": "Vacances",
+    "vacation_intro": "Une personne en vacances n'est pas prise en compte dans les cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. Les vacances peuvent aussi se définir depuis un Flow, ou depuis l'appareil de vacances de cet utilisateur.",
+    "vacation_auto_return": "Effacer les vacances automatiquement quand quelqu'un rentre",
+    "save": "Enregistrer",
+    "refresh": "Actualiser",
+    "saved": "Enregistré."
+  }
+}

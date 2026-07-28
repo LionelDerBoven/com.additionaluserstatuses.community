@@ -1,0 +1,21 @@
+{
+  "unnamed_user": "Naamloze gebruiker",
+  "any_user": "Elke gebruiker",
+  "device": {
+    "name_prefix": "Vakantie",
+    "user_gone": "Deze Homey-gebruiker bestaat niet meer."
+  },
+  "settings": {
+    "title": "Welke gebruikers tellen mee als \"iedereen\"?",
+    "intro": "De \"iedereen\"-kaarten kijken live naar de gebruikers die hieronder zijn aangevinkt, elke keer dat een Flow loopt. Een nieuwe Homey-gebruiker telt automatisch mee, dus je hoeft nooit een Flow aan te passen nadat er iemand bij komt. Vink iemand uit die het hele huis niet mag tegenhouden — een gastaccount, of een telefoon die nooit aanwezigheid doorgeeft. Accounts die in Homey zijn uitgeschakeld worden altijd genegeerd.",
+    "everyone_home": "Iedereen is thuis",
+    "everyone_asleep": "Iedereen slaapt",
+    "everyone_home_asleep": "Iedereen die thuis is slaapt",
+    "vacation_title": "Vakantie",
+    "vacation_intro": "Wie op vakantie is telt niet mee in de \"iedereen\"-kaarten, zodat die blijven werken voor wie er nog wel is. Vakantie kun je ook instellen vanuit een Flow, of via het vakantie-apparaat van die gebruiker.",
+    "vacation_auto_return": "Vakantie automatisch wissen wanneer iemand thuiskomt",
+    "save": "Opslaan",
+    "refresh": "Vernieuwen",
+    "saved": "Opgeslagen."
+  }
+}
