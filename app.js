@@ -46,6 +46,10 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.error(`Could not read the Homey users at startup: ${err.message}`);
     });
 
+    // Devices are deliberately not synced from here: at this point Homey has not
+    // initialised the drivers yet, so getDriver() throws. Each device waits for
+    // this app's store instead, in VacationDevice#getStore.
+
     this.log('Additional User Statuses initialised.');
   }
 
@@ -197,14 +201,30 @@ class AdditionalUserStatusesApp extends Homey.App {
   }
 
   async onVacationChanged({ added, removed }) {
+    // Reflect the new state before announcing it. A tile showing the truth must
+    // not depend on whether firing a Flow trigger happened to succeed, or the
+    // device drifts out of step with the store - the exact failure the device
+    // was introduced to prevent.
+    this.syncVacationDevices();
+
     const users = await this.userStatus.fetchUsers();
     const nameOf = (id) => users.find((user) => user.id === id)?.name ?? this.homey.__('unnamed_user');
 
+    // Each trigger is fired independently: one Flow card failing should not stop
+    // the rest, nor the household-wide cards below.
+    const fire = async (card, tokens, state) => {
+      try {
+        await card.trigger(tokens, state);
+      } catch (err) {
+        this.error(`Could not fire a vacation trigger: ${err.message}`);
+      }
+    };
+
     for (const id of added) {
-      await this.triggerVacationStarted.trigger({ user: nameOf(id) }, { userId: id });
+      await fire(this.triggerVacationStarted, { user: nameOf(id) }, { userId: id });
     }
     for (const id of removed) {
-      await this.triggerVacationEnded.trigger({ user: nameOf(id) }, { userId: id });
+      await fire(this.triggerVacationEnded, { user: nameOf(id) }, { userId: id });
     }
 
     // Household-wide cards fire on the edge, so "everyone is on vacation" runs
@@ -213,25 +233,34 @@ class AdditionalUserStatusesApp extends Homey.App {
     const nobody = await this.userStatus.isNobodyOnVacation();
 
     if (everyone && !this.lastEveryoneOnVacation) {
-      await this.triggerEveryoneVacationStarted.trigger();
+      await fire(this.triggerEveryoneVacationStarted);
     }
     if (nobody && this.lastNobodyOnVacation === false) {
-      await this.triggerEveryoneVacationEnded.trigger();
+      await fire(this.triggerEveryoneVacationEnded);
     }
 
     this.lastEveryoneOnVacation = everyone;
     this.lastNobodyOnVacation = nobody;
-
-    this.syncVacationDevices();
   }
 
-  /** Keeps every paired vacation device showing the truth from the store. */
+  /**
+   * Keeps every paired vacation device showing the truth from the store.
+   *
+   * Also called once at startup: a device can initialise before this app does,
+   * and a device that lost that race would otherwise sit showing no value at all.
+   */
   syncVacationDevices() {
-    const driver = this.homey.drivers.getDriver('vacation');
-    if (!driver) return;
+    try {
+      const driver = this.homey.drivers.getDriver('vacation');
+      if (!driver) return;
 
-    for (const device of driver.getDevices()) {
-      if (typeof device.syncFromStore === 'function') device.syncFromStore();
+      for (const device of driver.getDevices()) {
+        if (typeof device.syncFromStore === 'function') {
+          device.syncFromStore().catch((err) => this.error(`Device sync failed: ${err.message}`));
+        }
+      }
+    } catch (err) {
+      this.error(`Could not reach the vacation devices: ${err.message}`);
     }
   }
 
