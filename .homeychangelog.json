@@ -4,5 +4,8 @@
   },
   "1.0.0": {
     "en": "First release. Adds the household-wide condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'."
+  },
+  "1.2.0": {
+    "en": "Adds 'Exactly one person at home is awake' - true when a single person is up while the others sleep or are out. Use it for a first-one-up morning Flow, or a last-one-still-awake evening Flow."
   }
 }

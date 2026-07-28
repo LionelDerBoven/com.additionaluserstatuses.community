@@ -16,6 +16,7 @@
     "vacation_auto_return": "Clear vacation automatically when someone comes home",
     "save": "Save",
     "refresh": "Refresh",
-    "saved": "Saved."
+    "saved": "Saved.",
+    "one_home_awake": "Exactly one at home is awake"
   }
 }

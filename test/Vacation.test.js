@@ -258,3 +258,91 @@ test('the overview reports vacation flags and the feature toggles', async () => 
   assert.strictEqual(overview.everyoneHomeAsleep, true);
   assert.strictEqual(overview.autoReturnEnabled, true);
 });
+
+// ---------------------------------------------------------------------------
+// Exactly one at home is awake
+//
+// The first six cases are the truth table from the HomeyScript this card
+// replaces, so the card is verified to behave the way that script intended.
+// ---------------------------------------------------------------------------
+
+test('nobody home -> false', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: false, asleep: false },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), false);
+});
+
+test('one home and asleep -> false', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: true },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), false);
+});
+
+test('one home and awake -> true (the whole point of the card)', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: false },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});
+
+test('two home, both asleep -> false', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: true },
+    { id: 'b', present: true, asleep: true },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), false);
+});
+
+test('two home, one awake -> true (first up, or last still awake)', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: false },
+    { id: 'b', present: true, asleep: true },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});
+
+test('two home, both awake -> false', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: false },
+    { id: 'b', present: true, asleep: false },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), false);
+});
+
+test('someone awake but away does not count', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: false },
+    { id: 'b', present: false, asleep: false },
+  ));
+  // b is awake but out, so a is still the only one awake at home.
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});
+
+test('a never-set sleep status counts as awake', async () => {
+  const { status } = makeStatus(fakeHomey(), users(
+    { id: 'a', present: true, asleep: null },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});
+
+test('a second awake person on vacation is ignored', async () => {
+  const homey = fakeHomey();
+  const { status, vacation } = makeStatus(homey, users(
+    { id: 'a', present: true, asleep: false },
+    { id: 'b', present: true, asleep: false },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), false);
+
+  await vacation.set('b', true);
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});
+
+test('an excluded awake person is ignored', async () => {
+  const { status } = makeStatus(fakeHomey({ excluded_user_ids: ['b'] }), users(
+    { id: 'a', present: true, asleep: false },
+    { id: 'b', present: true, asleep: false },
+  ));
+  assert.strictEqual(await status.isExactlyOneHomeAwake(), true);
+});

@@ -31,6 +31,7 @@ function renderVerdicts(overview) {
   setVerdict('verdict-home', overview.everyoneHome);
   setVerdict('verdict-asleep', overview.everyoneAsleep);
   setVerdict('verdict-home-asleep', overview.everyoneHomeAsleep);
+  setVerdict('verdict-one-awake', overview.oneHomeAwake);
 
   document.getElementById('vacation-auto-return').checked = overview.autoReturnEnabled;
 

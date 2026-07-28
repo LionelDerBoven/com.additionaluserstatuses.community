@@ -106,6 +106,9 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.homey.flow.getConditionCard('everyone_home_asleep')
       .registerRunListener(async () => this.userStatus.isEveryoneHomeAsleep());
 
+    this.homey.flow.getConditionCard('one_home_awake')
+      .registerRunListener(async () => this.userStatus.isExactlyOneHomeAwake());
+
     this.homey.flow.getConditionCard('everyone_on_vacation')
       .registerRunListener(async () => this.userStatus.isEveryoneOnVacation());
 
