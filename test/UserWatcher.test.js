@@ -23,6 +23,11 @@ function fakeStatus(initialUsers, initialHomeAsleep = false) {
     async fetchUsers() {
       return this.users;
     },
+    // The watcher reads arrivals from the full list and the awake logic from the
+    // counted one; these tests use no exclusions, so both return the same users.
+    async getCountedUsers() {
+      return this.users;
+    },
     async isEveryoneHomeAsleep() {
       return this.homeAsleep;
     },
@@ -45,16 +50,19 @@ function makeWatcher(status) {
   };
 
   const watcher = new UserWatcher({ homey, userStatus: status });
-  const events = { arrived: [], asleep: 0 };
+  const events = { arrived: [], asleep: 0, firstAwake: [] };
   watcher.on('arrived', (user) => events.arrived.push(user.id));
   watcher.on('everyone-home-asleep', () => {
     events.asleep += 1;
   });
+  watcher.on('first-home-awake', (user) => events.firstAwake.push(user.id));
 
   return { watcher, events };
 }
 
-const user = (id, present) => ({ id, name: `User ${id}`, present });
+const user = (id, present, asleep = false) => ({
+  id, name: `User ${id}`, present, asleep,
+});
 
 test('the first check only seeds, so starting the app fires nothing', async () => {
   const status = fakeStatus([user('a', true)], true);
@@ -138,4 +146,87 @@ test('a missing realtime channel is survivable', async () => {
   // getApi throws in this harness; subscribing must swallow it rather than
   // taking the app down, because polling alone is a complete fallback.
   assert.doesNotThrow(() => watcher.subscribeRealtime());
+});
+
+// ---------------------------------------------------------------------------
+// The first person at home to wake up
+//
+// The distinction that matters: "exactly one person is awake" also becomes true
+// in the evening when the second-to-last person goes to bed. This trigger must
+// not fire then.
+// ---------------------------------------------------------------------------
+
+test('fires when a sleeping person wakes while the other still sleeps', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, ['a']);
+});
+
+test('does not fire again for the second person to wake', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, ['a'], 'b waking is not a "first"');
+});
+
+test('does not fire in the evening when someone goes to bed leaving one awake', async () => {
+  // Both awake, then b sleeps. "Exactly one awake" flips false->true here, so a
+  // naive implementation would fire. Nobody woke up, so this must stay silent.
+  const status = fakeStatus([user('a', true, false), user('b', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, [], 'going to bed is not waking up');
+});
+
+test('does not fire when somebody arrives home awake', async () => {
+  // a is asleep at home; b comes home awake at 2am. b did not wake up here.
+  const status = fakeStatus([user('a', true, true), user('b', false, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, [], 'arriving awake is not waking up');
+  assert.deepStrictEqual(events.arrived, ['b'], 'but it is still an arrival');
+});
+
+test('does not fire on the seeding check', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+
+  await watcher.check({ silent: true });
+
+  assert.deepStrictEqual(events.firstAwake, [], 'a restart must not look like morning');
+});
+
+test('fires again the next morning', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+  // Everyone back to sleep, then a wakes again.
+  status.users = [user('a', true, true), user('b', true, true)];
+  await watcher.check();
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, ['a', 'a']);
 });

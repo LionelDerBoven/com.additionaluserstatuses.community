@@ -124,6 +124,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     // --- Triggers -------------------------------------------------------------
     this.triggerEveryoneHomeAsleep = this.homey.flow.getTriggerCard('everyone_home_became_asleep');
+    this.triggerFirstHomeAwake = this.homey.flow.getTriggerCard('first_home_awake');
     this.triggerEveryoneVacationStarted = this.homey.flow.getTriggerCard('everyone_vacation_started');
     this.triggerEveryoneVacationEnded = this.homey.flow.getTriggerCard('everyone_vacation_ended');
 
@@ -178,6 +179,11 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.watcher.on('everyone-home-asleep', () => {
       this.log('Everyone who is at home is now asleep.');
       this.triggerEveryoneHomeAsleep.trigger().catch((err) => this.error(err.message));
+    });
+
+    this.watcher.on('first-home-awake', ({ name }) => {
+      this.log(`${name} is the first person at home to wake up.`);
+      this.triggerFirstHomeAwake.trigger({ user: name }).catch((err) => this.error(err.message));
     });
 
     this.watcher.on('arrived', ({ id, name }) => {
