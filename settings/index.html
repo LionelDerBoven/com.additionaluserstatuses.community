@@ -127,6 +127,40 @@
       color: #8a5a20;
     }
 
+    .badge.vacation {
+      background: #e0eef3;
+      color: #1c5f77;
+    }
+
+    .feature-toggles {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .feature-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .vacation-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #555;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .vacation-toggle input {
+      margin: 0;
+    }
+
     .button-group {
       display: flex;
       gap: 10px;
@@ -204,7 +238,29 @@
       <span class="label" data-i18n="settings.everyone_asleep">Everyone is asleep</span>
       <span id="verdict-asleep">&mdash;</span>
     </div>
+    <div class="status-row">
+      <span class="label" data-i18n="settings.everyone_home_asleep">Everyone at home is asleep</span>
+      <span id="verdict-home-asleep">&mdash;</span>
+    </div>
     <div class="counted-line" id="counted-line"></div>
+  </div>
+
+  <h2 data-i18n="settings.vacation_title">Vacation</h2>
+  <p class="intro" data-i18n="settings.vacation_intro">
+    A user on vacation is left out of the &quot;everyone&quot; cards, so those keep working for
+    whoever is still around. Vacation can also be set from a Flow, or from the user&rsquo;s
+    vacation device.
+  </p>
+
+  <div class="feature-toggles">
+    <label class="feature-row">
+      <input type="checkbox" id="vacation-enabled">
+      <span data-i18n="settings.vacation_enabled">Enable vacation statuses</span>
+    </label>
+    <label class="feature-row">
+      <input type="checkbox" id="vacation-auto-return">
+      <span data-i18n="settings.vacation_auto_return">Clear vacation automatically when someone comes home</span>
+    </label>
   </div>
 
   <ul class="users" id="users"></ul>

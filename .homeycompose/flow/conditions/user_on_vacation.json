@@ -1,0 +1,24 @@
+{
+  "id": "user_on_vacation",
+  "title": {
+    "en": "A user is !{{on vacation|not on vacation}}"
+  },
+  "titleFormatted": {
+    "en": "[[user]] is !{{on vacation|not on vacation}}"
+  },
+  "hint": {
+    "en": "Checks the vacation status this app keeps for the chosen Homey user. Vacation is set by the 'Set vacation' action, by the user's vacation device, or on the app's settings page."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User"
+      },
+      "placeholder": {
+        "en": "Choose a user…"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Original mark: a suitcase - the vacation status of one household member. -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="
+    M 176 120 L 176 168 L 216 168 L 216 144 L 296 144 L 296 168 L 336 168 L 336 120 Z
+    M 72 192 L 440 192 L 440 424 L 72 424 Z
+    M 200 240 L 232 240 L 232 376 L 200 376 Z
+    M 280 240 L 312 240 L 312 376 L 280 376 Z
+  " />
+</svg>

@@ -1,6 +1,6 @@
 {
   "id": "com.additionaluserstatuses.community",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -11,7 +11,7 @@
     "en": "Additional User Statuses"
   },
   "description": {
-    "en": "Adds the household-wide presence and sleep condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'. The cards read your Homey users live, so adding or removing a housemate never means editing a Flow. Unofficial community app."
+    "en": "Adds the household-wide presence and sleep condition cards Homey does not have ('Everyone is at home', 'Everyone is asleep', 'Everyone at home is asleep'), plus a vacation status per user with its own triggers, conditions, action and device. A user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Unofficial community app."
   },
   "brandColor": "#3D5A96",
   "category": [
@@ -33,6 +33,10 @@
     "getUsers": {
       "method": "get",
       "path": "/users"
+    },
+    "setVacation": {
+      "method": "post",
+      "path": "/vacation"
     }
   }
 }

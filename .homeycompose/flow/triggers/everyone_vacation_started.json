@@ -1,0 +1,9 @@
+{
+  "id": "everyone_vacation_started",
+  "title": {
+    "en": "Everyone is on vacation"
+  },
+  "hint": {
+    "en": "Fires at the moment the last counted user is marked as on vacation, so the whole household is away. Use it for holiday mode: heating down, presence simulation on."
+  }
+}

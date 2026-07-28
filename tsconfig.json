@@ -10,6 +10,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["*.js", "lib/**/*.js", "settings/**/*.js", "test/**/*.js"],
+  "include": ["*.js", "lib/**/*.js", "drivers/**/*.js", "settings/**/*.js", "test/**/*.js"],
   "exclude": ["node_modules", ".homeybuild"]
 }

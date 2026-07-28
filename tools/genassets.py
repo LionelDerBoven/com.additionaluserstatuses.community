@@ -54,10 +54,50 @@ def draw_mark(size):
     return img.resize(size, Image.LANCZOS)
 
 
+# The vacation driver's mark, in the same 512x512 space as
+# drivers/vacation/assets/icon.svg: a suitcase, drawn as body plus handle with
+# two straps knocked out of it.
+CASE_BODY = (72, 192, 440, 424)
+CASE_HANDLE_OUTER = (176, 120, 336, 168)
+CASE_HANDLE_INNER = (216, 144, 296, 168)
+CASE_STRAPS = [(200, 240, 232, 376), (280, 240, 312, 376)]
+
+DRIVER_SIZES = {"small": (75, 75), "large": (500, 500)}
+
+
+def draw_case(size):
+    """Return an RGB image of the suitcase mark on the brand colour."""
+    width, height = size[0] * SS, size[1] * SS
+    img = Image.new("RGB", (width, height), BRAND)
+    draw = ImageDraw.Draw(img)
+
+    scale = min(width, height) / 512 * 0.72
+    offset_x = (width - 512 * scale) / 2
+    offset_y = (height - 512 * scale) / 2
+
+    def box(x0, y0, x1, y1):
+        return [offset_x + x0 * scale, offset_y + y0 * scale,
+                offset_x + x1 * scale, offset_y + y1 * scale]
+
+    radius = max(1, int(18 * scale))
+    draw.rectangle(box(*CASE_HANDLE_OUTER), fill=WHITE)
+    draw.rectangle(box(*CASE_HANDLE_INNER), fill=BRAND)
+    draw.rounded_rectangle(box(*CASE_BODY), radius=radius, fill=WHITE)
+    for strap in CASE_STRAPS:
+        draw.rectangle(box(*strap), fill=BRAND)
+
+    return img.resize(size, Image.LANCZOS)
+
+
 def main():
     for name, size in SIZES.items():
         path = f"assets/images/{name}.png"
         draw_mark(size).save(path)
+        print(f"wrote {path} ({size[0]}x{size[1]})")
+
+    for name, size in DRIVER_SIZES.items():
+        path = f"drivers/vacation/assets/images/{name}.png"
+        draw_case(size).save(path)
         print(f"wrote {path} ({size[0]}x{size[1]})")
 
 

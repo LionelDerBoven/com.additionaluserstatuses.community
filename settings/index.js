@@ -30,13 +30,38 @@ function setVerdict(id, value) {
 function renderVerdicts(overview) {
   setVerdict('verdict-home', overview.everyoneHome);
   setVerdict('verdict-asleep', overview.everyoneAsleep);
+  setVerdict('verdict-home-asleep', overview.everyoneHomeAsleep);
+
+  document.getElementById('vacation-enabled').checked = overview.vacationEnabled;
+  document.getElementById('vacation-auto-return').checked = overview.autoReturnEnabled;
 
   const line = document.getElementById('counted-line');
   if (overview.countedCount === 0) {
-    line.textContent = 'No users are counted, so both cards are false. Tick at least one user below.';
+    line.textContent = 'No users are counted, so the "everyone" cards are false. Tick at least one user below.';
   } else {
     line.textContent = `Counting ${overview.countedCount} of ${overview.users.length} Homey user(s).`;
   }
+}
+
+function apply(overview) {
+  hideError();
+  currentUsers = overview.users;
+  renderVerdicts(overview);
+  renderUsers(overview.users);
+}
+
+/**
+ * Vacation writes go through the app's own endpoint rather than Homey.set, so the
+ * Flow triggers fire and any paired vacation device follows.
+ */
+function setVacation(userId, onVacation) {
+  Homey.api('POST', '/vacation', { userId, onVacation }, (err, overview) => {
+    if (err) {
+      showError(err.message || String(err));
+      return;
+    }
+    apply(overview);
+  });
 }
 
 function renderUsers(users) {
@@ -50,9 +75,9 @@ function renderUsers(users) {
     const box = document.createElement('input');
     box.type = 'checkbox';
     box.id = `user-${user.id}`;
-    box.checked = user.counted;
+    box.checked = !user.excluded;
     // A disabled Homey account can never come home or fall asleep, so counting
-    // one would pin both cards to false forever. Not the user's choice to make.
+    // one would pin the cards to false forever. Not the user's choice to make.
     box.disabled = !user.enabled;
     li.appendChild(box);
 
@@ -64,6 +89,7 @@ function renderUsers(users) {
     name.textContent = user.name;
     name.appendChild(badge(user.role));
     if (!user.enabled) name.appendChild(badge('disabled in Homey'));
+    if (user.onVacation) name.appendChild(badge('on vacation', 'vacation'));
     main.appendChild(name);
 
     const meta = document.createElement('div');
@@ -77,6 +103,20 @@ function renderUsers(users) {
     main.appendChild(meta);
 
     li.appendChild(main);
+
+    // Vacation applies immediately rather than waiting for Save, because it also
+    // fires Flow triggers - deferring that would make the triggers feel arbitrary.
+    const vacationLabel = document.createElement('label');
+    vacationLabel.className = 'vacation-toggle';
+    const vacationBox = document.createElement('input');
+    vacationBox.type = 'checkbox';
+    vacationBox.checked = user.onVacation;
+    vacationBox.disabled = !user.enabled;
+    vacationBox.addEventListener('change', () => setVacation(user.id, vacationBox.checked));
+    vacationLabel.appendChild(vacationBox);
+    vacationLabel.appendChild(document.createTextNode('on vacation'));
+    li.appendChild(vacationLabel);
+
     list.appendChild(li);
   });
 }
@@ -87,11 +127,7 @@ function load() {
       showError(err.message || String(err));
       return;
     }
-
-    hideError();
-    currentUsers = overview.users;
-    renderVerdicts(overview);
-    renderUsers(overview.users);
+    apply(overview);
   });
 }
 
@@ -106,19 +142,26 @@ function save() {
     })
     .map((user) => user.id);
 
+  const enabled = document.getElementById('vacation-enabled').checked;
+  const autoReturn = document.getElementById('vacation-auto-return').checked;
+
   Homey.set('excluded_user_ids', excluded, (err) => {
     if (err) {
       showError(err.message || String(err));
       return;
     }
 
-    const note = document.getElementById('saved-note');
-    note.style.display = 'inline';
-    setTimeout(() => {
-      note.style.display = 'none';
-    }, 2500);
+    Homey.set('vacation_enabled', enabled, () => {
+      Homey.set('vacation_auto_return', autoReturn, () => {
+        const note = document.getElementById('saved-note');
+        note.style.display = 'inline';
+        setTimeout(() => {
+          note.style.display = 'none';
+        }, 2500);
 
-    load();
+        load();
+      });
+    });
   });
 }
 

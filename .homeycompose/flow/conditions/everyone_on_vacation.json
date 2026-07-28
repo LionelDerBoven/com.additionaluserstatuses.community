@@ -1,0 +1,9 @@
+{
+  "id": "everyone_on_vacation",
+  "title": {
+    "en": "!{{Everyone is on vacation|Not everyone is on vacation}}"
+  },
+  "hint": {
+    "en": "True when every counted Homey user is marked as on vacation. Users switched off in this app's settings and accounts disabled in Homey are ignored. If there are no counted users at all this card is false."
+  }
+}

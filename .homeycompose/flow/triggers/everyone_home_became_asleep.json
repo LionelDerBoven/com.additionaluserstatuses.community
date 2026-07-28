@@ -1,0 +1,9 @@
+{
+  "id": "everyone_home_became_asleep",
+  "title": {
+    "en": "The last person at home falls asleep"
+  },
+  "hint": {
+    "en": "Fires at the moment everyone who is at home is asleep, having not been a moment earlier. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored, so this still fires when somebody is out for the evening. It does not fire when the house is empty."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "everyone_vacation_ended",
+  "title": {
+    "en": "Nobody is on vacation any more"
+  },
+  "hint": {
+    "en": "Fires when the last person on vacation returns, so nobody in the household is away any longer. The counterpart to 'Everyone is on vacation'."
+  }
+}

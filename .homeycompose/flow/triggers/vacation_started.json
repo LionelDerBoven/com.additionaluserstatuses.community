@@ -1,0 +1,34 @@
+{
+  "id": "vacation_started",
+  "title": {
+    "en": "A user goes on vacation"
+  },
+  "titleFormatted": {
+    "en": "[[user]] goes on vacation"
+  },
+  "hint": {
+    "en": "Fires when a user is marked as on vacation, by a Flow, their vacation device, or the app's settings page. Choose 'Any user' to fire for everybody and read the User tag to tell who."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User"
+      },
+      "placeholder": {
+        "en": "Any user"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "user",
+      "type": "string",
+      "title": {
+        "en": "User"
+      },
+      "example": "Alex"
+    }
+  ]
+}

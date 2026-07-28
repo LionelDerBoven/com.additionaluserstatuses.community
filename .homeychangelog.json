@@ -1,0 +1,8 @@
+{
+  "1.1.0": {
+    "en": "Adds 'Everyone at home is asleep', which ignores anyone who is out, so a 'last one to bed' Flow still works when somebody is away for the evening. Adds a vacation status per user, with triggers, conditions, an action and a device: a user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Vacation can clear itself when Homey sees that person come home."
+  },
+  "1.0.0": {
+    "en": "First release. Adds the household-wide condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'."
+  }
+}

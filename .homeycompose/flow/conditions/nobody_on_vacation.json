@@ -1,0 +1,9 @@
+{
+  "id": "nobody_on_vacation",
+  "title": {
+    "en": "!{{Nobody is on vacation|Someone is on vacation}}"
+  },
+  "hint": {
+    "en": "True when no counted Homey user is on vacation. Invert it to ask whether at least one person is away on vacation."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "vacation_ended",
+  "title": {
+    "en": "A user returns from vacation"
+  },
+  "titleFormatted": {
+    "en": "[[user]] returns from vacation"
+  },
+  "hint": {
+    "en": "Fires when a user's vacation status is cleared, whether by a Flow, their vacation device, the settings page, or automatically because Homey saw them come home. Choose 'Any user' to fire for everybody and read the User tag to tell who."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User"
+      },
+      "placeholder": {
+        "en": "Any user"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "user",
+      "type": "string",
+      "title": {
+        "en": "User"
+      },
+      "example": "Alex"
+    }
+  ]
+}
