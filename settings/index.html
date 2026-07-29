@@ -204,7 +204,12 @@
       margin: 0 0 15px 0;
       border: 1px solid #e0e0e0;
       border-radius: 4px;
-      overflow: hidden;
+      /* Scrolls inside itself rather than pushing the dialog ever taller.
+         Relative to the viewport so it adapts to a phone as well as a desktop. */
+      max-height: 50vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     ul.log li {
@@ -220,13 +225,15 @@
       border-bottom: none;
     }
 
-    ul.log li.level-error {
-      background: #fdf0f0;
-      color: #6b2a2a;
+    /* Translucent rather than a fixed light colour, so the tint reads correctly
+       whether Homey is showing the settings page in its light or dark theme.
+       Addressed by id so Homey's own theme styling does not win on specificity. */
+    #log li.level-error {
+      background: rgba(200, 60, 60, 0.14);
     }
 
-    ul.log li.level-trigger {
-      background: #f4f8f4;
+    #log li.level-trigger {
+      background: rgba(60, 160, 90, 0.12);
     }
 
     .log-time {

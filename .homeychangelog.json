@@ -28,5 +28,8 @@
   },
   "1.5.0": {
     "en": "The Log tab gains two options. Keep the log across app restarts, off by default, which stores it on your Homey with the writes batched so a burst of events costs one write rather than several. And a 24-hour clock, switched on by default unless your Homey is set to English."
+  },
+  "1.5.1": {
+    "en": "The log now scrolls within its own box instead of making the settings window grow longer and longer, and its colour tints read correctly in Homey’s dark theme."
   }
 }
