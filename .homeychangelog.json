@@ -16,5 +16,8 @@
   },
   "1.3.2": {
     "en": "Housekeeping: vacation statuses for users who have since been deleted from Homey are now cleared away at startup instead of lingering in the app settings."
+  },
+  "1.3.3": {
+    "en": "Fixes 'The first person at home wakes up' not firing at all when two people woke within the same moment - for example one alarm waking a couple. It now fires once for the household waking, whoever gets up."
   }
 }

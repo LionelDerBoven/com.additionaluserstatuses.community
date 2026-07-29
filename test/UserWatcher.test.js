@@ -306,3 +306,59 @@ test('two overlapping checks do not report the same transition twice', async () 
 
   assert.strictEqual(events.asleep, 1, 'one bedtime must not run the Flow twice');
 });
+
+test('both waking inside one poll still fires, exactly once', async () => {
+  // One alarm waking a couple is one morning. Keying on "exactly one is awake"
+  // made this fire zero times, which is worse than firing twice: the Flow just
+  // silently never ran.
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.strictEqual(events.firstAwake.length, 1, 'one morning, one trigger');
+});
+
+test('two of three waking together fires once, third waking later does not', async () => {
+  const status = fakeStatus([
+    user('a', true, true), user('b', true, true), user('c', true, true),
+  ]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false), user('c', true, true)];
+  await watcher.check();
+  assert.strictEqual(events.firstAwake.length, 1);
+
+  status.users = [user('a', true, false), user('b', true, false), user('c', true, false)];
+  await watcher.check();
+  assert.strictEqual(events.firstAwake.length, 1, 'c is not a first riser');
+});
+
+test('a new morning fires again after everyone has gone back to sleep', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+  status.users = [user('a', true, true), user('b', true, true)];
+  await watcher.check();
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.strictEqual(events.firstAwake.length, 2, 'two mornings, two triggers');
+});
+
+test('waking while somebody at home is already awake is not a first', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstAwake, [], 'a was already up');
+});
