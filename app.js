@@ -23,7 +23,7 @@ class AdditionalUserStatusesApp extends Homey.App {
   async onInit() {
     this.api = null;
 
-    this.eventLog = new EventLog();
+    this.eventLog = new EventLog({ homey: this.homey });
     this.vacation = new VacationStore({ homey: this.homey });
 
     this.userStatus = new UserStatus({
@@ -34,6 +34,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     this.registerFlowCards();
     this.wireVacationTriggers();
+    this.watchLogSettings();
 
     this.watcher = new UserWatcher({ homey: this.homey, userStatus: this.userStatus });
     this.wireWatcher();
@@ -57,6 +58,25 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   async onUninit() {
     if (this.watcher) this.watcher.stop();
+    if (this.eventLog) await this.eventLog.stop();
+  }
+
+  /**
+   * The log settings apply the moment they are ticked, so the app has to notice
+   * rather than wait for anything to be saved.
+   */
+  watchLogSettings() {
+    this.homey.settings.on('set', (key) => {
+      if (key !== 'log_persist') return;
+
+      const persist = this.homey.settings.get('log_persist') === true;
+      this.record(persist
+        ? 'Log will now be kept across restarts.'
+        : 'Log is no longer kept across restarts.');
+
+      this.eventLog.onPersistChanged(persist)
+        .catch((err) => this.error(`Could not change log persistence: ${err.message}`));
+    });
   }
 
   /**
@@ -305,13 +325,31 @@ class AdditionalUserStatusesApp extends Homey.App {
   }
 
   getLog() {
-    return this.eventLog.list();
+    return {
+      entries: this.eventLog.list(),
+      ...this.getLogPrefs(),
+    };
+  }
+
+  /**
+   * The 24-hour default follows the Homey's own language: English is the only
+   * one of Homey's languages where a 12-hour clock is the everyday norm.
+   */
+  getLogPrefs() {
+    const stored = this.homey.settings.get('log_24h');
+    const language = this.homey.i18n.getLanguage();
+
+    return {
+      persist: this.homey.settings.get('log_persist') === true,
+      use24Hour: typeof stored === 'boolean' ? stored : language !== 'en',
+      language,
+    };
   }
 
   clearLog() {
     this.eventLog.clear();
     this.record('Log cleared.');
-    return this.eventLog.list();
+    return this.getLog();
   }
 
   async setVacation(userId, onVacation) {

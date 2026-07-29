@@ -166,6 +166,15 @@ function save() {
 // Log tab
 // ---------------------------------------------------------------------------
 
+// Remembered from the last fetch, so re-rendering does not need a round trip.
+let use24Hour = true;
+
+function formatTime(ms) {
+  const d = new Date(ms);
+  // hour12 false gives 24-hour; true gives the locale's 12-hour form.
+  return d.toLocaleTimeString([], { hour12: !use24Hour });
+}
+
 function renderLog(entries) {
   const list = document.getElementById('log');
   list.textContent = '';
@@ -185,7 +194,7 @@ function renderLog(entries) {
     const time = document.createElement('span');
     time.className = 'log-time';
     // Local time only: the date is rarely useful for a log this short-lived.
-    time.textContent = new Date(entry.at).toLocaleTimeString();
+    time.textContent = formatTime(entry.at);
     li.appendChild(time);
 
     const msg = document.createElement('span');
@@ -196,25 +205,47 @@ function renderLog(entries) {
   });
 }
 
+function applyLog(payload) {
+  hideError();
+  use24Hour = payload.use24Hour !== false;
+  document.getElementById('log-24h').checked = use24Hour;
+  document.getElementById('log-persist').checked = payload.persist === true;
+  renderLog(payload.entries);
+}
+
 function loadLog() {
-  Homey.api('GET', '/log', null, (err, entries) => {
+  Homey.api('GET', '/log', null, (err, payload) => {
     if (err) {
       showError(err.message || String(err));
       return;
     }
-    hideError();
-    renderLog(entries);
+    applyLog(payload);
   });
 }
 
 function clearLog() {
-  Homey.api('POST', '/log/clear', null, (err, entries) => {
+  Homey.api('POST', '/log/clear', null, (err, payload) => {
     if (err) {
       showError(err.message || String(err));
       return;
     }
-    hideError();
-    renderLog(entries);
+    applyLog(payload);
+  });
+}
+
+// Both apply at once rather than waiting for Save: they are view preferences,
+// and the app reacts to the persistence one the moment it changes.
+function setLogPersist(value) {
+  Homey.set('log_persist', value, (err) => {
+    if (err) showError(err.message || String(err));
+  });
+}
+
+function setLog24Hour(value) {
+  use24Hour = value;
+  Homey.set('log_24h', value, (err) => {
+    if (err) showError(err.message || String(err));
+    else loadLog();
   });
 }
 
@@ -236,6 +267,8 @@ function onHomeyReady(homey) {
   document.getElementById('refresh').addEventListener('click', load);
   document.getElementById('log-refresh').addEventListener('click', loadLog);
   document.getElementById('log-clear').addEventListener('click', clearLog);
+  document.getElementById('log-persist').addEventListener('change', (e) => setLogPersist(e.target.checked));
+  document.getElementById('log-24h').addEventListener('change', (e) => setLog24Hour(e.target.checked));
   document.getElementById('tab-btn-settings').addEventListener('click', () => showTab('settings'));
   document.getElementById('tab-btn-log').addEventListener('click', () => showTab('log'));
 

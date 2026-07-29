@@ -81,3 +81,102 @@ test('list() returns a copy, so a caller cannot corrupt the buffer', () => {
 
   assert.strictEqual(log.list().length, 1);
 });
+
+// ---------------------------------------------------------------------------
+// Persistence — opt-in, and debounced so a burst is one flash write
+// ---------------------------------------------------------------------------
+
+/** A Homey stand-in whose settings and timers the test drives by hand. */
+function fakeHomey(initial = {}) {
+  const store = { ...initial };
+  const timers = [];
+  return {
+    settings: {
+      get: (key) => store[key],
+      set: async (key, value) => {
+        store[key] = value;
+      },
+      unset: async (key) => {
+        delete store[key];
+      },
+    },
+    setTimeout: (fn) => {
+      timers.push(fn);
+      return timers.length;
+    },
+    clearTimeout: () => {},
+    _store: store,
+    _runTimers: () => {
+      const due = timers.splice(0);
+      due.forEach((fn) => fn());
+    },
+    _timerCount: () => timers.length,
+  };
+}
+
+test('memory-only by default: nothing reaches settings', async () => {
+  const homey = fakeHomey();
+  const log = new EventLog({ homey });
+
+  log.add('something');
+  homey._runTimers();
+
+  assert.strictEqual(homey._store.log_entries, undefined, 'no flash write');
+});
+
+test('with persistence on, a burst of events costs one write', async () => {
+  const homey = fakeHomey({ log_persist: true });
+  const log = new EventLog({ homey });
+
+  log.add('one');
+  log.add('two');
+  log.add('three');
+
+  assert.strictEqual(homey._timerCount(), 1, 'debounced into a single save');
+  homey._runTimers();
+  await new Promise((r) => setImmediate(r));
+
+  assert.strictEqual(homey._store.log_entries.length, 3);
+});
+
+test('a persisted log is restored on startup', () => {
+  const homey = fakeHomey({
+    log_persist: true,
+    log_entries: [{ at: 1, level: 'info', message: 'from before' }],
+  });
+
+  const log = new EventLog({ homey });
+
+  assert.deepStrictEqual(log.list().map((e) => e.message), ['from before']);
+});
+
+test('garbage in the stored log is ignored rather than shown', () => {
+  const homey = fakeHomey({
+    log_persist: true,
+    log_entries: ['not an entry', { message: 'no timestamp' }, { at: 1, message: 'good' }],
+  });
+
+  const log = new EventLog({ homey });
+
+  assert.deepStrictEqual(log.list().map((e) => e.message), ['good']);
+});
+
+test('turning persistence off removes the stored copy', async () => {
+  const homey = fakeHomey({ log_persist: true, log_entries: [{ at: 1, message: 'x' }] });
+  const log = new EventLog({ homey });
+
+  homey._store.log_persist = false;
+  await log.onPersistChanged(false);
+
+  assert.strictEqual('log_entries' in homey._store, false, 'no orphan left in settings');
+});
+
+test('a restored log is still capped', () => {
+  const many = Array.from({ length: 500 }, (_, i) => ({ at: i, level: 'info', message: `e${i}` }));
+  const homey = fakeHomey({ log_persist: true, log_entries: many });
+
+  const log = new EventLog({ homey, limit: 10 });
+
+  assert.strictEqual(log.list().length, 10);
+  assert.strictEqual(log.list()[0].message, 'e499', 'keeps the newest');
+});

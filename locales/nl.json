@@ -23,6 +23,8 @@
     "log_title": "Wat de app heeft gedaan",
     "log_intro": "De recentste gebeurtenissen, nieuwste eerst — triggers die afgingen, vakantiewijzigingen en eventuele fouten. Wordt alleen in het geheugen bewaard, dus het wordt gewist zodra de app herstart en er wordt niets naar de opslag van je Homey geschreven.",
     "log_clear": "Wissen",
-    "log_empty": "Nog niets gelogd."
+    "log_empty": "Nog niets gelogd.",
+    "log_persist": "Logboek bewaren na een herstart van de app",
+    "log_24h": "Tijden tonen op een 24-uursklok"
   }
 }

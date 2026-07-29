@@ -25,5 +25,8 @@
   },
   "1.4.0": {
     "en": "Adds a Log tab to the app settings, showing what the app has been doing: triggers that fired, vacation changes and any errors. It is kept in memory only, capped at 100 lines, so nothing is written to your Homey and it clears when the app restarts."
+  },
+  "1.5.0": {
+    "en": "The Log tab gains two options. Keep the log across app restarts, off by default, which stores it on your Homey with the writes batched so a burst of events costs one write rather than several. And a 24-hour clock, switched on by default unless your Homey is set to English."
   }
 }
