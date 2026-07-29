@@ -161,6 +161,88 @@
       margin: 0;
     }
 
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+      color: #3D5A96;
+    }
+
+    .tab-btn.active {
+      color: #3D5A96;
+      border-bottom-color: #3D5A96;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Log */
+    ul.log {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 15px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    ul.log li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+      align-items: baseline;
+    }
+
+    ul.log li:last-child {
+      border-bottom: none;
+    }
+
+    ul.log li.level-error {
+      background: #fdf0f0;
+      color: #6b2a2a;
+    }
+
+    ul.log li.level-trigger {
+      background: #f4f8f4;
+    }
+
+    .log-time {
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .log-empty {
+      padding: 14px 12px;
+      color: #777;
+      font-size: 13px;
+    }
+
     .button-group {
       display: flex;
       gap: 10px;
@@ -218,6 +300,13 @@
 </head>
 <body>
 
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-btn-settings" data-i18n="settings.tab_settings">Settings</button>
+    <button class="tab-btn" id="tab-btn-log" data-i18n="settings.tab_log">Log</button>
+  </div>
+
+  <div class="tab-pane active" id="tab-settings">
+
   <h2 data-i18n="settings.title">Which users count as "everyone"?</h2>
   <p class="intro" data-i18n="settings.intro">
     The "Everyone is at home" and "Everyone is asleep" Flow cards look at the users ticked below,
@@ -270,6 +359,24 @@
     <button class="btn-refresh" id="refresh" data-i18n="settings.refresh">Refresh</button>
     <span class="saved-note" id="saved-note" style="display: none;" data-i18n="settings.saved">Saved.</span>
   </div>
+
+  </div><!-- /tab-settings -->
+
+  <div class="tab-pane" id="tab-log">
+    <h2 data-i18n="settings.log_title">What the app has been doing</h2>
+    <p class="intro" data-i18n="settings.log_intro">
+      The most recent events, newest first &mdash; triggers that fired, vacation changes and any
+      errors. Kept in memory only, so it is cleared whenever the app restarts and nothing is
+      written to your Homey&rsquo;s storage.
+    </p>
+
+    <ul class="log" id="log"></ul>
+
+    <div class="button-group">
+      <button class="btn-refresh" id="log-refresh" data-i18n="settings.refresh">Refresh</button>
+      <button class="btn-refresh" id="log-clear" data-i18n="settings.log_clear">Clear</button>
+    </div>
+  </div><!-- /tab-log -->
 
   <script type="text/javascript" src="index.js"></script>
 </body>

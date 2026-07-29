@@ -17,6 +17,12 @@
     "save": "Save",
     "refresh": "Refresh",
     "saved": "Saved.",
-    "one_home_awake": "Exactly one at home is awake"
+    "one_home_awake": "Exactly one at home is awake",
+    "tab_settings": "Settings",
+    "tab_log": "Log",
+    "log_title": "What the app has been doing",
+    "log_intro": "The most recent events, newest first — triggers that fired, vacation changes and any errors. Kept in memory only, so it is cleared whenever the app restarts and nothing is written to your Homey's storage.",
+    "log_clear": "Clear",
+    "log_empty": "Nothing logged yet."
   }
 }

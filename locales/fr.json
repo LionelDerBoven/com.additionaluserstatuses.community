@@ -17,6 +17,12 @@
     "save": "Enregistrer",
     "refresh": "Actualiser",
     "saved": "Enregistré.",
-    "one_home_awake": "Exactement une personne éveillée"
+    "one_home_awake": "Exactement une personne éveillée",
+    "tab_settings": "Réglages",
+    "tab_log": "Journal",
+    "log_title": "Ce que l'app a fait",
+    "log_intro": "Les événements les plus récents, du plus récent au plus ancien — déclencheurs qui se sont activés, changements de vacances et éventuelles erreurs. Conservé uniquement en mémoire : il est effacé à chaque redémarrage de l'app et rien n'est écrit dans le stockage de votre Homey.",
+    "log_clear": "Effacer",
+    "log_empty": "Rien encore enregistré."
   }
 }

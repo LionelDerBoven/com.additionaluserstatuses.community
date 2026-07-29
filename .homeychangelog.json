@@ -22,5 +22,8 @@
   },
   "1.3.4": {
     "en": "Two fixes found by a systematic edge-case review. An early riser leaving at the same moment a sleeper wakes now counts as the first person waking, as it already did when those two events happened a little further apart. And two vacation changes made at the same instant can no longer overwrite one another."
+  },
+  "1.4.0": {
+    "en": "Adds a Log tab to the app settings, showing what the app has been doing: triggers that fired, vacation changes and any errors. It is kept in memory only, capped at 100 lines, so nothing is written to your Homey and it clears when the app restarts."
   }
 }

@@ -12,4 +12,12 @@ module.exports = {
   async setVacation({ homey, body }) {
     return homey.app.setVacation(body?.userId, body?.onVacation);
   },
+
+  async getLog({ homey }) {
+    return homey.app.getLog();
+  },
+
+  async clearLog({ homey }) {
+    return homey.app.clearLog();
+  },
 };

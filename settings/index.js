@@ -162,11 +162,82 @@ function save() {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Log tab
+// ---------------------------------------------------------------------------
+
+function renderLog(entries) {
+  const list = document.getElementById('log');
+  list.textContent = '';
+
+  if (!entries || entries.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'log-empty';
+    empty.textContent = 'Nothing logged yet.';
+    list.appendChild(empty);
+    return;
+  }
+
+  entries.forEach((entry) => {
+    const li = document.createElement('li');
+    if (entry.level && entry.level !== 'info') li.className = `level-${entry.level}`;
+
+    const time = document.createElement('span');
+    time.className = 'log-time';
+    // Local time only: the date is rarely useful for a log this short-lived.
+    time.textContent = new Date(entry.at).toLocaleTimeString();
+    li.appendChild(time);
+
+    const msg = document.createElement('span');
+    msg.textContent = entry.message;
+    li.appendChild(msg);
+
+    list.appendChild(li);
+  });
+}
+
+function loadLog() {
+  Homey.api('GET', '/log', null, (err, entries) => {
+    if (err) {
+      showError(err.message || String(err));
+      return;
+    }
+    hideError();
+    renderLog(entries);
+  });
+}
+
+function clearLog() {
+  Homey.api('POST', '/log/clear', null, (err, entries) => {
+    if (err) {
+      showError(err.message || String(err));
+      return;
+    }
+    hideError();
+    renderLog(entries);
+  });
+}
+
+function showTab(which) {
+  const isLog = which === 'log';
+  document.getElementById('tab-settings').className = isLog ? 'tab-pane' : 'tab-pane active';
+  document.getElementById('tab-log').className = isLog ? 'tab-pane active' : 'tab-pane';
+  document.getElementById('tab-btn-settings').className = isLog ? 'tab-btn' : 'tab-btn active';
+  document.getElementById('tab-btn-log').className = isLog ? 'tab-btn active' : 'tab-btn';
+
+  // Fetched on demand rather than polled, so an open settings page costs nothing.
+  if (isLog) loadLog();
+}
+
 function onHomeyReady(homey) {
   homey.ready();
 
   document.getElementById('save').addEventListener('click', save);
   document.getElementById('refresh').addEventListener('click', load);
+  document.getElementById('log-refresh').addEventListener('click', loadLog);
+  document.getElementById('log-clear').addEventListener('click', clearLog);
+  document.getElementById('tab-btn-settings').addEventListener('click', () => showTab('settings'));
+  document.getElementById('tab-btn-log').addEventListener('click', () => showTab('log'));
 
   load();
 }
