@@ -4,6 +4,23 @@
 // a user deleted in Homey since the page loaded simply drops out on the next load.
 let currentUsers = [];
 
+/**
+ * Translate through Homey, falling back to the English text if the settings
+ * context does not expose __(). The fallback means a missing i18n API degrades
+ * to readable English rather than printing raw keys at the user.
+ */
+function t(key, fallback, tokens) {
+  try {
+    const out = Homey.__(`ui.${key}`, tokens || {});
+    if (out && out !== `ui.${key}`) return out;
+  } catch (err) {
+    // fall through
+  }
+
+  if (!tokens) return fallback;
+  return Object.keys(tokens).reduce((acc, k) => acc.split(`__${k}__`).join(tokens[k]), fallback);
+}
+
 function badge(text, extraClass) {
   const span = document.createElement('span');
   span.className = extraClass ? `badge ${extraClass}` : 'badge';
@@ -13,7 +30,7 @@ function badge(text, extraClass) {
 
 function showError(message) {
   const el = document.getElementById('error');
-  el.textContent = `Could not read the Homey users: ${message}`;
+  el.textContent = t('read_failed', 'Could not read the Homey users: __message__', { message });
   el.style.display = 'block';
 }
 
@@ -23,7 +40,7 @@ function hideError() {
 
 function setVerdict(id, value) {
   const el = document.getElementById(id);
-  el.textContent = value ? 'Yes' : 'No';
+  el.textContent = value ? t('yes', 'Yes') : t('no', 'No');
   el.className = value ? 'verdict-true' : 'verdict-false';
 }
 
@@ -37,9 +54,11 @@ function renderVerdicts(overview) {
 
   const line = document.getElementById('counted-line');
   if (overview.countedCount === 0) {
-    line.textContent = 'No users are counted, so the "everyone" cards are false. Tick at least one user below.';
+    line.textContent = t('none_counted', 'No users are counted, so the "everyone" cards are false. Tick at least one user below.');
   } else {
-    line.textContent = `Counting ${overview.countedCount} of ${overview.users.length} Homey user(s).`;
+    line.textContent = t('counting', 'Counting __n__ of __total__ Homey user(s).', {
+      n: overview.countedCount, total: overview.users.length,
+    });
   }
 }
 
@@ -88,18 +107,18 @@ function renderUsers(users) {
     name.className = 'user-name';
     name.textContent = user.name;
     name.appendChild(badge(user.role));
-    if (!user.enabled) name.appendChild(badge('disabled in Homey'));
-    if (user.onVacation) name.appendChild(badge('on vacation', 'vacation'));
+    if (!user.enabled) name.appendChild(badge(t('disabled', 'disabled in Homey')));
+    if (user.onVacation) name.appendChild(badge(t('on_vacation', 'on vacation'), 'vacation'));
     main.appendChild(name);
 
     const meta = document.createElement('div');
     meta.className = 'user-meta';
-    meta.appendChild(badge(user.present ? 'home' : 'away', user.present ? 'home' : ''));
-    meta.appendChild(badge(user.asleep ? 'asleep' : 'awake', user.asleep ? 'asleep' : ''));
+    meta.appendChild(badge(user.present ? t('home', 'home') : t('away', 'away'), user.present ? 'home' : ''));
+    meta.appendChild(badge(user.asleep ? t('asleep', 'asleep') : t('awake', 'awake'), user.asleep ? 'asleep' : ''));
     // Worth calling out: this is the usual reason an 'everyone' card is
     // unexpectedly false. Homey has simply never been told about this user.
-    if (!user.presenceKnown) meta.appendChild(badge('presence never set', 'unknown'));
-    if (!user.sleepKnown) meta.appendChild(badge('sleep never set', 'unknown'));
+    if (!user.presenceKnown) meta.appendChild(badge(t('presence_unset', 'presence never set'), 'unknown'));
+    if (!user.sleepKnown) meta.appendChild(badge(t('sleep_unset', 'sleep never set'), 'unknown'));
     main.appendChild(meta);
 
     li.appendChild(main);
@@ -114,7 +133,7 @@ function renderUsers(users) {
     vacationBox.disabled = !user.enabled;
     vacationBox.addEventListener('change', () => setVacation(user.id, vacationBox.checked));
     vacationLabel.appendChild(vacationBox);
-    vacationLabel.appendChild(document.createTextNode('on vacation'));
+    vacationLabel.appendChild(document.createTextNode(t('on_vacation', 'on vacation')));
     li.appendChild(vacationLabel);
 
     list.appendChild(li);
@@ -189,15 +208,15 @@ function renderLog() {
 
   const count = document.getElementById('log-count');
   count.textContent = logEntries.length === entries.length
-    ? `${entries.length} shown`
-    : `${entries.length} of ${logEntries.length} shown`;
+    ? t('shown', '__n__ shown', { n: entries.length })
+    : t('shown_of', '__n__ of __total__ shown', { n: entries.length, total: logEntries.length });
 
   list.textContent = '';
 
   if (!entries || entries.length === 0) {
     const empty = document.createElement('li');
     empty.className = 'log-empty';
-    empty.textContent = 'Nothing logged yet.';
+    empty.textContent = t('nothing_logged', 'Nothing logged yet.');
     list.appendChild(empty);
     return;
   }

@@ -42,18 +42,18 @@ class AdditionalUserStatusesApp extends Homey.App {
     // Not awaited: a Homey that is slow to answer should delay the first trigger,
     // not block the app from starting.
     this.watcher.start().catch((err) => {
-      this.record(`Could not start watching users: ${err.message}`, 'error');
+      this.record(this.homey.__('log.err_watcher', { message: err.message }), 'error');
     });
 
     this.logUsersOnce().catch((err) => {
-      this.record(`Could not read the Homey users at startup: ${err.message}`, 'error');
+      this.record(this.homey.__('log.err_users', { message: err.message }), 'error');
     });
 
     // Devices are deliberately not synced from here: at this point Homey has not
     // initialised the drivers yet, so getDriver() throws. Each device waits for
     // this app's store instead, in VacationDevice#getStore.
 
-    this.record('App started.');
+    this.record(this.homey.__('log.app_started'));
   }
 
   async onUninit() {
@@ -70,9 +70,7 @@ class AdditionalUserStatusesApp extends Homey.App {
       if (key !== 'log_persist') return;
 
       const persist = this.homey.settings.get('log_persist') === true;
-      this.record(persist
-        ? 'Log will now be kept across restarts.'
-        : 'Log is no longer kept across restarts.');
+      this.record(this.homey.__(persist ? 'log.persist_on' : 'log.persist_off'));
 
       this.eventLog.onPersistChanged(persist)
         .catch((err) => this.error(`Could not change log persistence: ${err.message}`));
@@ -123,13 +121,13 @@ class AdditionalUserStatusesApp extends Homey.App {
     const described = users
       .map((user) => {
         const notes = [];
-        if (user.onVacation) notes.push('on vacation');
-        else if (!user.counted) notes.push('not counted');
+        if (user.onVacation) notes.push(this.homey.__('log.on_vacation'));
+        else if (!user.counted) notes.push(this.homey.__('log.not_counted'));
         return `${user.name} (${user.role}${notes.length ? `, ${notes.join(', ')}` : ''})`;
       })
       .join(', ');
 
-    this.record(`Found ${users.length} Homey user(s), counting ${countedCount}: ${described}`);
+    this.record(this.homey.__('log.users_found', { count: users.length, counted: countedCount, list: described }));
   }
 
   // ---------------------------------------------------------------------------
@@ -218,25 +216,25 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   wireWatcher() {
     this.watcher.on('everyone-home-asleep', ({ name }) => {
-      this.record(`${name} was the last person at home to fall asleep.`, 'trigger');
+      this.record(this.homey.__('log.last_asleep', { name }), 'trigger');
       this.triggerEveryoneHomeAsleep.trigger({ user: name }).catch((err) => this.error(err.message));
     });
 
     this.watcher.on('first-home-awake', ({ name }) => {
-      this.record(`${name} is the first person at home to wake up.`, 'trigger');
+      this.record(this.homey.__('log.first_awake', { name }), 'trigger');
       this.triggerFirstHomeAwake.trigger({ user: name }).catch((err) => this.error(err.message));
     });
 
     // Raw status changes, so the log explains why a card did or did not fire.
     this.watcher.on('user-changed', ({ name, field, value }) => {
-      const wording = {
-        'present:true': 'came home',
-        'present:false': 'went away',
-        'asleep:true': 'went to sleep',
-        'asleep:false': 'woke up',
-      };
+      const key = {
+        'present:true': 'log.came_home',
+        'present:false': 'log.went_away',
+        'asleep:true': 'log.went_to_sleep',
+        'asleep:false': 'log.woke_up',
+      }[`${field}:${value}`];
 
-      this.record(`${name} ${wording[`${field}:${value}`]}.`);
+      this.record(this.homey.__(key, { name }));
     });
 
     this.watcher.on('arrived', ({ id, name }) => {
@@ -245,7 +243,7 @@ class AdditionalUserStatusesApp extends Homey.App {
       if (!this.vacation.isAutoReturnEnabled()) return;
       if (!this.vacation.isOnVacation(id)) return;
 
-      this.record(`${name} came home while on vacation; clearing their vacation status.`);
+      this.record(this.homey.__('log.auto_return', { name }));
       this.vacation.set(id, false).catch((err) => this.error(err.message));
     });
   }
@@ -278,16 +276,16 @@ class AdditionalUserStatusesApp extends Homey.App {
       try {
         await card.trigger(tokens, state);
       } catch (err) {
-        this.record(`Could not fire a vacation trigger: ${err.message}`, 'error');
+        this.record(this.homey.__('log.err_trigger', { message: err.message }), 'error');
       }
     };
 
     for (const id of added) {
-      this.record(`${nameOf(id)} went on vacation.`, 'trigger');
+      this.record(this.homey.__('log.vacation_started', { name: nameOf(id) }), 'trigger');
       await fire(this.triggerVacationStarted, { user: nameOf(id) }, { userId: id });
     }
     for (const id of removed) {
-      this.record(`${nameOf(id)} returned from vacation.`, 'trigger');
+      this.record(this.homey.__('log.vacation_ended', { name: nameOf(id) }), 'trigger');
       await fire(this.triggerVacationEnded, { user: nameOf(id) }, { userId: id });
     }
 
@@ -360,7 +358,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   clearLog() {
     this.eventLog.clear();
-    this.record('Log cleared.');
+    this.record(this.homey.__('log.cleared'));
     return this.getLog();
   }
 
