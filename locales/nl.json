@@ -25,6 +25,9 @@
     "log_clear": "Wissen",
     "log_empty": "Nog niets gelogd.",
     "log_persist": "Logboek bewaren na een herstart van de app",
-    "log_24h": "Tijden tonen op een 24-uursklok"
+    "log_24h": "Tijden tonen op een 24-uursklok",
+    "log_filter": "Toon",
+    "log_filter_all": "Alle gebeurtenissen",
+    "log_filter_special": "Alleen triggers en fouten"
   }
 }

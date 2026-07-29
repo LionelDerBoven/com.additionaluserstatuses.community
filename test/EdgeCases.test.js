@@ -235,3 +235,55 @@ test('E13 a Homey with no users at all answers everything false', async () => {
   assert.strictEqual(overview.everyoneHomeAsleep, false);
   assert.strictEqual(overview.oneHomeAwake, false);
 });
+
+// ---------------------------------------------------------------------------
+// Raw status changes, for the settings log
+// ---------------------------------------------------------------------------
+
+test('E14 every presence and sleep change is reported', async () => {
+  const { watcher, status } = makeWatcher([user('a', true, false), user('b', false, false)]);
+  const changes = [];
+  watcher.on('user-changed', (c) => changes.push(`${c.id}:${c.field}=${c.value}`));
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(changes.sort(), ['a:asleep=true', 'b:present=true']);
+});
+
+test('E15 the seeding check reports no changes', async () => {
+  const { watcher } = makeWatcher([user('a', true, true)]);
+  const changes = [];
+  watcher.on('user-changed', (c) => changes.push(c.id));
+
+  await watcher.check({ silent: true });
+
+  assert.deepStrictEqual(changes, []);
+});
+
+test('E16 a user Homey has only just mentioned is not a change', async () => {
+  const { watcher, status } = makeWatcher([user('a', true, false)]);
+  const changes = [];
+  watcher.on('user-changed', (c) => changes.push(c.id));
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(changes, [], 'no previous value means no transition');
+});
+
+test('E17 an unchanged status is not reported again', async () => {
+  const { watcher, status } = makeWatcher([user('a', true, false)]);
+  const changes = [];
+  watcher.on('user-changed', (c) => changes.push(c.id));
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true)];
+  await watcher.check();
+  await watcher.check();
+  await watcher.check();
+
+  assert.deepStrictEqual(changes, ['a'], 'edge, not level');
+});

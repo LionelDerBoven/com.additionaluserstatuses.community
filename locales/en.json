@@ -25,6 +25,9 @@
     "log_clear": "Clear",
     "log_empty": "Nothing logged yet.",
     "log_persist": "Keep the log across app restarts",
-    "log_24h": "Show times on a 24-hour clock"
+    "log_24h": "Show times on a 24-hour clock",
+    "log_filter": "Show",
+    "log_filter_all": "All events",
+    "log_filter_special": "Only triggers and errors"
   }
 }

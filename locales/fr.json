@@ -25,6 +25,9 @@
     "log_clear": "Effacer",
     "log_empty": "Rien encore enregistré.",
     "log_persist": "Conserver le journal après un redémarrage de l'app",
-    "log_24h": "Afficher les heures au format 24 heures"
+    "log_24h": "Afficher les heures au format 24 heures",
+    "log_filter": "Afficher",
+    "log_filter_all": "Tous les événements",
+    "log_filter_special": "Uniquement déclencheurs et erreurs"
   }
 }

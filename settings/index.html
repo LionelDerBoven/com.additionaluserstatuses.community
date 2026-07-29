@@ -250,6 +250,30 @@
       font-size: 13px;
     }
 
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .filter-row select {
+      padding: 5px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      background: transparent;
+      color: inherit;
+    }
+
+    .filter-count {
+      color: #888;
+      font-size: 12px;
+    }
+
     .button-group {
       display: flex;
       gap: 10px;
@@ -386,6 +410,15 @@
         <input type="checkbox" id="log-24h">
         <span data-i18n="settings.log_24h">Show times on a 24-hour clock</span>
       </label>
+    </div>
+
+    <div class="filter-row">
+      <label for="log-filter" data-i18n="settings.log_filter">Show</label>
+      <select id="log-filter">
+        <option value="all" data-i18n="settings.log_filter_all">All events</option>
+        <option value="special" data-i18n="settings.log_filter_special">Only triggers and errors</option>
+      </select>
+      <span class="filter-count" id="log-count"></span>
     </div>
 
     <ul class="log" id="log"></ul>

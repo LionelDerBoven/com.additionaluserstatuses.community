@@ -168,6 +168,8 @@ function save() {
 
 // Remembered from the last fetch, so re-rendering does not need a round trip.
 let use24Hour = true;
+let logEntries = [];
+let logFilter = 'all';
 
 function formatTime(ms) {
   const d = new Date(ms);
@@ -175,8 +177,21 @@ function formatTime(ms) {
   return d.toLocaleTimeString([], { hour12: !use24Hour });
 }
 
-function renderLog(entries) {
+/** 'special' keeps the moments a Flow could act on, and anything that broke. */
+function visibleEntries() {
+  if (logFilter !== 'special') return logEntries;
+  return logEntries.filter((e) => e.level === 'trigger' || e.level === 'error');
+}
+
+function renderLog() {
   const list = document.getElementById('log');
+  const entries = visibleEntries();
+
+  const count = document.getElementById('log-count');
+  count.textContent = logEntries.length === entries.length
+    ? `${entries.length} shown`
+    : `${entries.length} of ${logEntries.length} shown`;
+
   list.textContent = '';
 
   if (!entries || entries.length === 0) {
@@ -208,9 +223,17 @@ function renderLog(entries) {
 function applyLog(payload) {
   hideError();
   use24Hour = payload.use24Hour !== false;
+  logEntries = payload.entries || [];
   document.getElementById('log-24h').checked = use24Hour;
   document.getElementById('log-persist').checked = payload.persist === true;
-  renderLog(payload.entries);
+  renderLog();
+}
+
+function setLogFilter(value) {
+  logFilter = value;
+  renderLog();
+  // Remembered so the choice survives closing the settings page.
+  Homey.set('log_filter', value, () => {});
 }
 
 function loadLog() {
@@ -269,6 +292,14 @@ function onHomeyReady(homey) {
   document.getElementById('log-clear').addEventListener('click', clearLog);
   document.getElementById('log-persist').addEventListener('change', (e) => setLogPersist(e.target.checked));
   document.getElementById('log-24h').addEventListener('change', (e) => setLog24Hour(e.target.checked));
+  document.getElementById('log-filter').addEventListener('change', (e) => setLogFilter(e.target.value));
+
+  Homey.get('log_filter', (err, stored) => {
+    if (!err && stored) {
+      logFilter = stored;
+      document.getElementById('log-filter').value = stored;
+    }
+  });
   document.getElementById('tab-btn-settings').addEventListener('click', () => showTab('settings'));
   document.getElementById('tab-btn-log').addEventListener('click', () => showTab('log'));
 

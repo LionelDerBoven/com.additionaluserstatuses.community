@@ -31,5 +31,8 @@
   },
   "1.5.1": {
     "en": "The log now scrolls within its own box instead of making the settings window grow longer and longer, and its colour tints read correctly in Homey’s dark theme."
+  },
+  "1.6.0": {
+    "en": "The log now records every presence and sleep change per user - came home, went away, went to sleep, woke up - alongside the triggers that fired, which is what turns it from a list of outcomes into something that explains why a card did or did not fire. A filter lets you switch between all events and only the triggers and errors."
   }
 }

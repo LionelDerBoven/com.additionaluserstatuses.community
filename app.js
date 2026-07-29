@@ -227,6 +227,18 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.triggerFirstHomeAwake.trigger({ user: name }).catch((err) => this.error(err.message));
     });
 
+    // Raw status changes, so the log explains why a card did or did not fire.
+    this.watcher.on('user-changed', ({ name, field, value }) => {
+      const wording = {
+        'present:true': 'came home',
+        'present:false': 'went away',
+        'asleep:true': 'went to sleep',
+        'asleep:false': 'woke up',
+      };
+
+      this.record(`${name} ${wording[`${field}:${value}`]}.`);
+    });
+
     this.watcher.on('arrived', ({ id, name }) => {
       // Coming home is taken as evidence the holiday is over. Opt-out, because
       // some households will want vacation to end only when a Flow says so.
