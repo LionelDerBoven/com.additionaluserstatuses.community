@@ -1,41 +1,67 @@
 {
   "1.1.0": {
-    "en": "Adds 'Everyone at home is asleep', which ignores anyone who is out, so a 'last one to bed' Flow still works when somebody is away for the evening. Adds a vacation status per user, with triggers, conditions, an action and a device: a user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Vacation can clear itself when Homey sees that person come home."
+    "en": "Adds 'Everyone at home is asleep', which ignores anyone who is out, so a 'last one to bed' Flow still works when somebody is away for the evening. Adds a vacation status per user, with triggers, conditions, an action and a device: a user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Vacation can clear itself when Homey sees that person come home.",
+    "nl": "Voegt 'Iedereen die thuis is slaapt' toe, dat iedereen die weg is buiten beschouwing laat, zodat een 'laatste die gaat slapen'-Flow blijft werken als er iemand een avond weg is. Voegt een vakantiestatus per gebruiker toe, met triggers, voorwaarden, een actie en een apparaat: een gebruiker op vakantie telt niet mee in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog is. De vakantiestatus kan zichzelf opheffen zodra Homey die persoon thuis ziet komen.",
+    "fr": "Ajoute « Tout le monde à la maison dort », qui ne tient pas compte des absents : une Flow « le dernier à aller au lit » continue donc de fonctionner quand quelqu'un est parti pour la soirée. Ajoute un statut de vacances par utilisateur, avec déclencheurs, conditions, une action et un appareil : un utilisateur en vacances est exclu des cartes « tout le monde », qui restent ainsi valables pour ceux qui sont encore là. Le statut de vacances peut se désactiver tout seul dès que Homey voit cette personne rentrer."
   },
   "1.0.0": {
-    "en": "First release. Adds the household-wide condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'."
+    "en": "First release. Adds the household-wide condition cards Homey does not have: 'Everyone is at home' and 'Everyone is asleep'.",
+    "nl": "Eerste versie. Voegt de voorwaardekaarten voor het hele huishouden toe die Homey niet heeft: 'Iedereen is thuis' en 'Iedereen slaapt'.",
+    "fr": "Première version. Ajoute les cartes de condition à l'échelle du foyer qui manquent à Homey : « Tout le monde est à la maison » et « Tout le monde dort »."
   },
   "1.2.0": {
-    "en": "Adds 'Exactly one person at home is awake' - true when a single person is up while the others sleep or are out. Use it for a first-one-up morning Flow, or a last-one-still-awake evening Flow."
+    "en": "Adds 'Exactly one person at home is awake' - true when a single person is up while the others sleep or are out. Use it for a first-one-up morning Flow, or a last-one-still-awake evening Flow.",
+    "nl": "Voegt 'Precies één persoon thuis is wakker' toe - waar zodra er één iemand op is terwijl de anderen slapen of weg zijn. Handig voor een ochtend-Flow voor wie als eerste opstaat, of een avond-Flow voor wie als laatste nog wakker is.",
+    "fr": "Ajoute « Exactement une personne à la maison est éveillée » - vrai dès qu'une seule personne est debout pendant que les autres dorment ou sont absentes. Pratique pour une Flow du matin pour le premier levé, ou une Flow du soir pour le dernier encore éveillé."
   },
   "1.3.0": {
-    "en": "Adds the trigger 'The first person at home wakes up' - fires when someone who was asleep at home wakes while the others are still asleep. It deliberately does not fire in the evening when somebody goes to bed leaving one person awake, nor when somebody arrives home awake."
+    "en": "Adds the trigger 'The first person at home wakes up' - fires when someone who was asleep at home wakes while the others are still asleep. It deliberately does not fire in the evening when somebody goes to bed leaving one person awake, nor when somebody arrives home awake.",
+    "nl": "Voegt de trigger 'De eerste persoon thuis wordt wakker' toe - gaat af zodra iemand die thuis lag te slapen wakker wordt terwijl de anderen nog slapen. Hij gaat met opzet niet af 's avonds wanneer iemand gaat slapen en er één persoon wakker achterblijft, en evenmin wanneer er iemand wakker thuiskomt.",
+    "fr": "Ajoute le déclencheur « La première personne à la maison se réveille » - il se déclenche dès qu'une personne endormie à la maison se réveille alors que les autres dorment encore. Il ne se déclenche volontairement pas le soir lorsque quelqu'un va se coucher en laissant une personne éveillée, ni lorsque quelqu'un rentre à la maison déjà éveillé."
   },
   "1.3.1": {
-    "en": "Fixes 'The last person at home goes to the status asleep' firing when the last awake person simply left the house - nobody had gone to bed. It now requires somebody to actually fall asleep. Both sleep triggers now carry a User tag naming who woke up first, or went to sleep last."
+    "en": "Fixes 'The last person at home goes to the status asleep' firing when the last awake person simply left the house - nobody had gone to bed. It now requires somebody to actually fall asleep. Both sleep triggers now carry a User tag naming who woke up first, or went to sleep last.",
+    "nl": "Lost op dat 'De laatste persoon die thuis is gaat naar de status slaapt' afging wanneer de laatste wakkere persoon gewoon het huis verliet - er was niemand gaan slapen. Er moet nu echt iemand in slaap vallen. Beide slaaptriggers dragen voortaan een Gebruiker-tag met wie als eerste wakker werd, of als laatste ging slapen.",
+    "fr": "Corrige « La dernière personne à la maison passe au statut endormi », qui se déclenchait quand la dernière personne éveillée quittait simplement la maison - personne n'était allé se coucher. Il faut désormais que quelqu'un s'endorme réellement. Les deux déclencheurs de sommeil portent maintenant une étiquette Utilisateur indiquant qui s'est réveillé en premier, ou endormi en dernier."
   },
   "1.3.2": {
-    "en": "Housekeeping: vacation statuses for users who have since been deleted from Homey are now cleared away at startup instead of lingering in the app settings."
+    "en": "Housekeeping: vacation statuses for users who have since been deleted from Homey are now cleared away at startup instead of lingering in the app settings.",
+    "nl": "Opruiming: vakantiestatussen van gebruikers die intussen uit Homey verwijderd zijn, worden nu bij het opstarten opgeruimd in plaats van in de app-instellingen te blijven staan.",
+    "fr": "Entretien : les statuts de vacances d'utilisateurs supprimés entre-temps de Homey sont désormais effacés au démarrage au lieu de subsister dans les réglages de l'app."
   },
   "1.3.3": {
-    "en": "Fixes 'The first person at home wakes up' not firing at all when two people woke within the same moment - for example one alarm waking a couple. It now fires once for the household waking, whoever gets up."
+    "en": "Fixes 'The first person at home wakes up' not firing at all when two people woke within the same moment - for example one alarm waking a couple. It now fires once for the household waking, whoever gets up.",
+    "nl": "Lost op dat 'De eerste persoon thuis wordt wakker' helemaal niet afging wanneer twee mensen op hetzelfde moment wakker werden - bijvoorbeeld één wekker die een koppel wakker maakt. Hij gaat nu één keer af voor het ontwaken van het huishouden, wie er ook opstaat.",
+    "fr": "Corrige « La première personne à la maison se réveille », qui ne se déclenchait pas du tout lorsque deux personnes se réveillaient au même instant - un seul réveil tirant un couple du lit, par exemple. Il se déclenche maintenant une fois pour le réveil du foyer, quelle que soit la personne qui se lève."
   },
   "1.3.4": {
-    "en": "Two fixes found by a systematic edge-case review. An early riser leaving at the same moment a sleeper wakes now counts as the first person waking, as it already did when those two events happened a little further apart. And two vacation changes made at the same instant can no longer overwrite one another."
+    "en": "Two fixes found by a systematic edge-case review. An early riser leaving at the same moment a sleeper wakes now counts as the first person waking, as it already did when those two events happened a little further apart. And two vacation changes made at the same instant can no longer overwrite one another.",
+    "nl": "Twee correcties uit een systematische doorlichting van randgevallen. Een vroege vogel die vertrekt op het moment dat een slaper wakker wordt, telt nu als de eerste die wakker wordt, net zoals dat al gebeurde wanneer die twee gebeurtenissen iets verder uit elkaar lagen. En twee vakantiewijzigingen op hetzelfde ogenblik kunnen elkaar niet langer overschrijven.",
+    "fr": "Deux corrections issues d'une revue systématique des cas limites. Un lève-tôt qui part au moment précis où un dormeur se réveille compte désormais comme la première personne réveillée, comme c'était déjà le cas lorsque ces deux événements étaient un peu plus espacés. Et deux modifications de vacances faites au même instant ne peuvent plus s'écraser mutuellement."
   },
   "1.4.0": {
-    "en": "Adds a Log tab to the app settings, showing what the app has been doing: triggers that fired, vacation changes and any errors. It is kept in memory only, capped at 100 lines, so nothing is written to your Homey and it clears when the app restarts."
+    "en": "Adds a Log tab to the app settings, showing what the app has been doing: triggers that fired, vacation changes and any errors. It is kept in memory only, capped at 100 lines, so nothing is written to your Homey and it clears when the app restarts.",
+    "nl": "Voegt een tabblad Logboek toe aan de app-instellingen, dat laat zien wat de app heeft gedaan: triggers die afgingen, vakantiewijzigingen en eventuele fouten. Het blijft alleen in het geheugen, met een maximum van 100 regels, zodat er niets naar je Homey wordt weggeschreven en het leegloopt zodra de app herstart.",
+    "fr": "Ajoute un onglet Journal aux réglages de l'app, qui montre ce que l'app a fait : déclencheurs activés, changements de vacances et éventuelles erreurs. Il reste uniquement en mémoire, limité à 100 lignes, de sorte que rien n'est écrit sur votre Homey et qu'il se vide au redémarrage de l'app."
   },
   "1.5.0": {
-    "en": "The Log tab gains two options. Keep the log across app restarts, off by default, which stores it on your Homey with the writes batched so a burst of events costs one write rather than several. And a 24-hour clock, switched on by default unless your Homey is set to English."
+    "en": "The Log tab gains two options. Keep the log across app restarts, off by default, which stores it on your Homey with the writes batched so a burst of events costs one write rather than several. And a 24-hour clock, switched on by default unless your Homey is set to English.",
+    "nl": "Het tabblad Logboek krijgt twee opties. Het logboek bewaren over herstarts heen, standaard uit, waarbij het op je Homey wordt opgeslagen met gebundelde schrijfacties zodat een reeks gebeurtenissen één schrijfactie kost in plaats van meerdere. En een 24-uursklok, standaard aan tenzij je Homey op Engels staat.",
+    "fr": "L'onglet Journal gagne deux options. Conserver le journal d'un redémarrage à l'autre, désactivé par défaut, qui l'enregistre sur votre Homey en regroupant les écritures afin qu'une rafale d'événements ne coûte qu'une seule écriture au lieu de plusieurs. Et une horloge de 24 heures, activée par défaut sauf si votre Homey est en anglais."
   },
   "1.5.1": {
-    "en": "The log now scrolls within its own box instead of making the settings window grow longer and longer, and its colour tints read correctly in Homey’s dark theme."
+    "en": "The log now scrolls within its own box instead of making the settings window grow longer and longer, and its colour tints read correctly in Homey’s dark theme.",
+    "nl": "Het logboek scrolt nu binnen zijn eigen kader in plaats van het instellingenvenster steeds langer te maken, en de kleurtinten zijn goed leesbaar in het donkere thema van Homey.",
+    "fr": "Le journal défile désormais dans son propre cadre au lieu d'allonger sans fin la fenêtre des réglages, et ses teintes de couleur restent lisibles dans le thème sombre de Homey."
   },
   "1.6.0": {
-    "en": "The log now records every presence and sleep change per user - came home, went away, went to sleep, woke up - alongside the triggers that fired, which is what turns it from a list of outcomes into something that explains why a card did or did not fire. A filter lets you switch between all events and only the triggers and errors."
+    "en": "The log now records every presence and sleep change per user - came home, went away, went to sleep, woke up - alongside the triggers that fired, which is what turns it from a list of outcomes into something that explains why a card did or did not fire. A filter lets you switch between all events and only the triggers and errors.",
+    "nl": "Het logboek noteert nu elke aanwezigheids- en slaapwijziging per gebruiker - thuisgekomen, weggegaan, gaan slapen, wakker geworden - naast de triggers die afgingen. Dat maakt er van een lijst met uitkomsten iets dat uitlegt waarom een kaart wel of niet afging. Met een filter schakel je tussen alle gebeurtenissen en enkel de triggers en fouten.",
+    "fr": "Le journal enregistre désormais chaque changement de présence et de sommeil par utilisateur - rentré, parti, endormi, réveillé - à côté des déclencheurs activés. C'est ce qui le transforme d'une liste de résultats en quelque chose qui explique pourquoi une carte s'est déclenchée ou non. Un filtre permet de basculer entre tous les événements et uniquement les déclencheurs et les erreurs."
   },
   "1.7.0": {
-    "en": "The log is now written in your Homey's own language, and so are the status badges and answers on the settings page - they were English regardless of your Homey's language before. Dutch and French included."
+    "en": "The log is now written in your Homey's own language, and so are the status badges and answers on the settings page - they were English regardless of your Homey's language before. Dutch and French included.",
+    "nl": "Het logboek wordt nu geschreven in de taal van je Homey, net als de statusbadges en antwoorden op de instellingenpagina - die waren voorheen Engels, ongeacht de taal van je Homey. Nederlands en Frans inbegrepen.",
+    "fr": "Le journal est désormais rédigé dans la langue de votre Homey, tout comme les badges de statut et les réponses sur la page des réglages - ils étaient auparavant en anglais quelle que soit la langue de votre Homey. Néerlandais et français compris."
   }
 }
