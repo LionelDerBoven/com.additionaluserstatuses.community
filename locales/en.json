@@ -68,6 +68,10 @@
     "shown_of": "__n__ of __total__ shown",
     "counting": "Counting __n__ of __total__ Homey user(s).",
     "none_counted": "No users are counted, so the \"everyone\" cards are false. Tick at least one user below.",
-    "read_failed": "Could not read the Homey users: __message__"
+    "read_failed": "Could not read the Homey users: __message__",
+    "role_owner": "owner",
+    "role_manager": "manager",
+    "role_user": "user",
+    "role_guest": "guest"
   }
 }

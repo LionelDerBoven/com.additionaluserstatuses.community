@@ -63,5 +63,10 @@
     "en": "The log is now written in your Homey's own language, and so are the status badges and answers on the settings page - they were English regardless of your Homey's language before. Dutch and French included.",
     "nl": "Het logboek wordt nu geschreven in de taal van je Homey, net als de statusbadges en antwoorden op de instellingenpagina - die waren voorheen Engels, ongeacht de taal van je Homey. Nederlands en Frans inbegrepen.",
     "fr": "Le journal est désormais rédigé dans la langue de votre Homey, tout comme les badges de statut et les réponses sur la page des réglages - ils étaient auparavant en anglais quelle que soit la langue de votre Homey. Néerlandais et français compris."
+  },
+  "1.7.1": {
+    "en": "Translation fixes. Two settings labels had lost a word and claimed more than the card they describe. The Dutch wording of the at-home cards now matches the English, and several Dutch phrasings were corrected. French log lines no longer assume everyone is male. User roles are translated instead of showing the raw English.",
+    "nl": "Vertaalcorrecties. Twee labels in de instellingen misten een woord en beweerden meer dan de kaart die ze beschrijven. De Nederlandse tekst van de thuis-kaarten komt nu overeen met de Engelse, en een aantal Nederlandse formuleringen is verbeterd. Franse logregels gaan er niet langer van uit dat iedereen een man is. Gebruikersrollen worden vertaald in plaats van in het Engels getoond.",
+    "fr": "Corrections de traduction. Deux libellés des réglages avaient perdu un mot et affirmaient plus que la carte qu'ils décrivent. Le texte néerlandais des cartes « à la maison » correspond maintenant à l'anglais, et plusieurs formulations néerlandaises ont été corrigées. Les lignes de journal en français ne supposent plus que tout le monde est un homme. Les rôles des utilisateurs sont traduits au lieu d'être affichés en anglais."
   }
 }

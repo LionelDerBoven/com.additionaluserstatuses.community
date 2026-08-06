@@ -2,7 +2,7 @@
   "id": "everyone_home_asleep",
   "title": {
     "en": "!{{Everyone at home is asleep|Not everyone at home is asleep}}",
-    "nl": "!{{Iedereen die thuis is slaapt|Niet iedereen die thuis is slaapt}}",
+    "nl": "!{{Iedereen thuis slaapt|Niet iedereen thuis slaapt}}",
     "fr": "!{{Tout le monde à la maison dort|Tout le monde à la maison ne dort pas}}"
   },
   "hint": {

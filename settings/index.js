@@ -106,7 +106,9 @@ function renderUsers(users) {
     const name = document.createElement('div');
     name.className = 'user-name';
     name.textContent = user.name;
-    name.appendChild(badge(user.role));
+    // Homey returns the role in English. Fall back to printing it raw, so a
+    // role added by Homey in future shows something rather than an empty badge.
+    name.appendChild(badge(t(`role_${user.role}`, user.role)));
     if (!user.enabled) name.appendChild(badge(t('disabled', 'disabled in Homey')));
     if (user.onVacation) name.appendChild(badge(t('on_vacation', 'on vacation'), 'vacation'));
     main.appendChild(name);
