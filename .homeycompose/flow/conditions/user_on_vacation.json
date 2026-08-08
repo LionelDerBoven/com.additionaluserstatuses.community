@@ -3,12 +3,12 @@
   "title": {
     "en": "A user is !{{on vacation|not on vacation}}",
     "nl": "Een gebruiker is !{{op vakantie|niet op vakantie}}",
-    "fr": "Un utilisateur est !{{en vacances|pas en vacances}}"
+    "fr": "Un utilisateur !{{est en vacances|n'est pas en vacances}}"
   },
   "titleFormatted": {
     "en": "[[user]] is !{{on vacation|not on vacation}}",
     "nl": "[[user]] is !{{op vakantie|niet op vakantie}}",
-    "fr": "[[user]] est !{{en vacances|pas en vacances}}"
+    "fr": "[[user]] !{{est en vacances|n'est pas en vacances}}"
   },
   "hint": {
     "en": "Checks the vacation status this app keeps for the chosen Homey user. Vacation is set by the 'Set vacation' action, by the user's vacation device, or on the app's settings page.",

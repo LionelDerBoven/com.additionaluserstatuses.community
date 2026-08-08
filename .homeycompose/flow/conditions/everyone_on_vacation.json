@@ -3,7 +3,7 @@
   "title": {
     "en": "!{{Everyone is on vacation|Not everyone is on vacation}}",
     "nl": "!{{Iedereen is op vakantie|Niet iedereen is op vakantie}}",
-    "fr": "!{{Tout le monde est en vacances|Tout le monde n'est pas en vacances}}"
+    "fr": "!{{Tout le monde est en vacances|Quelqu'un n'est pas en vacances}}"
   },
   "hint": {
     "en": "True when every counted Homey user is marked as on vacation. Users switched off in this app's settings and accounts disabled in Homey are ignored. If there are no counted users at all this card is false.",

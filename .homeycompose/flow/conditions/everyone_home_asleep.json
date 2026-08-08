@@ -2,8 +2,8 @@
   "id": "everyone_home_asleep",
   "title": {
     "en": "!{{Everyone at home is asleep|Not everyone at home is asleep}}",
-    "nl": "!{{Iedereen thuis slaapt|Niet iedereen thuis slaapt}}",
-    "fr": "!{{Tout le monde à la maison dort|Tout le monde à la maison ne dort pas}}"
+    "nl": "!{{Iedereen die thuis is, slaapt|Er is thuis nog iemand wakker}}",
+    "fr": "!{{Tout le monde à la maison dort|Quelqu'un est encore éveillé à la maison}}"
   },
   "hint": {
     "en": "True when every counted user who is currently at home also has the status asleep. Users who are away are ignored, which is the difference from 'Everyone is asleep': this card can still be true while somebody is out. Users on vacation, users switched off in this app's settings, and accounts disabled in Homey are ignored. If nobody is at home this card is false, because there is no one whose sleep it could describe.",

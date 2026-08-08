@@ -2,8 +2,8 @@
   "id": "everyone_asleep",
   "title": {
     "en": "!{{Everyone is asleep|Not everyone is asleep}}",
-    "nl": "!{{Iedereen slaapt|Niet iedereen slaapt}}",
-    "fr": "!{{Tout le monde dort|Tout le monde ne dort pas}}"
+    "nl": "!{{Iedereen slaapt|Er is nog iemand wakker}}",
+    "fr": "!{{Tout le monde dort|Quelqu'un est encore éveillé}}"
   },
   "hint": {
     "en": "True when every counted Homey user is marked as asleep. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose sleep status has never been set counts as awake, because Homey does not know. If no users are counted at all, this card is false.",

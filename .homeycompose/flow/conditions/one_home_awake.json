@@ -2,8 +2,8 @@
   "id": "one_home_awake",
   "title": {
     "en": "!{{Exactly one person at home is awake|Not exactly one person at home is awake}}",
-    "nl": "!{{Precies één persoon thuis is wakker|Niet precies één persoon thuis is wakker}}",
-    "fr": "!{{Exactement une personne à la maison est éveillée|Pas exactement une personne à la maison est éveillée}}"
+    "nl": "!{{Er is thuis precies één persoon wakker|Er is thuis niet precies één persoon wakker}}",
+    "fr": "!{{Il y a exactement une personne éveillée à la maison|Il n'y a pas exactement une personne éveillée à la maison}}"
   },
   "hint": {
     "en": "True when exactly one counted user is at home and awake, whatever the others are doing. In the morning that means the first person up while the rest still sleep; in the evening, the last one still awake. It is false when nobody is home, when everybody at home is asleep, and when two or more are awake. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored. A user whose sleep status was never set counts as awake.",
