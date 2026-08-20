@@ -49,6 +49,10 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.record(this.homey.__('log.err_users', { message: err.message }), 'error');
     });
 
+    this.seedVacationEdges().catch((err) => {
+      this.error(`Could not read the vacation state at startup: ${err.message}`);
+    });
+
     // Devices are deliberately not synced from here: at this point Homey has not
     // initialised the drivers yet, so getDriver() throws. Each device waits for
     // this app's store instead, in VacationDevice#getStore.
@@ -163,6 +167,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     // --- Triggers -------------------------------------------------------------
     this.triggerEveryoneHomeAsleep = this.homey.flow.getTriggerCard('everyone_home_became_asleep');
+    this.triggerEveryoneAsleep = this.homey.flow.getTriggerCard('everyone_became_asleep');
     this.triggerFirstHomeAwake = this.homey.flow.getTriggerCard('first_home_awake');
     this.triggerFirstHomeAsleep = this.homey.flow.getTriggerCard('first_home_asleep');
     this.triggerFirstAsleep = this.homey.flow.getTriggerCard('first_asleep');
@@ -223,6 +228,7 @@ class AdditionalUserStatusesApp extends Homey.App {
     // watcher down with it - so they are described rather than written out.
     const sleepCards = [
       { event: 'everyone-home-asleep', logKey: 'log.last_asleep', card: () => this.triggerEveryoneHomeAsleep },
+      { event: 'everyone-asleep', logKey: 'log.last_asleep_any', card: () => this.triggerEveryoneAsleep },
       { event: 'first-home-awake', logKey: 'log.first_awake', card: () => this.triggerFirstHomeAwake },
       { event: 'first-home-asleep', logKey: 'log.first_home_asleep', card: () => this.triggerFirstHomeAsleep },
       { event: 'first-asleep', logKey: 'log.first_asleep', card: () => this.triggerFirstAsleep },
@@ -269,6 +275,26 @@ class AdditionalUserStatusesApp extends Homey.App {
         this.error(`Vacation triggers failed: ${err.message}`);
       });
     });
+  }
+
+  /**
+   * Gives the household-wide vacation triggers a 'before' to compare against.
+   *
+   * Without this they start out undefined, and 'nobody is on vacation any more'
+   * needs a previous value of exactly false to fire. An app that restarted while
+   * somebody was away - which is every Homey reboot and every app update during
+   * a fortnight's holiday - would then swallow that trigger when the holiday
+   * ended. The same gap fires 'everyone is on vacation' a second time for a
+   * household that already was.
+   */
+  async seedVacationEdges() {
+    const everyone = await this.userStatus.isEveryoneOnVacation();
+    const nobody = await this.userStatus.isNobodyOnVacation();
+
+    // A change that landed while we were reading has already set these from the
+    // newer state, so it must not be overwritten with the older one.
+    if (this.lastEveryoneOnVacation === undefined) this.lastEveryoneOnVacation = everyone;
+    if (this.lastNobodyOnVacation === undefined) this.lastNobodyOnVacation = nobody;
   }
 
   async onVacationChanged({ added, removed }) {

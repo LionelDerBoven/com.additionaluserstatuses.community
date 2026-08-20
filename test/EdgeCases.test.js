@@ -54,6 +54,10 @@ function makeWatcher(users, counted = null) {
       const atHome = (this.counted || this.users).filter((u) => u.present);
       return atHome.length > 0 && atHome.every((u) => u.asleep);
     },
+    async isEveryoneAsleep() {
+      const all = this.counted || this.users;
+      return all.length > 0 && all.every((u) => u.asleep);
+    },
   };
 
   const homey = {

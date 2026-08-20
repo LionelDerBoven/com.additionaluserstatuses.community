@@ -34,6 +34,7 @@
     "app_started": "App démarrée.",
     "users_found": "__count__ utilisateur(s) Homey trouvé(s), __counted__ pris en compte : __list__",
     "last_asleep": "__name__ est la dernière personne à la maison à s’être endormie.",
+    "last_asleep_any": "__name__ est la dernière personne à s'endormir.",
     "first_awake": "__name__ est la première personne à la maison à s’être réveillée.",
     "first_home_asleep": "__name__ est la première personne à la maison à s'endormir.",
     "first_asleep": "__name__ est la première personne à s'endormir.",
