@@ -1,0 +1,25 @@
+{
+  "id": "first_home_asleep",
+  "title": {
+    "en": "The first person at home goes to the status asleep",
+    "nl": "De eerste persoon thuis ging slapen",
+    "fr": "La première personne à la maison s'endort"
+  },
+  "hint": {
+    "en": "Fires when somebody who was at home and awake goes to the status asleep while nobody else at home was asleep yet, so they are the first one in bed. It does not fire for the second person to go to sleep, nor when somebody arrives home already asleep, because they did not fall asleep here. It is ready again the next evening, once everybody at home is awake. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who went to sleep first.",
+    "nl": "Gaat af wanneer iemand die thuis en wakker was naar de status slaapt gaat terwijl er thuis nog niemand sliep, zodat diegene als eerste in bed ligt. Gaat niet af voor de tweede die gaat slapen, en niet wanneer er iemand al slapend thuiskomt, want die is hier niet in slaap gevallen. Hij staat de volgende avond weer klaar, zodra iedereen thuis wakker is. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. De tag Gebruiker zegt wie als eerste ging slapen.",
+    "fr": "Se déclenche lorsqu'une personne qui était à la maison et éveillée passe au statut endormi alors que personne d'autre à la maison ne dormait encore, ce qui en fait la première couchée. Ne se déclenche pas pour la deuxième personne qui va dormir, ni lorsque quelqu'un rentre déjà endormi, car cette personne ne s'est pas endormie ici. Il est de nouveau prêt le lendemain soir, dès que tout le monde à la maison est éveillé. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est endormi en premier."
+  },
+  "tokens": [
+    {
+      "name": "user",
+      "type": "string",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "example": "Alex"
+    }
+  ]
+}

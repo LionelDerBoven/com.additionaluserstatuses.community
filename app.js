@@ -164,6 +164,9 @@ class AdditionalUserStatusesApp extends Homey.App {
     // --- Triggers -------------------------------------------------------------
     this.triggerEveryoneHomeAsleep = this.homey.flow.getTriggerCard('everyone_home_became_asleep');
     this.triggerFirstHomeAwake = this.homey.flow.getTriggerCard('first_home_awake');
+    this.triggerFirstHomeAsleep = this.homey.flow.getTriggerCard('first_home_asleep');
+    this.triggerFirstAsleep = this.homey.flow.getTriggerCard('first_asleep');
+    this.triggerFirstAwake = this.homey.flow.getTriggerCard('first_awake');
     this.triggerEveryoneVacationStarted = this.homey.flow.getTriggerCard('everyone_vacation_started');
     this.triggerEveryoneVacationEnded = this.homey.flow.getTriggerCard('everyone_vacation_ended');
 
@@ -215,15 +218,23 @@ class AdditionalUserStatusesApp extends Homey.App {
   // ---------------------------------------------------------------------------
 
   wireWatcher() {
-    this.watcher.on('everyone-home-asleep', ({ name }) => {
-      this.record(this.homey.__('log.last_asleep', { name }), 'trigger');
-      this.triggerEveryoneHomeAsleep.trigger({ user: name }).catch((err) => this.error(err.message));
-    });
+    // Every sleep card is the same three steps - say it in the log, fire the
+    // card with the name as its tag, and never let a broken Flow take the
+    // watcher down with it - so they are described rather than written out.
+    const sleepCards = [
+      { event: 'everyone-home-asleep', logKey: 'log.last_asleep', card: () => this.triggerEveryoneHomeAsleep },
+      { event: 'first-home-awake', logKey: 'log.first_awake', card: () => this.triggerFirstHomeAwake },
+      { event: 'first-home-asleep', logKey: 'log.first_home_asleep', card: () => this.triggerFirstHomeAsleep },
+      { event: 'first-asleep', logKey: 'log.first_asleep', card: () => this.triggerFirstAsleep },
+      { event: 'first-awake', logKey: 'log.first_awake_any', card: () => this.triggerFirstAwake },
+    ];
 
-    this.watcher.on('first-home-awake', ({ name }) => {
-      this.record(this.homey.__('log.first_awake', { name }), 'trigger');
-      this.triggerFirstHomeAwake.trigger({ user: name }).catch((err) => this.error(err.message));
-    });
+    for (const { event, logKey, card } of sleepCards) {
+      this.watcher.on(event, ({ name }) => {
+        this.record(this.homey.__(logKey, { name }), 'trigger');
+        card().trigger({ user: name }).catch((err) => this.error(err.message));
+      });
+    }
 
     // Raw status changes, so the log explains why a card did or did not fire.
     this.watcher.on('user-changed', ({ name, field, value }) => {
