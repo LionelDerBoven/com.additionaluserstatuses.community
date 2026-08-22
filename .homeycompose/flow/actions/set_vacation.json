@@ -7,7 +7,7 @@
   },
   "titleFormatted": {
     "en": "Set [[user]] status to [[state]]",
-    "nl": "Zet status van [[user]] op [[state]]",
+    "nl": "Zet de status van [[user]] op [[state]]",
     "fr": "Définir le statut de [[user]] sur [[state]]"
   },
   "hint": {
@@ -59,7 +59,7 @@
           "id": "toggle",
           "title": {
             "en": "the other way round",
-            "nl": "omgewisseld",
+            "nl": "omgekeerd",
             "fr": "inversé"
           }
         }

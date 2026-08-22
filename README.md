@@ -21,13 +21,18 @@ or removing a housemate never means editing a Flow.
   user list, and that permission is not available on Homey Cloud / Homey Bridge.
 - Homey firmware 12.4.0 or newer.
 
-The permission grants read-only Web API access. This app only ever reads the user
-list; it never changes a user, a device or a Flow.
+That permission is not a read-only grant: `getOwnerApiToken()` opens a Web API
+session on behalf of the Homey owner. What is read-only is this app's use of it.
+It makes exactly one call, `GET /api/manager/users/user`, and never writes — it
+does not change a user, a device or a Flow. Setting a user's presence or sleep
+state is not something a Homey app can do at all; use Homey's own *Mark as at
+home* / *Mark as asleep* action cards for that.
 
-It ships with **no runtime dependencies**. The one Homey Web API call it needs is
-made in `lib/HomeyUsersApi.js` using the platform's own `fetch`, rather than
-pulling in the `homey-api` package and its socket.io stack for realtime events
-this app never subscribes to.
+It ships with **no runtime dependencies**. That one call is made in
+`lib/HomeyUsersApi.js` over `node:http`, rather than pulling in the `homey-api`
+package and its socket.io stack for realtime events this app never subscribes
+to, or Node's global `fetch`, whose undici connection pools and native buffers
+cost far more on a Homey Pro than the V8 heap suggests.
 
 ## Settings
 

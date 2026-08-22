@@ -2,28 +2,53 @@
   "id": "count_users",
   "title": {
     "en": "The number of users at home, awake or asleep",
-    "nl": "Het aantal gebruikers thuis, wakker of slapend",
+    "nl": "Het aantal gebruikers dat thuis, wakker of slapend is",
     "fr": "Le nombre d'utilisateurs à la maison, éveillés ou endormis"
   },
   "titleFormatted": {
     "en": "There !{{are|are not}} [[operator]] [[count]] users [[state]]",
     "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers [[state]]",
-    "fr": "Il y !{{a|n'y a pas}} [[operator]] [[count]] utilisateurs [[state]]"
+    "fr": "Il !{{y a|n'y a pas}} [[operator]] [[count]] utilisateurs [[state]]"
   },
   "hint": {
     "en": "Counts the users this app is told to count and compares that number. Anyone on vacation, switched off in this app's settings, or disabled in Homey is left out. Use it where a plain yes-or-no card is too blunt: 'at least two people at home', 'exactly one awake', 'no one asleep at home'.",
-    "nl": "Telt de gebruikers die volgens deze app meetellen en vergelijkt dat aantal. Wie op vakantie is, in de instellingen is uitgezet of in Homey is uitgeschakeld telt niet mee. Handig waar een gewone ja-of-nee-kaart te grof is: 'minstens twee mensen thuis', 'precies één wakker', 'niemand thuis aan het slapen'.",
-    "fr": "Compte les utilisateurs que cette app doit prendre en compte et compare ce nombre. Les personnes en vacances, désactivées dans les réglages de cette app ou désactivées dans Homey sont exclues. Utile là où une carte oui-ou-non est trop grossière : « au moins deux personnes à la maison », « exactement une éveillée », « personne endormi à la maison »."
+    "nl": "Telt de gebruikers die volgens deze app meetellen en vergelijkt dat aantal. Wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld telt niet mee. Handig waar een gewone ja-of-nee-kaart te grof is: 'minstens twee mensen thuis', 'precies één wakker', 'niemand thuis die slaapt'.",
+    "fr": "Compte les utilisateurs que cette app doit prendre en compte et compare ce nombre. Les personnes en vacances, désactivées dans les réglages de cette app ou désactivées dans Homey sont exclues. Utile là où une carte oui-ou-non est trop grossière : « au moins deux personnes à la maison », « exactement une personne éveillée », « personne d'endormi à la maison »."
   },
   "args": [
     {
       "name": "operator",
       "type": "dropdown",
-      "title": { "en": "Comparison", "nl": "Vergelijking", "fr": "Comparaison" },
+      "title": {
+        "en": "Comparison",
+        "nl": "Vergelijking",
+        "fr": "Comparaison"
+      },
       "values": [
-        { "id": "min", "title": { "en": "at least", "nl": "minstens", "fr": "au moins" } },
-        { "id": "exact", "title": { "en": "exactly", "nl": "precies", "fr": "exactement" } },
-        { "id": "max", "title": { "en": "at most", "nl": "hoogstens", "fr": "au plus" } }
+        {
+          "id": "min",
+          "title": {
+            "en": "at least",
+            "nl": "minstens",
+            "fr": "au moins"
+          }
+        },
+        {
+          "id": "exact",
+          "title": {
+            "en": "exactly",
+            "nl": "precies",
+            "fr": "exactement"
+          }
+        },
+        {
+          "id": "max",
+          "title": {
+            "en": "at most",
+            "nl": "hoogstens",
+            "fr": "au plus"
+          }
+        }
       ]
     },
     {
@@ -31,20 +56,74 @@
       "type": "number",
       "min": 0,
       "step": 1,
-      "title": { "en": "Number", "nl": "Aantal", "fr": "Nombre" },
-      "placeholder": { "en": "2", "nl": "2", "fr": "2" }
+      "title": {
+        "en": "Number",
+        "nl": "Aantal",
+        "fr": "Nombre"
+      },
+      "placeholder": {
+        "en": "2",
+        "nl": "2",
+        "fr": "2"
+      }
     },
     {
       "name": "state",
       "type": "dropdown",
-      "title": { "en": "Who", "nl": "Wie", "fr": "Qui" },
+      "title": {
+        "en": "Who",
+        "nl": "Wie",
+        "fr": "Qui"
+      },
       "values": [
-        { "id": "home", "title": { "en": "at home", "nl": "thuis", "fr": "à la maison" } },
-        { "id": "away", "title": { "en": "away", "nl": "weg", "fr": "absents" } },
-        { "id": "awake", "title": { "en": "awake", "nl": "wakker", "fr": "éveillés" } },
-        { "id": "asleep", "title": { "en": "asleep", "nl": "slapend", "fr": "endormis" } },
-        { "id": "home_awake", "title": { "en": "at home and awake", "nl": "thuis en wakker", "fr": "à la maison et éveillés" } },
-        { "id": "home_asleep", "title": { "en": "at home and asleep", "nl": "thuis en slapend", "fr": "à la maison et endormis" } }
+        {
+          "id": "home",
+          "title": {
+            "en": "at home",
+            "nl": "thuis",
+            "fr": "à la maison"
+          }
+        },
+        {
+          "id": "away",
+          "title": {
+            "en": "away",
+            "nl": "weg",
+            "fr": "absents"
+          }
+        },
+        {
+          "id": "awake",
+          "title": {
+            "en": "awake",
+            "nl": "wakker",
+            "fr": "éveillés"
+          }
+        },
+        {
+          "id": "asleep",
+          "title": {
+            "en": "asleep",
+            "nl": "slapend",
+            "fr": "endormis"
+          }
+        },
+        {
+          "id": "home_awake",
+          "title": {
+            "en": "at home and awake",
+            "nl": "thuis en wakker",
+            "fr": "à la maison et éveillés"
+          }
+        },
+        {
+          "id": "home_asleep",
+          "title": {
+            "en": "at home and asleep",
+            "nl": "thuis en slapend",
+            "fr": "à la maison et endormis"
+          }
+        }
       ]
     }
   ]

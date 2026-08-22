@@ -1,0 +1,46 @@
+{
+  "id": "user_arrived",
+  "title": {
+    "en": "A user comes home",
+    "nl": "Een gebruiker komt thuis",
+    "fr": "Un utilisateur rentre à la maison"
+  },
+  "titleFormatted": {
+    "en": "[[user]] comes home",
+    "nl": "[[user]] komt thuis",
+    "fr": "[[user]] rentre à la maison"
+  },
+  "hint": {
+    "en": "Fires the moment a user is marked as at home. Someone on vacation still sets it off: the card names a person, and a person coming back from a fortnight away is exactly when a Flow wants to know. Homey has a card of its own for this, and it fires for every account the Homey has - the guest phone that never reports where it is, the account you disabled. This one only fires for users who count: anyone unticked in this app's settings, or disabled in Homey, stays silent. Choose 'Any user' to fire for everybody and read the User tag to tell who it was.",
+    "nl": "Gaat af op het moment dat een gebruiker als thuis wordt gemarkeerd. Wie op vakantie is laat hem ook afgaan: de kaart noemt een persoon, en iemand die na twee weken terugkomt is juist het moment waarop een Flow dat wil weten. Homey heeft hier een eigen kaart voor, en die gaat af voor élk account dat de Homey kent - de gasttelefoon die nooit doorgeeft waar hij is, het account dat je hebt uitgeschakeld. Deze gaat alleen af voor gebruikers die meetellen: wie je in de instellingen van deze app hebt uitgevinkt, of in Homey is uitgeschakeld, blijft stil. Kies 'Elke gebruiker' om voor iedereen af te gaan en lees de tag Gebruiker om te zien wie het was.",
+    "fr": "Se déclenche dès qu'un utilisateur est marqué comme présent. Une personne en vacances la déclenche aussi : la carte nomme une personne, et quelqu'un qui rentre après quinze jours est précisément le moment où un Flow veut le savoir. Homey possède sa propre carte pour cela, et elle se déclenche pour chaque compte que la Homey connaît - le téléphone invité qui ne signale jamais où il est, le compte que vous avez désactivé. Celle-ci ne se déclenche que pour les utilisateurs qui comptent : toute personne décochée dans les réglages de cette app, ou désactivée dans Homey, reste silencieuse. Choisissez « Tout utilisateur » pour qu'elle se déclenche pour chacun et lisez le tag Utilisateur pour savoir de qui il s'agit."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Any user",
+        "nl": "Elke gebruiker",
+        "fr": "Tout utilisateur"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "user",
+      "type": "string",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "example": "Alex"
+    }
+  ]
+}

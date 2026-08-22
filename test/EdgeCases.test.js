@@ -50,6 +50,22 @@ function makeWatcher(users, counted = null) {
     async getCountedUsers() {
       return this.counted || this.users;
     },
+    // Eligible is the wider list: `counted` here stands for the people a status
+    // or a settings tick has taken out, and vacation deliberately does not
+    // silence the cards that name one person.
+    async getEligibleUsers() {
+      return this.users;
+    },
+    // The watcher takes all three lists in one call now, so a pass cannot
+    // compare one world against another. Derived from the two getters above so
+    // a test that overrides either still steers the snapshot.
+    async snapshot() {
+      // Routed through fetchUsers() like the real one, so a test that makes the
+      // read fail still makes the whole pass fail.
+      const users = await this.fetchUsers();
+
+      return { users, eligible: await this.getEligibleUsers(), counted: await this.getCountedUsers() };
+    },
     async isEveryoneHomeAsleep() {
       const atHome = (this.counted || this.users).filter((u) => u.present);
       return atHome.length > 0 && atHome.every((u) => u.asleep);

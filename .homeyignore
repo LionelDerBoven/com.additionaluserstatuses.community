@@ -1,0 +1,10 @@
+# What the Homey does not need on its flash. The CLI already excludes
+# node_modules, .homeycompose, *.compose.json, tsconfig.json and dotfiles;
+# these four are the rest, and they are 42% of the archive.
+#
+# LICENSE deliberately stays: the app is GPL-3.0-or-later and the archive is a
+# distribution, so the licence text travels with it.
+test/
+tools/
+package-lock.json
+README.md

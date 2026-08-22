@@ -2,12 +2,12 @@
   "id": "everyone_home_became_asleep",
   "title": {
     "en": "The last person at home goes to the status asleep",
-    "nl": "De laatste persoon thuis ging slapen",
+    "nl": "De laatste persoon thuis gaat slapen",
     "fr": "La dernière personne à la maison s'endort"
   },
   "hint": {
     "en": "Fires when somebody who was at home and awake goes to the status asleep while everyone else at home is already asleep, so nobody at home is awake any more. It does not fire when the last awake person simply leaves the house, because nobody went to bed. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored, so this still fires when somebody is out for the evening. It does not fire when the house is empty. The User tag says who was last to fall asleep.",
-    "nl": "Gaat af wanneer iemand die thuis en wakker was in slaap valt terwijl de rest thuis al slaapt, zodat er niemand thuis nog wakker is. Gaat niet af wanneer de laatste wakkere persoon gewoon het huis verlaat, want dan is er niemand gaan slapen. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd, dus dit gaat ook af als er iemand een avondje weg is. Bij een leeg huis gaat het niet af. De tag Gebruiker zegt wie als laatste is gaan slapen.",
+    "nl": "Gaat af wanneer iemand die thuis en wakker was in slaap valt terwijl de rest thuis al slaapt, zodat er niemand thuis nog wakker is. Gaat niet af wanneer de laatste wakkere persoon gewoon het huis verlaat, want dan is er niemand gaan slapen. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld worden genegeerd, dus dit gaat ook af als er iemand een avondje weg is. Bij een leeg huis gaat het niet af. De tag Gebruiker zegt wie als laatste is gaan slapen.",
     "fr": "Se déclenche lorsqu'une personne qui était à la maison et éveillée s'endort alors que tous les autres présents dorment déjà, si bien que plus personne n'est éveillé à la maison. Ne se déclenche pas lorsque la dernière personne éveillée quitte simplement la maison, car personne ne s'est couché. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés : la carte se déclenche donc aussi quand quelqu'un est sorti pour la soirée. Elle ne se déclenche pas si la maison est vide. Le tag Utilisateur indique qui s'est endormi en dernier."
   },
   "tokens": [

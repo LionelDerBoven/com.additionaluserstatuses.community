@@ -13,21 +13,58 @@
   "hint": {
     "en": "Fires when the chosen user is given the chosen status, whether that came from a Flow, the settings page, a device tile or auto-return. Leave the user on 'Any user' to fire for the whole household. The tags name who it was and which status. Vacation has its own card as well, which is shorter for that one case.",
     "nl": "Gaat af wanneer de gekozen gebruiker de gekozen status krijgt, of dat nu uit een Flow, de instellingenpagina, een apparaattegel of automatisch terugkeren kwam. Laat de gebruiker op 'Elke gebruiker' staan om voor het hele huishouden af te gaan. De tags zeggen wie het was en welke status. Vakantie heeft ook een eigen kaart, die korter is voor dat ene geval.",
-    "fr": "Se déclenche lorsque l'utilisateur choisi reçoit le statut choisi, que cela vienne d'une Flow, de la page de réglages, d'une tuile d'appareil ou du retour automatique. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut. Les vacances ont aussi leur propre carte, plus courte pour ce cas précis."
+    "fr": "Se déclenche lorsque l'utilisateur choisi reçoit le statut choisi, que cela vienne d'un Flow, de la page de réglages, d'une tuile d'appareil ou du retour automatique. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut. Les vacances ont aussi leur propre carte, plus courte pour ce cas précis."
   },
-  "args": [{
+  "args": [
+    {
       "name": "status",
       "type": "autocomplete",
-      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
-      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
-    }, {
+      "title": {
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
+      },
+      "placeholder": {
+        "en": "Choose a status…",
+        "nl": "Kies een status…",
+        "fr": "Choisissez un statut…"
+      }
+    },
+    {
       "name": "user",
       "type": "autocomplete",
-      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
-      "placeholder": { "en": "Any user", "nl": "Elke gebruiker", "fr": "Tout utilisateur" }
-    }],
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Any user",
+        "nl": "Elke gebruiker",
+        "fr": "Tout utilisateur"
+      }
+    }
+  ],
   "tokens": [
-    { "name": "user", "type": "string", "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" }, "example": "Alex" },
-    { "name": "status", "type": "string", "title": { "en": "Status", "nl": "Status", "fr": "Statut" }, "example": "On vacation" }
+    {
+      "name": "user",
+      "type": "string",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "example": "Alex"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "title": {
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
+      },
+      "example": "On vacation"
+    }
   ]
 }

@@ -223,3 +223,54 @@ test('an unknown state is a mistake worth reporting, not a zero', async () => {
   const { status } = makeStatus(users({ present: true }));
   await assert.rejects(() => status.countUsers('elsewhere'), /Unknown user state/);
 });
+
+// ---------------------------------------------------------------------------
+// One user at a time
+// ---------------------------------------------------------------------------
+
+test('a named user is at home only when Homey says so outright', async () => {
+  const { status } = makeStatus(users(
+    { id: 'home', present: true },
+    { id: 'away', present: false },
+    { id: 'unknown' },
+  ));
+
+  assert.strictEqual(await status.isUserHome('home'), true);
+  assert.strictEqual(await status.isUserHome('away'), false);
+  // Homey has never been told where this one is, so we cannot claim they are in.
+  assert.strictEqual(await status.isUserHome('unknown'), false);
+});
+
+test('a named user is asleep wherever they are', async () => {
+  const { status } = makeStatus(users(
+    { id: 'hotel', present: false, asleep: true },
+    { id: 'up', present: true, asleep: false },
+    { id: 'unknown', present: true },
+  ));
+
+  assert.strictEqual(await status.isUserAsleep('hotel'), true, 'asleep elsewhere is still asleep');
+  assert.strictEqual(await status.isUserAsleep('up'), false);
+  assert.strictEqual(await status.isUserAsleep('unknown'), false, 'never set counts as awake');
+});
+
+test('a card naming a deleted user answers false rather than throwing', async () => {
+  const { status } = makeStatus(users({ id: 'a', present: true }));
+
+  // The card is the right place to complain about a user who no longer exists;
+  // a condition that throws takes the whole Flow down with it.
+  assert.strictEqual(await status.isUserHome('gone'), false);
+  assert.strictEqual(await status.isUserAsleep('gone'), false);
+  assert.strictEqual(await status.getUser('gone'), undefined);
+});
+
+test('excluded and disabled users can still be asked about by name', async () => {
+  // These cards name one person, so they answer for anybody Homey knows. Who
+  // counts towards the household is a different question, asked by other cards.
+  const { status } = makeStatus(
+    users({ id: 'off', present: true }, { id: 'disabled', present: true, enabled: false }),
+    ['off'],
+  );
+
+  assert.strictEqual(await status.isUserHome('off'), true);
+  assert.strictEqual(await status.isUserHome('disabled'), true);
+});

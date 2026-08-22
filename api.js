@@ -1,5 +1,23 @@
 'use strict';
 
+// A Homey user id is a UUID. These endpoints are reachable by any Homey user of
+// this Homey, of any role, and whatever they pass ends up in a Set that is
+// written to app settings - where a read-side filter makes a wrong-typed id
+// inert but does not stop it being stored. Refuse it at the door instead.
+const MAX_ID_LENGTH = 64;
+
+/**
+ * @param {unknown} value
+ * @returns {string}
+ */
+function userId(value) {
+  if (typeof value !== 'string' || !value || value.length > MAX_ID_LENGTH) {
+    throw new Error('That is not a usable user id.');
+  }
+
+  return value;
+}
+
 module.exports = {
   // One round trip for the settings page: every Homey user with their counted,
   // excluded and vacation flags, plus what the condition cards would answer now.
@@ -10,7 +28,7 @@ module.exports = {
   // Vacation changes go through the app rather than straight to settings, so the
   // store emits and the Flow triggers and device tiles follow.
   async setVacation({ homey, body }) {
-    return homey.app.setVacation(body?.userId, body?.onVacation);
+    return homey.app.setVacation(userId(body?.userId), body?.onVacation === true);
   },
 
   async getLog({ homey }) {
@@ -27,7 +45,7 @@ module.exports = {
   },
 
   async setStatus({ homey, body }) {
-    return homey.app.setStatus(body?.statusId, body?.userId, body?.held);
+    return homey.app.setStatus(body?.statusId, userId(body?.userId), body?.held === true);
   },
 
   // The page edits the whole list of custom statuses at once, so this replaces

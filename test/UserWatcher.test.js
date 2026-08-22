@@ -22,10 +22,25 @@ function fakeStatus(initialUsers) {
     async fetchUsers() {
       return this.users;
     },
-    // The watcher reads arrivals from the full list and the awake logic from the
-    // counted one; these tests use no exclusions, so both return the same users.
+    // The watcher reads arrivals from the full list, the awake logic from the
+    // counted one and the per-user cards from the eligible one; these tests use
+    // no exclusions, so all three return the same users unless a test says
+    // otherwise by overriding one of them.
     async getCountedUsers() {
       return this.users;
+    },
+    async getEligibleUsers() {
+      return this.users;
+    },
+    // The watcher takes all three lists in one call now, so a pass cannot
+    // compare one world against another. Derived from the two getters above so
+    // a test that overrides either still steers the snapshot.
+    async snapshot() {
+      // Routed through fetchUsers() like the real one, so a test that makes the
+      // read fail still makes the whole pass fail.
+      const users = await this.fetchUsers();
+
+      return { users, eligible: await this.getEligibleUsers(), counted: await this.getCountedUsers() };
     },
     // Derived from the users rather than set by hand, so a test cannot describe
     // a household state that could never actually occur.
@@ -76,6 +91,11 @@ function makeWatcher(status) {
     everyoneAwake: [],
     everyoneHome: 0,
     everyoneLeft: 0,
+    userLeft: [],
+    userArrived: [],
+    userAsleep: [],
+    userAwake: [],
+    firstArrived: [],
   };
   watcher.on('arrived', (user) => events.arrived.push(user.id));
   watcher.on('everyone-home-asleep', (user) => {
@@ -99,6 +119,11 @@ function makeWatcher(status) {
   watcher.on('everyone-left', () => {
     events.everyoneLeft += 1;
   });
+  watcher.on('user-left', (u) => events.userLeft.push(u.id));
+  watcher.on('user-arrived', (u) => events.userArrived.push(u.id));
+  watcher.on('user-asleep', (u) => events.userAsleep.push(u.id));
+  watcher.on('user-awake', (u) => events.userAwake.push(u.id));
+  watcher.on('first-arrived', (u) => events.firstArrived.push(u.id));
 
   return { watcher, events };
 }
@@ -923,4 +948,318 @@ test('coming home asleep and then waking does fire', async () => {
   await watcher.check();
 
   assert.deepStrictEqual(events.someoneHomeAwake, ['a'], 'asleep here, then awake here');
+});
+
+// ---------------------------------------------------------------------------
+// The per-user cards
+//
+// These are the ones that replace Homey's own presence and sleep triggers, so
+// what matters is not only that they fire, but who they stay silent for.
+// ---------------------------------------------------------------------------
+
+test('each of the four per-user transitions fires once, naming the right person', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', false, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userLeft, ['a']);
+  assert.deepStrictEqual(events.userAsleep, ['b']);
+  assert.deepStrictEqual(events.userArrived, []);
+  assert.deepStrictEqual(events.userAwake, []);
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userArrived, ['a']);
+  assert.deepStrictEqual(events.userAwake, ['b']);
+});
+
+test('a per-user card does not fire again while nothing changes', async () => {
+  const status = fakeStatus([user('a', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', false, false)];
+  await watcher.check();
+  await watcher.check();
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userLeft, ['a'], 'a departure is one event, not one per poll');
+});
+
+test('a user Homey has only just told us about has not just changed', async () => {
+  const status = fakeStatus([user('a', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // 'b' appears mid-run - a new housemate, or a user the first read missed.
+  status.users = [user('a', true, false), user('b', false, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userLeft, [], 'no previous value is not a departure');
+  assert.deepStrictEqual(events.userAsleep, [], 'nor a bedtime');
+});
+
+test('a user excluded from the household fires nothing', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', true, false)]);
+  // Unticked in the settings, so getEligibleUsers() leaves them out entirely.
+  status.getEligibleUsers = async function getEligibleUsers() {
+    return this.users.filter((u) => u.id !== 'b');
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userLeft, [], 'somebody switched off never fires anything');
+});
+
+test('somebody on vacation still fires their own arrival card', async () => {
+  // The deliberate difference from the household cards: 'Alex comes home' is
+  // about a person, and a person coming back from a fortnight away is exactly
+  // when a Flow wants to know. Pinned so it cannot regress into 'counted'.
+  const status = fakeStatus([user('a', true, false), user('b', false, false)]);
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => u.id !== 'b');
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.userArrived, ['b']);
+});
+
+// ---------------------------------------------------------------------------
+// first-arrived
+// ---------------------------------------------------------------------------
+
+test('first-arrived fires when an empty house stops being empty', async () => {
+  const status = fakeStatus([user('a', false, false), user('b', false, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, ['a']);
+
+  // The second person home is not a first arrival.
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, ['a'], 'only the first person through the door');
+});
+
+test('two people through the door in one poll is one homecoming', async () => {
+  const status = fakeStatus([user('a', false, false), user('b', false, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, ['a'], 'the earlier one, and exactly once');
+});
+
+test('a house that stops being empty without an arrival stays quiet', async () => {
+  // The mirror of the everyone-home guard: 'b' was at home all along and simply
+  // rejoined the count - came back from vacation, or was ticked in the
+  // settings. Nobody walked through a door, so no Flow should run.
+  const status = fakeStatus([user('a', false, false), user('b', true, false)]);
+  status.counted = ['a'];
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => this.counted.includes(u.id));
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.counted = ['a', 'b'];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, [], 'rejoining the count is not coming home');
+});
+
+test('first-arrived and everyone-left are the same household', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', false, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', false, false), user('b', false, false)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneLeft, 1);
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+  assert.deepStrictEqual(events.firstArrived, ['a'], 'the house that emptied is the house that fills');
+});
+
+// ---------------------------------------------------------------------------
+// Failure modes found by the v2.2.0 bug sweep
+// ---------------------------------------------------------------------------
+
+test('a failed seed read does not leave the watcher without a poll timer', async () => {
+  // The whole app looks healthy after this - conditions still answer, the
+  // settings page still loads - while not one trigger card can ever fire again.
+  const status = fakeStatus([user('a', true, false)]);
+  status.fetchUsers = async () => {
+    throw new Error('Homey returned 500 for the user list');
+  };
+
+  const timers = [];
+  const { watcher } = makeWatcher(status);
+  watcher.homey.setInterval = (fn) => {
+    timers.push(fn);
+    return timers.length;
+  };
+
+  await assert.rejects(() => watcher.start(), /500/);
+  assert.strictEqual(timers.length, 1, 'the poll was armed before the seed could throw');
+  assert.notStrictEqual(watcher.pollTimer, null);
+});
+
+test('a seed that failed lets the first good poll become the seed', async () => {
+  // The other half of the bargain: arming first must not turn a recovered read
+  // into "everybody just fell asleep" at app start.
+  const status = fakeStatus([user('a', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+
+  const good = status.fetchUsers;
+  status.fetchUsers = async () => {
+    throw new Error('homey down');
+  };
+  await assert.rejects(() => watcher.check({ silent: true }));
+
+  status.fetchUsers = good;
+  await watcher.check();
+
+  assert.strictEqual(events.asleep, 0, 'a recovered read seeds, it does not announce');
+  assert.deepStrictEqual(events.userAsleep, []);
+});
+
+test('two overlapping checks do not replay the same transition', async () => {
+  const status = fakeStatus([user('a', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // A slow pass reading the old world, overtaken by a fast one.
+  let release;
+  const held = new Promise((resolve) => {
+    release = resolve;
+  });
+  const good = status.fetchUsers;
+  status.fetchUsers = async function slow() {
+    await held;
+    return this.users;
+  };
+
+  const slow = watcher.check();
+  status.users = [user('a', true, true)];
+  const fast = watcher.check();
+
+  release();
+  await Promise.all([slow, fast]);
+  status.fetchUsers = good;
+
+  assert.deepStrictEqual(events.userAsleep, ['a'], 'one bedtime, one event');
+
+  await watcher.check();
+  assert.deepStrictEqual(events.userAsleep, ['a'], 'and no replay on the next poll');
+});
+
+test('a returning holidaymaker still fires the first-arrived card', async () => {
+  // Auto-return clears the vacation flag one poll after the arrival, so by the
+  // time the returner counts, lastPresent already says they are in. Without
+  // carrying the arrival across that gap the card never fires - for exactly the
+  // household most wanting a welcome scene.
+  const status = fakeStatus([user('a', false, false), user('b', false, false)]);
+  status.onVacation = new Set(['b']);
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => !this.onVacation.has(u.id));
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // Poll 1: 'b' walks in, still flagged as on vacation so still not counted.
+  status.users = [user('a', false, false), user('b', true, false)];
+  await watcher.check();
+  assert.deepStrictEqual(events.firstArrived, [], 'not yet - they do not count yet');
+
+  // Poll 2: auto-return has landed.
+  status.onVacation = new Set();
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, ['b'], 'the empty house filled up');
+});
+
+test('a whole household back from holiday still fires everyone-home', async () => {
+  // With everyone on vacation nobody counts at all, so 'the house is empty' is
+  // deliberately false - there is no household to be empty. What must still
+  // work is the other end: the moment they all count again and are all in.
+  const status = fakeStatus([user('a', false, false), user('b', false, false)]);
+  status.onVacation = new Set(['a', 'b']);
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => !this.onVacation.has(u.id));
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  status.onVacation = new Set();
+  await watcher.check();
+
+  assert.strictEqual(events.everyoneHome, 1, 'the household is complete again');
+});
+
+test('rejoining the count from indoors is still not coming home', async () => {
+  // The guard the fix must not weaken: 'b' never went anywhere.
+  const status = fakeStatus([user('a', false, false), user('b', true, false)]);
+  status.counted = ['a'];
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => this.counted.includes(u.id));
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.counted = ['a', 'b'];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, [], 'nobody walked through a door');
+  assert.strictEqual(events.everyoneHome, 0);
+});
+
+test('an arrival that leaves again before counting is forgotten', async () => {
+  const status = fakeStatus([user('a', false, false)]);
+  status.onVacation = new Set(['a']);
+  status.getCountedUsers = async function getCountedUsers() {
+    return this.users.filter((u) => !this.onVacation.has(u.id));
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false)];
+  await watcher.check();
+  status.users = [user('a', false, false)];
+  await watcher.check();
+
+  // Vacation ends while they are out: they did not stay, so nothing to report.
+  status.onVacation = new Set();
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, []);
+  assert.strictEqual(events.everyoneHome, 0);
 });

@@ -12,8 +12,8 @@
   },
   "hint": {
     "en": "Checks the vacation status this app keeps for the chosen Homey user. Vacation is set by the 'Set vacation' action, by the user's vacation device, or on the app's settings page.",
-    "nl": "Controleert de vakantiestatus die deze app voor de gekozen Homey-gebruiker bijhoudt. Vakantie stel je in met de actiekaart, met het vakantie-apparaat van die gebruiker, of op de instellingenpagina van de app.",
-    "fr": "Vérifie le statut de vacances que cette app conserve pour l'utilisateur Homey choisi. Les vacances se définissent avec la carte d'action, avec l'appareil de vacances de cet utilisateur, ou depuis la page de réglages de l'app."
+    "nl": "Controleert de vakantiestatus die deze app voor de gekozen Homey-gebruiker bijhoudt. Vakantie stel je in met de actiekaart 'Gebruikersstatus op vakantie zetten', met het vakantie-apparaat van die gebruiker, of op de instellingenpagina van de app.",
+    "fr": "Vérifie le statut de vacances que cette app conserve pour l'utilisateur Homey choisi. Les vacances se définissent avec la carte d'action « Définir le statut d'un utilisateur sur vacances », avec l'appareil de vacances de cet utilisateur, ou depuis la page de réglages de l'app."
   },
   "args": [
     {

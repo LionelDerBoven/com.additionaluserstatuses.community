@@ -10,18 +10,39 @@
     "nl": "[[user]] !{{heeft|heeft niet}} de status [[status]]",
     "fr": "[[user]] !{{a|n'a pas}} le statut [[status]]"
   },
+  "hint": {
+    "en": "True when the chosen Homey user holds the chosen status. It asks about one named person, so being on vacation or unticked in this app's settings makes no difference here - those only decide who counts towards the 'everyone' cards. A status the user has never been given counts as not held.",
+    "nl": "Waar wanneer de gekozen Homey-gebruiker de gekozen status heeft. Deze kaart vraagt naar één genoemde persoon, dus op vakantie zijn of uitgevinkt staan in de instellingen van deze app maakt hier niets uit - dat bepaalt alleen wie meetelt voor de 'iedereen'-kaarten. Een status die de gebruiker nooit heeft gekregen telt als niet aanwezig.",
+    "fr": "Vrai lorsque l'utilisateur Homey choisi a le statut choisi. Cette carte porte sur une personne nommée : être en vacances ou décoché dans les réglages de cette app ne change donc rien ici - cela ne décide que de qui compte pour les cartes « tout le monde ». Un statut que l'utilisateur n'a jamais reçu compte comme absent."
+  },
   "args": [
     {
       "name": "status",
       "type": "autocomplete",
-      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
-      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+      "title": {
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
+      },
+      "placeholder": {
+        "en": "Choose a status…",
+        "nl": "Kies een status…",
+        "fr": "Choisissez un statut…"
+      }
     },
     {
       "name": "user",
       "type": "autocomplete",
-      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
-      "placeholder": { "en": "Choose a user…", "nl": "Kies een gebruiker…", "fr": "Choisissez un utilisateur…" }
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
+      }
     }
   ]
 }

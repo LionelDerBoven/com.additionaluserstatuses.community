@@ -8,7 +8,7 @@
   "titleFormatted": {
     "en": "There !{{are|are not}} [[operator]] [[count]] users with the status [[status]]",
     "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers met de status [[status]]",
-    "fr": "Il y !{{a|n'y a pas}} [[operator]] [[count]] utilisateurs avec le statut [[status]]"
+    "fr": "Il !{{y a|n'y a pas}} [[operator]] [[count]] utilisateurs avec le statut [[status]]"
   },
   "hint": {
     "en": "Counts the users who count and hold the chosen status. Use 'at most 0' for 'nobody has it'.",
@@ -19,17 +19,50 @@
     {
       "name": "status",
       "type": "autocomplete",
-      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
-      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+      "title": {
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
+      },
+      "placeholder": {
+        "en": "Choose a status…",
+        "nl": "Kies een status…",
+        "fr": "Choisissez un statut…"
+      }
     },
     {
       "name": "operator",
       "type": "dropdown",
-      "title": { "en": "Comparison", "nl": "Vergelijking", "fr": "Comparaison" },
+      "title": {
+        "en": "Comparison",
+        "nl": "Vergelijking",
+        "fr": "Comparaison"
+      },
       "values": [
-        { "id": "min", "title": { "en": "at least", "nl": "minstens", "fr": "au moins" } },
-        { "id": "exact", "title": { "en": "exactly", "nl": "precies", "fr": "exactement" } },
-        { "id": "max", "title": { "en": "at most", "nl": "hoogstens", "fr": "au plus" } }
+        {
+          "id": "min",
+          "title": {
+            "en": "at least",
+            "nl": "minstens",
+            "fr": "au moins"
+          }
+        },
+        {
+          "id": "exact",
+          "title": {
+            "en": "exactly",
+            "nl": "precies",
+            "fr": "exactement"
+          }
+        },
+        {
+          "id": "max",
+          "title": {
+            "en": "at most",
+            "nl": "hoogstens",
+            "fr": "au plus"
+          }
+        }
       ]
     },
     {
@@ -37,8 +70,16 @@
       "type": "number",
       "min": 0,
       "step": 1,
-      "title": { "en": "Number", "nl": "Aantal", "fr": "Nombre" },
-      "placeholder": { "en": "1", "nl": "1", "fr": "1" }
+      "title": {
+        "en": "Number",
+        "nl": "Aantal",
+        "fr": "Nombre"
+      },
+      "placeholder": {
+        "en": "1",
+        "nl": "1",
+        "fr": "1"
+      }
     }
   ]
 }

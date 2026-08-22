@@ -1,0 +1,34 @@
+{
+  "id": "user_at_home",
+  "title": {
+    "en": "A user is !{{at home|not at home}}",
+    "nl": "Een gebruiker is !{{thuis|niet thuis}}",
+    "fr": "Un utilisateur !{{est à la maison|n'est pas à la maison}}"
+  },
+  "titleFormatted": {
+    "en": "[[user]] is !{{at home|not at home}}",
+    "nl": "[[user]] is !{{thuis|niet thuis}}",
+    "fr": "[[user]] !{{est à la maison|n'est pas à la maison}}"
+  },
+  "hint": {
+    "en": "True when the chosen Homey user is marked as at home. A user whose presence has never been set counts as not at home, because Homey does not know where they are. Being on vacation makes no difference here: this card asks where one named person is, not who counts towards the household.",
+    "nl": "Waar wanneer de gekozen Homey-gebruiker als thuis is gemarkeerd. Een gebruiker van wie de aanwezigheid nooit is ingesteld telt als niet thuis, omdat Homey niet weet waar diegene is. Op vakantie zijn maakt hier niets uit: deze kaart vraagt waar één genoemde persoon is, niet wie meetelt voor het huishouden.",
+    "fr": "Vrai lorsque l'utilisateur Homey choisi est marqué comme présent. Un utilisateur dont la présence n'a jamais été définie compte comme absent, car Homey ignore où il se trouve. Être en vacances ne change rien ici : cette carte demande où se trouve une personne nommée, pas qui compte pour le foyer."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
+      }
+    }
+  ]
+}

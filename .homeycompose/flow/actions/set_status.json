@@ -19,23 +19,64 @@
     {
       "name": "status",
       "type": "autocomplete",
-      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
-      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+      "title": {
+        "en": "Status",
+        "nl": "Status",
+        "fr": "Statut"
+      },
+      "placeholder": {
+        "en": "Choose a status…",
+        "nl": "Kies een status…",
+        "fr": "Choisissez un statut…"
+      }
     },
     {
       "name": "user",
       "type": "autocomplete",
-      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
-      "placeholder": { "en": "Choose a user…", "nl": "Kies een gebruiker…", "fr": "Choisissez un utilisateur…" }
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
+      }
     },
     {
       "name": "state",
       "type": "dropdown",
-      "title": { "en": "Set to", "nl": "Zetten op", "fr": "Définir sur" },
+      "title": {
+        "en": "Set to",
+        "nl": "Zetten op",
+        "fr": "Définir sur"
+      },
       "values": [
-        { "id": "on", "title": { "en": "on", "nl": "aan", "fr": "activé" } },
-        { "id": "off", "title": { "en": "off", "nl": "uit", "fr": "désactivé" } },
-        { "id": "toggle", "title": { "en": "the other way round", "nl": "omgewisseld", "fr": "inversé" } }
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "nl": "aan",
+            "fr": "activé"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "nl": "uit",
+            "fr": "désactivé"
+          }
+        },
+        {
+          "id": "toggle",
+          "title": {
+            "en": "the other way round",
+            "nl": "omgekeerd",
+            "fr": "inversé"
+          }
+        }
       ]
     }
   ]

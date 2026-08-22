@@ -1,0 +1,34 @@
+{
+  "id": "user_asleep",
+  "title": {
+    "en": "A user is !{{asleep|awake}}",
+    "nl": "Een gebruiker !{{slaapt|slaapt niet}}",
+    "fr": "Un utilisateur !{{dort|ne dort pas}}"
+  },
+  "titleFormatted": {
+    "en": "[[user]] is !{{asleep|awake}}",
+    "nl": "[[user]] !{{slaapt|slaapt niet}}",
+    "fr": "[[user]] !{{dort|ne dort pas}}"
+  },
+  "hint": {
+    "en": "True when the chosen Homey user is marked as asleep. Where they are plays no part: somebody asleep at a hotel is still asleep. A user whose sleep status has never been set counts as awake.",
+    "nl": "Waar wanneer de gekozen Homey-gebruiker als slapend is gemarkeerd. Waar diegene is speelt geen rol: wie op hotel slaapt, slaapt nog steeds. Een gebruiker van wie de slaapstatus nooit is ingesteld telt als wakker.",
+    "fr": "Vrai lorsque l'utilisateur Homey choisi est marqué comme endormi. Peu importe où il se trouve : quelqu'un qui dort à l'hôtel dort quand même. Un utilisateur dont le statut de sommeil n'a jamais été défini compte comme éveillé."
+  },
+  "args": [
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": {
+        "en": "User",
+        "nl": "Gebruiker",
+        "fr": "Utilisateur"
+      },
+      "placeholder": {
+        "en": "Choose a user…",
+        "nl": "Kies een gebruiker…",
+        "fr": "Choisissez un utilisateur…"
+      }
+    }
+  ]
+}

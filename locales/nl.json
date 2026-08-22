@@ -22,9 +22,8 @@
     "tab_settings": "Instellingen",
     "tab_log": "Logboek",
     "log_title": "Wat de app heeft gedaan",
-    "log_intro": "De recentste gebeurtenissen, nieuwste eerst — triggers die afgingen, vakantiewijzigingen en eventuele fouten. Wordt alleen in het geheugen bewaard, dus het wordt gewist zodra de app herstart en er wordt niets naar de opslag van je Homey geschreven.",
+    "log_intro": "De recentste gebeurtenissen, nieuwste eerst — triggers die afgingen, statuswijzigingen en eventuele fouten. Wordt in het geheugen bewaard, dus het wordt gewist zodra de app herstart. Zet hieronder “Logboek bewaren na een herstart van de app” aan om het in plaats daarvan naar de opslag van je Homey te schrijven, waar het blijft tot je het wist of die schakelaar weer uitzet.",
     "log_clear": "Wissen",
-    "log_empty": "Nog niets gelogd.",
     "log_persist": "Logboek bewaren na een herstart van de app",
     "log_24h": "Tijden tonen op een 24-uursklok",
     "log_filter": "Toon",
@@ -34,15 +33,7 @@
     "tab_statuses": "Statussen",
     "statuses_title": "Statussen naast vakantie",
     "statuses_intro": "Een status is een label dat je op iemand plakt, en elke status krijgt dezelfde Flow-kaarten: een trigger voor het krijgen of verliezen ervan, een voorwaarde, en een actie om hem te zetten. Vakantie en Niet storen zitten in de app. Maak er zelf bij voor wat jouw huishouden nodig heeft.",
-    "status_add": "Status toevoegen",
-    "status_name": "Naam",
-    "status_exclude": "Wie hem heeft niet meetellen in de \"iedereen\"-kaarten",
-    "status_auto_return": "Automatisch wissen wanneer die persoon thuiskomt",
-    "status_delete": "Verwijderen",
-    "status_holders": "Wie hem heeft",
-    "status_builtin": "Zit in de app",
-    "status_none": "Nog geen eigen statussen.",
-    "status_name_placeholder": "Thuiswerk"
+    "status_add": "Status toevoegen"
   },
   "log": {
     "app_started": "App gestart.",
@@ -53,6 +44,7 @@
     "last_awake_any": "__name__ werd als laatste wakker.",
     "everyone_home": "Iedereen die meetelt is nu thuis.",
     "everyone_left": "Iedereen die meetelt is nu weg.",
+    "first_arrived": "__name__ is als eerste thuis; het huis was leeg.",
     "first_awake": "__name__ werd als eerste thuis wakker.",
     "someone_home_awake": "__name__ is thuis wakker geworden.",
     "first_home_asleep": "__name__ ging als eerste thuis slapen.",
@@ -80,26 +72,33 @@
     "statuses_saved": "De lijst met statussen is gewijzigd."
   },
   "ui": {
-    "yes": "Ja",
-    "no": "Nee",
-    "home": "thuis",
-    "away": "weg",
     "asleep": "slaapt",
     "awake": "wakker",
-    "on_vacation": "op vakantie",
+    "away": "weg",
+    "counting": "__n__ van de __total__ Homey-gebruikers meegeteld.",
     "disabled": "uitgeschakeld in Homey",
-    "presence_unset": "aanwezigheid nooit ingesteld",
-    "sleep_unset": "slaapstatus nooit ingesteld",
+    "home": "thuis",
+    "no": "Nee",
+    "none_counted": "Er tellen geen gebruikers mee, dus de \"iedereen\"-kaarten zijn onwaar. Vink hieronder minstens één gebruiker aan.",
     "nothing_logged": "Nog niets gelogd.",
+    "on_vacation": "op vakantie",
+    "presence_unset": "aanwezigheid nooit ingesteld",
+    "read_failed": "Kon de Homey-gebruikers niet lezen: __message__",
+    "role_guest": "gast",
+    "role_manager": "beheerder",
+    "role_owner": "eigenaar",
+    "role_user": "gebruiker",
     "shown": "__n__ getoond",
     "shown_of": "__n__ van __total__ getoond",
-    "counting": "__n__ van de __total__ Homey-gebruikers meegeteld.",
-    "none_counted": "Er tellen geen gebruikers mee, dus de \"iedereen\"-kaarten zijn onwaar. Vink hieronder minstens één gebruiker aan.",
-    "read_failed": "Kon de Homey-gebruikers niet lezen: __message__",
-    "role_owner": "eigenaar",
-    "role_manager": "beheerder",
-    "role_user": "gebruiker",
-    "role_guest": "gast"
+    "sleep_unset": "slaapstatus nooit ingesteld",
+    "status_auto_return": "Automatisch wissen wanneer die persoon thuiskomt",
+    "status_builtin": "Zit in de app",
+    "status_delete": "Verwijderen",
+    "status_exclude": "Wie hem heeft niet meetellen in de \"iedereen\"-kaarten",
+    "status_holders": "Wie hem heeft",
+    "status_name_placeholder": "Thuiswerk",
+    "status_none": "Nog geen eigen statussen.",
+    "yes": "Ja"
   },
   "token": {
     "count_home": "Gebruikers thuis",
@@ -114,5 +113,11 @@
   "status": {
     "vacation": "Op vakantie",
     "dnd": "Niet storen"
+  },
+  "error": {
+    "no_status": "Geen status gekozen.",
+    "no_such_status": "Er bestaat geen status __name__ meer.",
+    "no_such_user": "__name__ is geen Homey-gebruiker meer.",
+    "no_user": "Geen gebruiker gekozen."
   }
 }

@@ -22,9 +22,8 @@
     "tab_settings": "Settings",
     "tab_log": "Log",
     "log_title": "What the app has been doing",
-    "log_intro": "The most recent events, newest first — triggers that fired, vacation changes and any errors. Kept in memory only, so it is cleared whenever the app restarts and nothing is written to your Homey's storage.",
+    "log_intro": "The most recent events, newest first — triggers that fired, status changes and any errors. Kept in memory, so it clears when the app restarts. Switch on “Keep the log across app restarts” below to write it to your Homey's storage instead, where it stays until you clear it or switch that off again.",
     "log_clear": "Clear",
-    "log_empty": "Nothing logged yet.",
     "log_persist": "Keep the log across app restarts",
     "log_24h": "Show times on a 24-hour clock",
     "log_filter": "Show",
@@ -34,15 +33,7 @@
     "tab_statuses": "Statuses",
     "statuses_title": "Statuses beyond vacation",
     "statuses_intro": "A status is a label you put on a person, and every status gets the same Flow cards: a trigger for taking it on or losing it, a condition, and an action to set it. Vacation and Do not disturb come with the app. Add your own for whatever your household needs.",
-    "status_add": "Add a status",
-    "status_name": "Name",
-    "status_exclude": "Leave holders out of the \"everyone\" cards",
-    "status_auto_return": "Clear it automatically when that person comes home",
-    "status_delete": "Delete",
-    "status_holders": "Who has it",
-    "status_builtin": "Comes with the app",
-    "status_none": "No statuses of your own yet.",
-    "status_name_placeholder": "Working from home"
+    "status_add": "Add a status"
   },
   "log": {
     "app_started": "App started.",
@@ -53,6 +44,7 @@
     "last_awake_any": "__name__ is the last person to wake up.",
     "everyone_home": "Everyone who counts is now at home.",
     "everyone_left": "Everyone who counts has now gone out.",
+    "first_arrived": "__name__ is the first person home; the house was empty.",
     "first_awake": "__name__ is the first person at home to wake up.",
     "someone_home_awake": "__name__ woke up at home.",
     "first_home_asleep": "__name__ is the first person at home to go to sleep.",
@@ -80,26 +72,33 @@
     "statuses_saved": "The list of statuses was changed."
   },
   "ui": {
-    "yes": "Yes",
-    "no": "No",
-    "home": "home",
-    "away": "away",
     "asleep": "asleep",
     "awake": "awake",
-    "on_vacation": "on vacation",
+    "away": "away",
+    "counting": "Counting __n__ of __total__ Homey user(s).",
     "disabled": "disabled in Homey",
-    "presence_unset": "presence never set",
-    "sleep_unset": "sleep never set",
+    "home": "home",
+    "no": "No",
+    "none_counted": "No users are counted, so the \"everyone\" cards are false. Tick at least one user below.",
     "nothing_logged": "Nothing logged yet.",
+    "on_vacation": "on vacation",
+    "presence_unset": "presence never set",
+    "read_failed": "Could not read the Homey users: __message__",
+    "role_guest": "guest",
+    "role_manager": "manager",
+    "role_owner": "owner",
+    "role_user": "user",
     "shown": "__n__ shown",
     "shown_of": "__n__ of __total__ shown",
-    "counting": "Counting __n__ of __total__ Homey user(s).",
-    "none_counted": "No users are counted, so the \"everyone\" cards are false. Tick at least one user below.",
-    "read_failed": "Could not read the Homey users: __message__",
-    "role_owner": "owner",
-    "role_manager": "manager",
-    "role_user": "user",
-    "role_guest": "guest"
+    "sleep_unset": "sleep never set",
+    "status_auto_return": "Clear it automatically when that person comes home",
+    "status_builtin": "Comes with the app",
+    "status_delete": "Delete",
+    "status_exclude": "Leave holders out of the \"everyone\" cards",
+    "status_holders": "Who has it",
+    "status_name_placeholder": "Working from home",
+    "status_none": "No statuses of your own yet.",
+    "yes": "Yes"
   },
   "token": {
     "count_home": "Users at home",
@@ -114,5 +113,11 @@
   "status": {
     "vacation": "On vacation",
     "dnd": "Do not disturb"
+  },
+  "error": {
+    "no_status": "No status selected.",
+    "no_such_status": "There is no status called __name__ any more.",
+    "no_such_user": "__name__ is no longer a Homey user.",
+    "no_user": "No user selected."
   }
 }

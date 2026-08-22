@@ -93,7 +93,7 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.record(this.homey.__(persist ? 'log.persist_on' : 'log.persist_off'));
 
       this.eventLog.onPersistChanged(persist)
-        .catch((err) => this.error(`Could not change log persistence: ${err.message}`));
+        .catch((err) => this.record(this.homey.__('log.err_persist', { message: err.message }), 'error'));
     });
   }
 
@@ -117,8 +117,10 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   /**
    * The Apps SDK has no users manager, so the user list comes from the Homey Web
-   * API instead. Needs the homey:manager:api permission, which is read-only for
-   * apps: everything this app reads from Homey is a read, so that is enough.
+   * API instead. That needs the homey:manager:api permission, which is not a
+   * read-only grant: getOwnerApiToken() starts a session on behalf of the Homey
+   * owner. What is read-only is this app's use of it - one call, a GET of
+   * /api/manager/users/user, and nothing is ever written back.
    *
    * Constructing the client is synchronous and cannot fail - it defers the token
    * until the first actual request - so there is nothing to retry here.
@@ -187,8 +189,8 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     const userIsOnVacation = this.homey.flow.getConditionCard('user_on_vacation');
     userIsOnVacation.registerRunListener(async (args) => {
-      if (!args.user?.id) throw new Error('No user selected.');
-      return this.userStatus.isUserOnVacation(args.user.id);
+      const user = await this.requireUser(args.user);
+      return this.userStatus.isUserOnVacation(user.id);
     });
     userIsOnVacation.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
 
@@ -211,13 +213,31 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.triggerVacationEnded = this.homey.flow.getTriggerCard('vacation_ended');
 
     for (const card of [this.triggerVacationStarted, this.triggerVacationEnded]) {
-      // An empty or 'Any user' argument means the Flow wants every user.
-      card.registerRunListener(async (args, state) => {
-        const wanted = args.user?.id;
-        return !wanted || wanted === ANY_USER || wanted === state.userId;
-      });
-      card.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query, { includeAny: true }));
+      this.registerUserPicker(card);
     }
+
+    // --- One user at a time ---------------------------------------------------
+    // Homey has cards for all four of these, and they fire for every account it
+    // has: the guest phone that never reports where it is, the account somebody
+    // disabled. These fire for the household this app was told to count, which
+    // is the whole reason to replace Homey's with them.
+    this.triggerUserLeft = this.homey.flow.getTriggerCard('user_left');
+    this.triggerUserArrived = this.homey.flow.getTriggerCard('user_arrived');
+    this.triggerUserAsleep = this.homey.flow.getTriggerCard('user_became_asleep');
+    this.triggerUserAwake = this.homey.flow.getTriggerCard('user_woke_up');
+    this.triggerFirstArrived = this.homey.flow.getTriggerCard('first_arrived');
+
+    for (const card of [this.triggerUserLeft, this.triggerUserArrived, this.triggerUserAsleep, this.triggerUserAwake]) {
+      this.registerUserPicker(card);
+    }
+
+    const userAtHome = this.homey.flow.getConditionCard('user_at_home');
+    userAtHome.registerRunListener(async (args) => (await this.requireUser(args.user)).present === true);
+    userAtHome.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
+
+    const userAsleep = this.homey.flow.getConditionCard('user_asleep');
+    userAsleep.registerRunListener(async (args) => (await this.requireUser(args.user)).asleep === true);
+    userAsleep.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
 
     // --- Statuses in general --------------------------------------------------
     // Vacation keeps its own cards, which are shorter for the one status most
@@ -245,9 +265,9 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     const userHasStatus = this.homey.flow.getConditionCard('user_has_status');
     userHasStatus.registerRunListener(async (args) => {
-      if (!args.status?.id) throw new Error('No status selected.');
-      if (!args.user?.id) throw new Error('No user selected.');
-      return this.statuses.has(args.status.id, args.user.id);
+      if (!args.status?.id) throw new Error(this.homey.__('error.no_status'));
+      const user = await this.requireUser(args.user);
+      return this.statuses.has(args.status.id, user.id);
     });
     userHasStatus.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
     userHasStatus.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
@@ -273,10 +293,10 @@ class AdditionalUserStatusesApp extends Homey.App {
     const setStatus = this.homey.flow.getActionCard('set_status');
     setStatus.registerRunListener(async (args) => {
       const store = this.storeFor(args.status?.id);
-      if (!args.user?.id) throw new Error('No user selected.');
+      const user = await this.requireUser(args.user);
 
-      const wanted = args.state === 'toggle' ? !store.has(args.user.id) : args.state === 'on';
-      await store.set(args.user.id, wanted);
+      const wanted = args.state === 'toggle' ? !store.has(user.id) : args.state === 'on';
+      await store.set(user.id, wanted);
 
       return true;
     });
@@ -298,13 +318,13 @@ class AdditionalUserStatusesApp extends Homey.App {
     // --- Actions --------------------------------------------------------------
     const setVacation = this.homey.flow.getActionCard('set_vacation');
     setVacation.registerRunListener(async (args) => {
-      if (!args.user?.id) throw new Error('No user selected.');
+      const user = await this.requireUser(args.user);
 
       const wanted = args.state === 'toggle'
-        ? !this.vacation.isOnVacation(args.user.id)
+        ? !this.vacation.isOnVacation(user.id)
         : args.state === 'on';
 
-      await this.vacation.set(args.user.id, wanted);
+      await this.vacation.set(user.id, wanted);
       return true;
     });
     setVacation.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
@@ -320,6 +340,44 @@ class AdditionalUserStatusesApp extends Homey.App {
 
         return true;
       });
+  }
+
+  /**
+   * The 'this card is about one user, or about everybody' filter, shared by
+   * every trigger that takes a user argument and nothing else.
+   *
+   * An empty or 'Any user' argument means the Flow wants every user, which is
+   * what lets one card do the work of both "Alex comes home" and "somebody
+   * comes home" - the second is the first with the argument left alone.
+   */
+  registerUserPicker(card) {
+    card.registerRunListener(async (args, state) => {
+      const wanted = args.user?.id;
+      return !wanted || wanted === ANY_USER || wanted === state.userId;
+    });
+    card.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query, { includeAny: true }));
+  }
+
+  /**
+   * The user a Flow card names, or a plain error.
+   *
+   * A card outlives the user it points at: somebody leaves the household and
+   * their Homey account goes with them, while a Flow still names them. Answering
+   * 'false' there is worse than failing - these cards are invertible, so a Flow
+   * reading "if Alex is NOT at home, arm the alarm" would start arming it the
+   * moment Alex's account was deleted, silently and for ever. Failing loudly
+   * puts it in the Flow's own error instead, which is the same call storeFor()
+   * makes one screen down for a status that no longer exists.
+   *
+   * @param {{ id?: string, name?: string }} arg The card's user argument.
+   */
+  async requireUser(arg) {
+    if (!arg?.id) throw new Error(this.homey.__('error.no_user'));
+
+    const user = await this.userStatus.getUser(arg.id);
+    if (!user) throw new Error(this.homey.__('error.no_such_user', { name: arg.name || arg.id }));
+
+    return user;
   }
 
   /**
@@ -362,7 +420,11 @@ class AdditionalUserStatusesApp extends Homey.App {
    */
   storeFor(statusId) {
     const store = statusId && this.statuses.store(statusId);
-    if (!store) throw new Error(`No such status: ${statusId || 'none selected'}.`);
+    if (!store) {
+      throw new Error(statusId
+        ? this.homey.__('error.no_such_status', { name: statusId })
+        : this.homey.__('error.no_status'));
+    }
 
     return store;
   }
@@ -380,10 +442,11 @@ class AdditionalUserStatusesApp extends Homey.App {
   // ---------------------------------------------------------------------------
 
   wireWatcher() {
-    // Every sleep card is the same three steps - say it in the log, fire the
-    // card with the name as its tag, and never let a broken Flow take the
-    // watcher down with it - so they are described rather than written out.
-    const sleepCards = [
+    // Every card that names somebody is the same three steps - say it in the
+    // log, fire the card with the name as its tag, and never let a broken Flow
+    // take the watcher down with it - so they are described rather than written
+    // out.
+    const namedCards = [
       { event: 'everyone-home-asleep', logKey: 'log.last_asleep', card: () => this.triggerEveryoneHomeAsleep },
       { event: 'everyone-asleep', logKey: 'log.last_asleep_any', card: () => this.triggerEveryoneAsleep },
       { event: 'first-home-awake', logKey: 'log.first_awake', card: () => this.triggerFirstHomeAwake },
@@ -393,9 +456,10 @@ class AdditionalUserStatusesApp extends Homey.App {
       { event: 'first-awake', logKey: 'log.first_awake_any', card: () => this.triggerFirstAwake },
       { event: 'everyone-home-awake', logKey: 'log.last_awake', card: () => this.triggerEveryoneHomeAwake },
       { event: 'everyone-awake', logKey: 'log.last_awake_any', card: () => this.triggerEveryoneAwake },
+      { event: 'first-arrived', logKey: 'log.first_arrived', card: () => this.triggerFirstArrived },
     ];
 
-    for (const { event, logKey, card } of sleepCards) {
+    for (const { event, logKey, card } of namedCards) {
       this.watcher.on(event, ({ name }) => {
         this.record(this.homey.__(logKey, { name }), 'trigger');
         card().trigger({ user: name }).catch((err) => this.error(err.message));
@@ -413,6 +477,30 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.watcher.on(event, () => {
         this.record(this.homey.__(logKey), 'trigger');
         card().trigger().catch((err) => this.error(err.message));
+      });
+    }
+
+    // The four per-user cards. They cannot ride along in the table above: the
+    // run listener has to know which user this was about in order to decide
+    // whether a Flow that named somebody should run, and that travels as state
+    // rather than as a tag.
+    //
+    // No log line either - the 'user-changed' handler below already records
+    // these four transitions, and saying it twice would only pad a log whose
+    // whole job is to be readable. It records a superset, not the same set:
+    // 'user-changed' comes from every user, these cards only from the ones who
+    // count. A log line with no card behind it is the right way round for a log
+    // that exists to explain why a card did *not* fire.
+    const userCards = [
+      { event: 'user-left', card: () => this.triggerUserLeft },
+      { event: 'user-arrived', card: () => this.triggerUserArrived },
+      { event: 'user-asleep', card: () => this.triggerUserAsleep },
+      { event: 'user-awake', card: () => this.triggerUserAwake },
+    ];
+
+    for (const { event, card } of userCards) {
+      this.watcher.on(event, ({ id, name }) => {
+        card().trigger({ user: name }, { userId: id }).catch((err) => this.error(err.message));
       });
     }
 
@@ -448,10 +536,6 @@ class AdditionalUserStatusesApp extends Homey.App {
     });
   }
 
-  /**
-   * Every vacation change - Flow, device, settings page or auto-return - lands
-   * here, so the triggers fire exactly once regardless of what caused it.
-   */
   /**
    * Every status change - Flow, device, settings page or auto-return - lands
    * here, so the triggers fire exactly once regardless of what caused it.
