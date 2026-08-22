@@ -744,3 +744,44 @@ test('the two presence cards can each fire again after the other', async () => {
   assert.strictEqual(events.everyoneLeft, 2);
   assert.strictEqual(events.everyoneHome, 1);
 });
+
+test('everyone at home stays silent when only the count changed', async () => {
+  // a is in, b is out and on vacation, so a alone counts and everyone is home.
+  // b returning from vacation while still out makes "everyone is home" false and
+  // then true again - without anybody walking through a door.
+  const status = fakeStatus([user('a', true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true), user('b', false)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneHome, 0, 'b joining the count is not an arrival');
+
+  status.users = [user('a', true)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneHome, 0, 'and b leaving the count is not one either');
+});
+
+test('everyone out stays silent when only the count changed', async () => {
+  const status = fakeStatus([user('a', false), user('b', true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // b drops out of the count - on vacation, or unticked - leaving only a, who is
+  // out. The house is not suddenly empty; nobody went anywhere.
+  status.users = [user('a', false)];
+  await watcher.check();
+
+  assert.strictEqual(events.everyoneLeft, 0, 'the count shrank, nobody left');
+});
+
+test('somebody coming home from vacation still counts as arriving', async () => {
+  const status = fakeStatus([user('a', true), user('b', false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true), user('b', true)];
+  await watcher.check();
+
+  assert.strictEqual(events.everyoneHome, 1, 'b really did arrive');
+});
