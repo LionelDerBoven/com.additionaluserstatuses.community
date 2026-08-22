@@ -851,3 +851,76 @@ test('an empty house cannot report a waking', async () => {
 
   assert.deepStrictEqual(events.someoneHomeAwake, [], 'waking outside is not waking here');
 });
+
+// ---------------------------------------------------------------------------
+// Leaving while still marked asleep, then waking outside
+//
+// The case the Goedemorgen Flow used to guard with a ten-second cooldown. Every
+// wake-up card must stay silent for it, however the polls happen to fall.
+// ---------------------------------------------------------------------------
+
+test('leaving asleep and waking outside is silent, across two polls', async () => {
+  const status = fakeStatus([user('a', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // Out the door, still marked asleep.
+  status.users = [user('a', false, true)];
+  await watcher.check();
+  // Wakes up somewhere else.
+  status.users = [user('a', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, [], 'nobody woke up here');
+  assert.deepStrictEqual(events.firstAwake, [], 'nor was anybody the first up here');
+  assert.deepStrictEqual(events.everyoneHomeAwake, [], 'nor the last');
+});
+
+test('leaving and waking inside one poll is silent too', async () => {
+  const status = fakeStatus([user('a', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // Both changes land in the same fifteen seconds.
+  status.users = [user('a', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, []);
+  assert.deepStrictEqual(events.firstAwake, []);
+  assert.deepStrictEqual(events.everyoneHomeAwake, []);
+});
+
+test('a housemate left behind asleep still holds the last-riser card', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // a leaves asleep and wakes outside; b is still asleep in bed.
+  status.users = [user('a', false, false), user('b', true, true)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.everyoneHomeAwake, [], 'b is still asleep at home');
+  assert.deepStrictEqual(events.someoneHomeAwake, []);
+
+  // b really does wake, at home.
+  status.users = [user('a', false, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, ['b']);
+  assert.deepStrictEqual(events.everyoneHomeAwake, ['b'], 'now the house is up');
+});
+
+test('coming home asleep and then waking does fire', async () => {
+  // The mirror image: the status has to work when it should, not only stay
+  // silent when it should.
+  const status = fakeStatus([user('a', false, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true)];
+  await watcher.check();
+  status.users = [user('a', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, ['a'], 'asleep here, then awake here');
+});
