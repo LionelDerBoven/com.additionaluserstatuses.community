@@ -224,3 +224,21 @@ test('setting what is already set changes nothing and says so', async () => {
   assert.strictEqual(await store.set('a', true), false);
   assert.strictEqual(announcements, 0);
 });
+
+test('the overview counts the same household the cards do', async () => {
+  // A page that says somebody counts while the cards leave them out is worse
+  // than no page at all, so both must read the same rule.
+  const { homey, registry } = makeRegistry();
+  await registry.saveCustom([{ id: 'away', name: 'Away for a month', excludeFromEveryone: true }]);
+  await registry.store('away').set('a', true);
+
+  const api = { users: { getUsers: async () => users({ id: 'a', present: true }, { id: 'b', present: true }) } };
+  const status = new UserStatus({ homey, getApi: async () => api, statuses: registry });
+
+  const overview = await status.getOverview();
+  const counted = await status.getCountedUsers();
+
+  assert.strictEqual(overview.countedCount, counted.length);
+  assert.deepStrictEqual(overview.users.filter((u) => u.counted).map((u) => u.id), ['b']);
+  assert.strictEqual(overview.users.find((u) => u.id === 'a').onVacation, false, 'excluded, but not by vacation');
+});
