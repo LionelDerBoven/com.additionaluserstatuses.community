@@ -1,0 +1,44 @@
+{
+  "id": "count_status",
+  "title": {
+    "en": "The number of users with a status",
+    "nl": "Het aantal gebruikers met een status",
+    "fr": "Le nombre d'utilisateurs avec un statut"
+  },
+  "titleFormatted": {
+    "en": "There !{{are|are not}} [[operator]] [[count]] users with the status [[status]]",
+    "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers met de status [[status]]",
+    "fr": "Il y !{{a|n'y a pas}} [[operator]] [[count]] utilisateurs avec le statut [[status]]"
+  },
+  "hint": {
+    "en": "Counts the users who count and hold the chosen status. Use 'at most 0' for 'nobody has it'.",
+    "nl": "Telt de gebruikers die meetellen en de gekozen status hebben. Gebruik 'hoogstens 0' voor 'niemand heeft hem'.",
+    "fr": "Compte les utilisateurs qui comptent et ont le statut choisi. Utilisez « au plus 0 » pour « personne ne l'a »."
+  },
+  "args": [
+    {
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    },
+    {
+      "name": "operator",
+      "type": "dropdown",
+      "title": { "en": "Comparison", "nl": "Vergelijking", "fr": "Comparaison" },
+      "values": [
+        { "id": "min", "title": { "en": "at least", "nl": "minstens", "fr": "au moins" } },
+        { "id": "exact", "title": { "en": "exactly", "nl": "precies", "fr": "exactement" } },
+        { "id": "max", "title": { "en": "at most", "nl": "hoogstens", "fr": "au plus" } }
+      ]
+    },
+    {
+      "name": "count",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "title": { "en": "Number", "nl": "Aantal", "fr": "Nombre" },
+      "placeholder": { "en": "1", "nl": "1", "fr": "1" }
+    }
+  ]
+}

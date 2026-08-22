@@ -1,0 +1,27 @@
+{
+  "id": "everyone_status_ended",
+  "title": {
+    "en": "Nobody has a status any more",
+    "nl": "Niemand heeft een status meer",
+    "fr": "Plus personne n'a un statut"
+  },
+  "titleFormatted": {
+    "en": "Nobody has the status [[status]] any more",
+    "nl": "Niemand heeft de status [[status]] nog",
+    "fr": "Plus personne n'a le statut [[status]]"
+  },
+  "hint": {
+    "en": "Fires once, when the last person holding the chosen status loses it. It does not fire again while nobody has it.",
+    "nl": "Gaat één keer af, wanneer de laatste persoon die de gekozen status had hem verliest. Gaat niet opnieuw af zolang niemand hem heeft.",
+    "fr": "Se déclenche une fois, lorsque la dernière personne ayant le statut choisi le perd. Ne se déclenche plus tant que personne ne l'a."
+  },
+  "args": [{
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    }],
+  "tokens": [
+    { "name": "status", "type": "string", "title": { "en": "Status", "nl": "Status", "fr": "Statut" }, "example": "On vacation" }
+  ]
+}

@@ -3,7 +3,8 @@
   "any_user": "Tout utilisateur",
   "device": {
     "name_prefix": "Vacances",
-    "user_gone": "Cet utilisateur Homey n'existe plus."
+    "user_gone": "Cet utilisateur Homey n'existe plus.",
+    "status_gone": "Ce statut n'existe plus."
   },
   "settings": {
     "title": "Quels utilisateurs comptent comme « tout le monde » ?",
@@ -29,7 +30,19 @@
     "log_filter": "Afficher",
     "log_filter_all": "Tous les événements",
     "log_filter_special": "Uniquement déclencheurs et erreurs",
-    "disabled_note": "Un compte désactivé dans Homey n'est jamais pris en compte, quoi que vous cochiez ici — il ne peut pas signaler où il se trouve."
+    "disabled_note": "Un compte désactivé dans Homey n'est jamais pris en compte, quoi que vous cochiez ici — il ne peut pas signaler où il se trouve.",
+    "tab_statuses": "Statuts",
+    "statuses_title": "Des statuts au-delà des vacances",
+    "statuses_intro": "Un statut est une étiquette que vous posez sur une personne, et chaque statut reçoit les mêmes cartes de Flow : un déclencheur pour la prise ou la perte, une condition, et une action pour le définir. Vacances et Ne pas déranger sont fournis avec l'app. Ajoutez les vôtres selon les besoins de votre foyer.",
+    "status_add": "Ajouter un statut",
+    "status_name": "Nom",
+    "status_exclude": "Exclure ceux qui l'ont des cartes « tout le monde »",
+    "status_auto_return": "L'effacer automatiquement quand la personne rentre",
+    "status_delete": "Supprimer",
+    "status_holders": "Qui l'a",
+    "status_builtin": "Fourni avec l'app",
+    "status_none": "Pas encore de statuts personnels.",
+    "status_name_placeholder": "Télétravail"
   },
   "log": {
     "app_started": "App démarrée.",
@@ -59,7 +72,11 @@
     "err_trigger": "Impossible de déclencher une carte de vacances : __message__",
     "err_persist": "Impossible de modifier la conservation du journal : __message__",
     "not_counted": "non pris en compte",
-    "on_vacation": "en vacances"
+    "on_vacation": "en vacances",
+    "status_started": "__name__ a maintenant le statut __status__.",
+    "status_ended": "__name__ n'a plus le statut __status__.",
+    "auto_return_status": "__name__ est rentré, le statut __status__ est donc effacé.",
+    "statuses_saved": "La liste des statuts a été modifiée."
   },
   "ui": {
     "yes": "Oui",
@@ -92,5 +109,9 @@
     "names_home": "Noms à la maison",
     "names_awake": "Noms éveillés",
     "names_vacation": "Noms en vacances"
+  },
+  "status": {
+    "vacation": "En vacances",
+    "dnd": "Ne pas déranger"
   }
 }

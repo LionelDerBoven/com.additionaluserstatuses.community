@@ -1,6 +1,6 @@
 {
   "id": "com.additionaluserstatuses.community",
-  "version": "1.10.1",
+  "version": "2.0.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -13,9 +13,9 @@
     "fr": "Statuts d'utilisateur supplémentaires"
   },
   "description": {
-    "en": "Adds the household-wide presence and sleep condition cards Homey does not have ('Everyone is at home', 'Everyone is asleep', 'Everyone at home is asleep'), plus a vacation status per user with its own triggers, conditions, action and device. A user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Unofficial community app.",
-    "nl": "Voegt de kaarten voor het hele huishouden toe die Homey zelf niet heeft ('Iedereen is thuis', 'Iedereen slaapt', 'Iedereen die thuis is, slaapt'), plus een vakantiestatus per gebruiker met eigen triggers, voorwaarden, actie en apparaat. Wie op vakantie is telt niet mee in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is. Onofficiële community-app.",
-    "fr": "Ajoute les cartes à l'échelle du foyer que Homey ne propose pas (« Tout le monde est à la maison », « Tout le monde dort », « Tout le monde à la maison dort »), ainsi qu'un statut de vacances par utilisateur avec ses propres déclencheurs, conditions, action et appareil. Une personne en vacances n'est pas prise en compte dans les cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. App communautaire non officielle."
+    "en": "Adds the household-wide presence and sleep cards Homey does not have - everyone at home, everyone asleep, the first and last person to go to bed or wake up - each carrying a User tag. Adds statuses of your own on top of that: vacation and do not disturb come with the app, and you can define any other your household needs, each with its own triggers, conditions, action and device. A status can be told to leave its holders out of the 'everyone' cards, so those keep working for whoever is still around. Eight Flow tags count who is home, awake or away. Unofficial community app.",
+    "nl": "Voegt de kaarten voor aanwezigheid en slaap toe die Homey zelf niet heeft - iedereen thuis, iedereen slaapt, de eerste en laatste die gaat slapen of wakker wordt - elk met een Gebruiker-tag. Daarbovenop komen eigen statussen: vakantie en niet storen zitten in de app, en je maakt er zelf bij wat je huishouden nodig heeft, elk met eigen triggers, voorwaarden, actie en apparaat. Van een status kun je zeggen dat wie hem heeft niet meetelt in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is. Acht Flow-tags tellen wie thuis, wakker of weg is. Onofficiële community-app.",
+    "fr": "Ajoute les cartes de présence et de sommeil à l'échelle du foyer que Homey ne propose pas - tout le monde à la maison, tout le monde dort, la première et la dernière personne à se coucher ou se réveiller - chacune avec un tag Utilisateur. S'y ajoutent vos propres statuts : vacances et ne pas déranger sont fournis, et vous définissez ceux dont votre foyer a besoin, chacun avec ses déclencheurs, conditions, action et appareil. Un statut peut exclure ceux qui le portent des cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. Huit tags de Flow comptent qui est à la maison, éveillé ou absent. App communautaire non officielle."
   },
   "brandColor": "#3D5A96",
   "category": [
@@ -49,6 +49,18 @@
     "clearLog": {
       "method": "post",
       "path": "/log/clear"
+    },
+    "getStatuses": {
+      "method": "get",
+      "path": "/statuses"
+    },
+    "setStatus": {
+      "method": "post",
+      "path": "/status"
+    },
+    "saveStatuses": {
+      "method": "post",
+      "path": "/statuses"
     }
   }
 }

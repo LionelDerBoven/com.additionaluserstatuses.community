@@ -1,0 +1,27 @@
+{
+  "id": "user_has_status",
+  "title": {
+    "en": "A user has a status",
+    "nl": "Een gebruiker heeft een status",
+    "fr": "Un utilisateur a un statut"
+  },
+  "titleFormatted": {
+    "en": "[[user]] !{{has|does not have}} the status [[status]]",
+    "nl": "[[user]] !{{heeft|heeft niet}} de status [[status]]",
+    "fr": "[[user]] !{{a|n'a pas}} le statut [[status]]"
+  },
+  "args": [
+    {
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    },
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
+      "placeholder": { "en": "Choose a user…", "nl": "Kies een gebruiker…", "fr": "Choisissez un utilisateur…" }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "set_status_all",
+  "title": {
+    "en": "Set a status for everyone",
+    "nl": "Een status voor iedereen zetten",
+    "fr": "Définir un statut pour tout le monde"
+  },
+  "titleFormatted": {
+    "en": "Set [[status]] for everyone to [[state]]",
+    "nl": "Zet [[status]] voor iedereen op [[state]]",
+    "fr": "Définir [[status]] pour tout le monde sur [[state]]"
+  },
+  "hint": {
+    "en": "Gives every user the status at once, or takes it from all of them. Applied as a single change, so 'Everyone has a status' and 'Nobody has a status any more' fire once rather than once per person. Accounts disabled in Homey are left alone.",
+    "nl": "Geeft iedereen in één keer de status, of neemt hem van iedereen af. Wordt als één wijziging doorgevoerd, zodat 'Iedereen heeft een status' en 'Niemand heeft een status meer' één keer afgaan in plaats van één keer per persoon. Accounts die in Homey zijn uitgeschakeld blijven ongemoeid.",
+    "fr": "Donne le statut à tout le monde d'un coup, ou le retire à tous. Appliqué comme une seule modification : « Tout le monde a un statut » et « Plus personne n'a un statut » se déclenchent une fois au lieu d'une fois par personne. Les comptes désactivés dans Homey ne sont pas touchés."
+  },
+  "args": [
+    {
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    },
+    {
+      "name": "state",
+      "type": "dropdown",
+      "title": { "en": "Set to", "nl": "Zetten op", "fr": "Définir sur" },
+      "values": [
+        { "id": "on", "title": { "en": "on", "nl": "aan", "fr": "activé" } },
+        { "id": "off", "title": { "en": "off", "nl": "uit", "fr": "désactivé" } }
+      ]
+    }
+  ]
+}

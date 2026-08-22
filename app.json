@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "1.10.1",
+  "version": "2.0.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -14,9 +14,9 @@
     "fr": "Statuts d'utilisateur supplémentaires"
   },
   "description": {
-    "en": "Adds the household-wide presence and sleep condition cards Homey does not have ('Everyone is at home', 'Everyone is asleep', 'Everyone at home is asleep'), plus a vacation status per user with its own triggers, conditions, action and device. A user on vacation is left out of the 'everyone' cards, so those keep working for whoever is still around. Unofficial community app.",
-    "nl": "Voegt de kaarten voor het hele huishouden toe die Homey zelf niet heeft ('Iedereen is thuis', 'Iedereen slaapt', 'Iedereen die thuis is, slaapt'), plus een vakantiestatus per gebruiker met eigen triggers, voorwaarden, actie en apparaat. Wie op vakantie is telt niet mee in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is. Onofficiële community-app.",
-    "fr": "Ajoute les cartes à l'échelle du foyer que Homey ne propose pas (« Tout le monde est à la maison », « Tout le monde dort », « Tout le monde à la maison dort »), ainsi qu'un statut de vacances par utilisateur avec ses propres déclencheurs, conditions, action et appareil. Une personne en vacances n'est pas prise en compte dans les cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. App communautaire non officielle."
+    "en": "Adds the household-wide presence and sleep cards Homey does not have - everyone at home, everyone asleep, the first and last person to go to bed or wake up - each carrying a User tag. Adds statuses of your own on top of that: vacation and do not disturb come with the app, and you can define any other your household needs, each with its own triggers, conditions, action and device. A status can be told to leave its holders out of the 'everyone' cards, so those keep working for whoever is still around. Eight Flow tags count who is home, awake or away. Unofficial community app.",
+    "nl": "Voegt de kaarten voor aanwezigheid en slaap toe die Homey zelf niet heeft - iedereen thuis, iedereen slaapt, de eerste en laatste die gaat slapen of wakker wordt - elk met een Gebruiker-tag. Daarbovenop komen eigen statussen: vakantie en niet storen zitten in de app, en je maakt er zelf bij wat je huishouden nodig heeft, elk met eigen triggers, voorwaarden, actie en apparaat. Van een status kun je zeggen dat wie hem heeft niet meetelt in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is. Acht Flow-tags tellen wie thuis, wakker of weg is. Onofficiële community-app.",
+    "fr": "Ajoute les cartes de présence et de sommeil à l'échelle du foyer que Homey ne propose pas - tout le monde à la maison, tout le monde dort, la première et la dernière personne à se coucher ou se réveiller - chacune avec un tag Utilisateur. S'y ajoutent vos propres statuts : vacances et ne pas déranger sont fournis, et vous définissez ceux dont votre foyer a besoin, chacun avec ses déclencheurs, conditions, action et appareil. Un statut peut exclure ceux qui le portent des cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. Huit tags de Flow comptent qui est à la maison, éveillé ou absent. App communautaire non officielle."
   },
   "brandColor": "#3D5A96",
   "category": [
@@ -50,6 +50,18 @@
     "clearLog": {
       "method": "post",
       "path": "/log/clear"
+    },
+    "getStatuses": {
+      "method": "get",
+      "path": "/statuses"
+    },
+    "setStatus": {
+      "method": "post",
+      "path": "/status"
+    },
+    "saveStatuses": {
+      "method": "post",
+      "path": "/statuses"
     }
   },
   "flow": {
@@ -181,6 +193,98 @@
         }
       },
       {
+        "id": "everyone_status_ended",
+        "title": {
+          "en": "Nobody has a status any more",
+          "nl": "Niemand heeft een status meer",
+          "fr": "Plus personne n'a un statut"
+        },
+        "titleFormatted": {
+          "en": "Nobody has the status [[status]] any more",
+          "nl": "Niemand heeft de status [[status]] nog",
+          "fr": "Plus personne n'a le statut [[status]]"
+        },
+        "hint": {
+          "en": "Fires once, when the last person holding the chosen status loses it. It does not fire again while nobody has it.",
+          "nl": "Gaat één keer af, wanneer de laatste persoon die de gekozen status had hem verliest. Gaat niet opnieuw af zolang niemand hem heeft.",
+          "fr": "Se déclenche une fois, lorsque la dernière personne ayant le statut choisi le perd. Ne se déclenche plus tant que personne ne l'a."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "example": "On vacation"
+          }
+        ]
+      },
+      {
+        "id": "everyone_status_started",
+        "title": {
+          "en": "Everyone has a status",
+          "nl": "Iedereen heeft een status",
+          "fr": "Tout le monde a un statut"
+        },
+        "titleFormatted": {
+          "en": "Everyone has the status [[status]]",
+          "nl": "Iedereen heeft de status [[status]]",
+          "fr": "Tout le monde a le statut [[status]]"
+        },
+        "hint": {
+          "en": "Fires once, when the last person still without the chosen status takes it on. It does not fire again while everyone still has it. Accounts disabled in Homey are not counted, so one dormant account cannot hold this shut forever.",
+          "nl": "Gaat één keer af, wanneer de laatste persoon die de gekozen status nog niet had hem krijgt. Gaat niet opnieuw af zolang iedereen hem nog heeft. Accounts die in Homey zijn uitgeschakeld tellen niet mee, zodat één slapend account dit niet eeuwig kan tegenhouden.",
+          "fr": "Se déclenche une fois, lorsque la dernière personne encore sans le statut choisi le prend. Ne se déclenche plus tant que tout le monde l'a encore. Les comptes désactivés dans Homey ne comptent pas : un compte dormant ne peut donc pas bloquer cette carte indéfiniment."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "example": "On vacation"
+          }
+        ]
+      },
+      {
         "id": "everyone_vacation_ended",
         "title": {
           "en": "Nobody is on vacation any more",
@@ -307,6 +411,146 @@
         ]
       },
       {
+        "id": "status_ended",
+        "title": {
+          "en": "A user loses a status",
+          "nl": "Een gebruiker verliest een status",
+          "fr": "Un utilisateur perd un statut"
+        },
+        "titleFormatted": {
+          "en": "[[user]] loses the status [[status]]",
+          "nl": "[[user]] verliest de status [[status]]",
+          "fr": "[[user]] perd le statut [[status]]"
+        },
+        "hint": {
+          "en": "Fires when the chosen user no longer has the chosen status. Leave the user on 'Any user' to fire for the whole household. The tags name who it was and which status.",
+          "nl": "Gaat af wanneer de gekozen gebruiker de gekozen status niet meer heeft. Laat de gebruiker op 'Elke gebruiker' staan om voor het hele huishouden af te gaan. De tags zeggen wie het was en welke status.",
+          "fr": "Se déclenche lorsque l'utilisateur choisi n'a plus le statut choisi. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "user",
+            "type": "autocomplete",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "placeholder": {
+              "en": "Any user",
+              "nl": "Elke gebruiker",
+              "fr": "Tout utilisateur"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "example": "On vacation"
+          }
+        ]
+      },
+      {
+        "id": "status_started",
+        "title": {
+          "en": "A user takes on a status",
+          "nl": "Een gebruiker krijgt een status",
+          "fr": "Un utilisateur prend un statut"
+        },
+        "titleFormatted": {
+          "en": "[[user]] takes on the status [[status]]",
+          "nl": "[[user]] krijgt de status [[status]]",
+          "fr": "[[user]] prend le statut [[status]]"
+        },
+        "hint": {
+          "en": "Fires when the chosen user is given the chosen status, whether that came from a Flow, the settings page, a device tile or auto-return. Leave the user on 'Any user' to fire for the whole household. The tags name who it was and which status. Vacation has its own card as well, which is shorter for that one case.",
+          "nl": "Gaat af wanneer de gekozen gebruiker de gekozen status krijgt, of dat nu uit een Flow, de instellingenpagina, een apparaattegel of automatisch terugkeren kwam. Laat de gebruiker op 'Elke gebruiker' staan om voor het hele huishouden af te gaan. De tags zeggen wie het was en welke status. Vakantie heeft ook een eigen kaart, die korter is voor dat ene geval.",
+          "fr": "Se déclenche lorsque l'utilisateur choisi reçoit le statut choisi, que cela vienne d'une Flow, de la page de réglages, d'une tuile d'appareil ou du retour automatique. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut. Les vacances ont aussi leur propre carte, plus courte pour ce cas précis."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "user",
+            "type": "autocomplete",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "placeholder": {
+              "en": "Any user",
+              "nl": "Elke gebruiker",
+              "fr": "Tout utilisateur"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "example": "On vacation"
+          }
+        ]
+      },
+      {
         "id": "vacation_ended",
         "title": {
           "en": "A user returns from vacation",
@@ -400,6 +644,91 @@
       }
     ],
     "conditions": [
+      {
+        "id": "count_status",
+        "title": {
+          "en": "The number of users with a status",
+          "nl": "Het aantal gebruikers met een status",
+          "fr": "Le nombre d'utilisateurs avec un statut"
+        },
+        "titleFormatted": {
+          "en": "There !{{are|are not}} [[operator]] [[count]] users with the status [[status]]",
+          "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers met de status [[status]]",
+          "fr": "Il y !{{a|n'y a pas}} [[operator]] [[count]] utilisateurs avec le statut [[status]]"
+        },
+        "hint": {
+          "en": "Counts the users who count and hold the chosen status. Use 'at most 0' for 'nobody has it'.",
+          "nl": "Telt de gebruikers die meetellen en de gekozen status hebben. Gebruik 'hoogstens 0' voor 'niemand heeft hem'.",
+          "fr": "Compte les utilisateurs qui comptent et ont le statut choisi. Utilisez « au plus 0 » pour « personne ne l'a »."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "operator",
+            "type": "dropdown",
+            "title": {
+              "en": "Comparison",
+              "nl": "Vergelijking",
+              "fr": "Comparaison"
+            },
+            "values": [
+              {
+                "id": "min",
+                "title": {
+                  "en": "at least",
+                  "nl": "minstens",
+                  "fr": "au moins"
+                }
+              },
+              {
+                "id": "exact",
+                "title": {
+                  "en": "exactly",
+                  "nl": "precies",
+                  "fr": "exactement"
+                }
+              },
+              {
+                "id": "max",
+                "title": {
+                  "en": "at most",
+                  "nl": "hoogstens",
+                  "fr": "au plus"
+                }
+              }
+            ]
+          },
+          {
+            "name": "count",
+            "type": "number",
+            "min": 0,
+            "step": 1,
+            "title": {
+              "en": "Number",
+              "nl": "Aantal",
+              "fr": "Nombre"
+            },
+            "placeholder": {
+              "en": "1",
+              "nl": "1",
+              "fr": "1"
+            }
+          }
+        ]
+      },
       {
         "id": "count_users",
         "title": {
@@ -544,6 +873,40 @@
         }
       },
       {
+        "id": "everyone_has_status",
+        "title": {
+          "en": "Everyone has a status",
+          "nl": "Iedereen heeft een status",
+          "fr": "Tout le monde a un statut"
+        },
+        "titleFormatted": {
+          "en": "Everyone !{{has|does not have}} the status [[status]]",
+          "nl": "Iedereen !{{heeft|heeft niet}} de status [[status]]",
+          "fr": "Tout le monde !{{a|n'a pas}} le statut [[status]]"
+        },
+        "hint": {
+          "en": "True when every user who counts holds the chosen status. Accounts disabled in Homey are left out. False for an empty household, so a misconfigured app never says 'everyone' about nobody.",
+          "nl": "Waar wanneer elke gebruiker die meetelt de gekozen status heeft. Accounts die in Homey zijn uitgeschakeld tellen niet mee. Onwaar bij een leeg huishouden, zodat een verkeerd ingestelde app nooit 'iedereen' zegt over niemand.",
+          "fr": "Vrai lorsque chaque utilisateur qui compte a le statut choisi. Les comptes désactivés dans Homey sont exclus. Faux pour un foyer vide : une app mal configurée ne dit donc jamais « tout le monde » à propos de personne."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          }
+        ]
+      },
+      {
         "id": "everyone_home",
         "title": {
           "en": "!{{Everyone is at home|Not everyone is at home}}",
@@ -609,6 +972,49 @@
         }
       },
       {
+        "id": "user_has_status",
+        "title": {
+          "en": "A user has a status",
+          "nl": "Een gebruiker heeft een status",
+          "fr": "Un utilisateur a un statut"
+        },
+        "titleFormatted": {
+          "en": "[[user]] !{{has|does not have}} the status [[status]]",
+          "nl": "[[user]] !{{heeft|heeft niet}} de status [[status]]",
+          "fr": "[[user]] !{{a|n'a pas}} le statut [[status]]"
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "user",
+            "type": "autocomplete",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "placeholder": {
+              "en": "Choose a user…",
+              "nl": "Kies een gebruiker…",
+              "fr": "Choisissez un utilisateur…"
+            }
+          }
+        ]
+      },
+      {
         "id": "user_on_vacation",
         "title": {
           "en": "A user is !{{on vacation|not on vacation}}",
@@ -644,6 +1050,150 @@
       }
     ],
     "actions": [
+      {
+        "id": "set_status",
+        "title": {
+          "en": "Set a status for a user",
+          "nl": "Een status voor een gebruiker zetten",
+          "fr": "Définir un statut pour un utilisateur"
+        },
+        "titleFormatted": {
+          "en": "Set [[status]] for [[user]] to [[state]]",
+          "nl": "Zet [[status]] voor [[user]] op [[state]]",
+          "fr": "Définir [[status]] pour [[user]] sur [[state]]"
+        },
+        "hint": {
+          "en": "Gives one user a status, takes it away, or flips whichever it is now. Every route to a status - this card, the settings page, a device tile - writes to the same place, so nothing can drift out of step.",
+          "nl": "Geeft één gebruiker een status, neemt hem weg, of wisselt om wat hij nu is. Elke weg naar een status - deze kaart, de instellingenpagina, een apparaattegel - schrijft naar dezelfde plek, dus er kan niets uit de pas lopen.",
+          "fr": "Donne un statut à un utilisateur, le retire, ou inverse l'état actuel. Toutes les voies vers un statut - cette carte, la page de réglages, une tuile d'appareil - écrivent au même endroit : rien ne peut se désynchroniser."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "user",
+            "type": "autocomplete",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "placeholder": {
+              "en": "Choose a user…",
+              "nl": "Kies een gebruiker…",
+              "fr": "Choisissez un utilisateur…"
+            }
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "title": {
+              "en": "Set to",
+              "nl": "Zetten op",
+              "fr": "Définir sur"
+            },
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan",
+                  "fr": "activé"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit",
+                  "fr": "désactivé"
+                }
+              },
+              {
+                "id": "toggle",
+                "title": {
+                  "en": "the other way round",
+                  "nl": "omgewisseld",
+                  "fr": "inversé"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "set_status_all",
+        "title": {
+          "en": "Set a status for everyone",
+          "nl": "Een status voor iedereen zetten",
+          "fr": "Définir un statut pour tout le monde"
+        },
+        "titleFormatted": {
+          "en": "Set [[status]] for everyone to [[state]]",
+          "nl": "Zet [[status]] voor iedereen op [[state]]",
+          "fr": "Définir [[status]] pour tout le monde sur [[state]]"
+        },
+        "hint": {
+          "en": "Gives every user the status at once, or takes it from all of them. Applied as a single change, so 'Everyone has a status' and 'Nobody has a status any more' fire once rather than once per person. Accounts disabled in Homey are left alone.",
+          "nl": "Geeft iedereen in één keer de status, of neemt hem van iedereen af. Wordt als één wijziging doorgevoerd, zodat 'Iedereen heeft een status' en 'Niemand heeft een status meer' één keer afgaan in plaats van één keer per persoon. Accounts die in Homey zijn uitgeschakeld blijven ongemoeid.",
+          "fr": "Donne le statut à tout le monde d'un coup, ou le retire à tous. Appliqué comme une seule modification : « Tout le monde a un statut » et « Plus personne n'a un statut » se déclenchent une fois au lieu d'une fois par personne. Les comptes désactivés dans Homey ne sont pas touchés."
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "autocomplete",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "placeholder": {
+              "en": "Choose a status…",
+              "nl": "Kies een status…",
+              "fr": "Choisissez un statut…"
+            }
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "title": {
+              "en": "Set to",
+              "nl": "Zetten op",
+              "fr": "Définir sur"
+            },
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan",
+                  "fr": "activé"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit",
+                  "fr": "désactivé"
+                }
+              }
+            ]
+          }
+        ]
+      },
       {
         "id": "set_vacation",
         "title": {
@@ -763,6 +1313,58 @@
     ]
   },
   "drivers": [
+    {
+      "name": {
+        "en": "User status",
+        "nl": "Gebruikersstatus",
+        "fr": "Statut d'utilisateur"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Has this status",
+            "nl": "Heeft deze status",
+            "fr": "A ce statut"
+          },
+          "insightsTitleTrue": {
+            "en": "Took on the status",
+            "nl": "Kreeg de status",
+            "fr": "A pris le statut"
+          },
+          "insightsTitleFalse": {
+            "en": "Lost the status",
+            "nl": "Verloor de status",
+            "fr": "A perdu le statut"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [],
+      "images": {
+        "small": "/drivers/status/assets/images/small.png",
+        "large": "/drivers/status/assets/images/large.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "status"
+    },
     {
       "name": {
         "en": "Vacation status",

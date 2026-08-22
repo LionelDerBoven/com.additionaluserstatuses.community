@@ -1,0 +1,27 @@
+{
+  "id": "everyone_status_started",
+  "title": {
+    "en": "Everyone has a status",
+    "nl": "Iedereen heeft een status",
+    "fr": "Tout le monde a un statut"
+  },
+  "titleFormatted": {
+    "en": "Everyone has the status [[status]]",
+    "nl": "Iedereen heeft de status [[status]]",
+    "fr": "Tout le monde a le statut [[status]]"
+  },
+  "hint": {
+    "en": "Fires once, when the last person still without the chosen status takes it on. It does not fire again while everyone still has it. Accounts disabled in Homey are not counted, so one dormant account cannot hold this shut forever.",
+    "nl": "Gaat één keer af, wanneer de laatste persoon die de gekozen status nog niet had hem krijgt. Gaat niet opnieuw af zolang iedereen hem nog heeft. Accounts die in Homey zijn uitgeschakeld tellen niet mee, zodat één slapend account dit niet eeuwig kan tegenhouden.",
+    "fr": "Se déclenche une fois, lorsque la dernière personne encore sans le statut choisi le prend. Ne se déclenche plus tant que tout le monde l'a encore. Les comptes désactivés dans Homey ne comptent pas : un compte dormant ne peut donc pas bloquer cette carte indéfiniment."
+  },
+  "args": [{
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    }],
+  "tokens": [
+    { "name": "status", "type": "string", "title": { "en": "Status", "nl": "Status", "fr": "Statut" }, "example": "On vacation" }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "status_ended",
+  "title": {
+    "en": "A user loses a status",
+    "nl": "Een gebruiker verliest een status",
+    "fr": "Un utilisateur perd un statut"
+  },
+  "titleFormatted": {
+    "en": "[[user]] loses the status [[status]]",
+    "nl": "[[user]] verliest de status [[status]]",
+    "fr": "[[user]] perd le statut [[status]]"
+  },
+  "hint": {
+    "en": "Fires when the chosen user no longer has the chosen status. Leave the user on 'Any user' to fire for the whole household. The tags name who it was and which status.",
+    "nl": "Gaat af wanneer de gekozen gebruiker de gekozen status niet meer heeft. Laat de gebruiker op 'Elke gebruiker' staan om voor het hele huishouden af te gaan. De tags zeggen wie het was en welke status.",
+    "fr": "Se déclenche lorsque l'utilisateur choisi n'a plus le statut choisi. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut."
+  },
+  "args": [{
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    }, {
+      "name": "user",
+      "type": "autocomplete",
+      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
+      "placeholder": { "en": "Any user", "nl": "Elke gebruiker", "fr": "Tout utilisateur" }
+    }],
+  "tokens": [
+    { "name": "user", "type": "string", "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" }, "example": "Alex" },
+    { "name": "status", "type": "string", "title": { "en": "Status", "nl": "Status", "fr": "Statut" }, "example": "On vacation" }
+  ]
+}

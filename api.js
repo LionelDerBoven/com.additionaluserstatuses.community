@@ -20,4 +20,19 @@ module.exports = {
   async clearLog({ homey }) {
     return homey.app.clearLog();
   },
+
+  // Statuses beyond vacation: the list itself, and who holds each one.
+  async getStatuses({ homey }) {
+    return homey.app.getStatuses();
+  },
+
+  async setStatus({ homey, body }) {
+    return homey.app.setStatus(body?.statusId, body?.userId, body?.held);
+  },
+
+  // The page edits the whole list of custom statuses at once, so this replaces
+  // it rather than adding one - that is what makes deleting one possible.
+  async saveStatuses({ homey, body }) {
+    return homey.app.saveStatuses(body?.statuses);
+  },
 };

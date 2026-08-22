@@ -3,7 +3,8 @@
   "any_user": "Elke gebruiker",
   "device": {
     "name_prefix": "Vakantie",
-    "user_gone": "Deze Homey-gebruiker bestaat niet meer."
+    "user_gone": "Deze Homey-gebruiker bestaat niet meer.",
+    "status_gone": "Deze status bestaat niet meer."
   },
   "settings": {
     "title": "Welke gebruikers tellen mee als \"iedereen\"?",
@@ -29,7 +30,19 @@
     "log_filter": "Toon",
     "log_filter_all": "Alle gebeurtenissen",
     "log_filter_special": "Alleen triggers en fouten",
-    "disabled_note": "Een account dat in Homey is uitgeschakeld telt nooit mee, wat je hier ook aanvinkt — zo'n account kan niet doorgeven waar het is."
+    "disabled_note": "Een account dat in Homey is uitgeschakeld telt nooit mee, wat je hier ook aanvinkt — zo'n account kan niet doorgeven waar het is.",
+    "tab_statuses": "Statussen",
+    "statuses_title": "Statussen naast vakantie",
+    "statuses_intro": "Een status is een label dat je op iemand plakt, en elke status krijgt dezelfde Flow-kaarten: een trigger voor het krijgen of verliezen ervan, een voorwaarde, en een actie om hem te zetten. Vakantie en Niet storen zitten in de app. Maak er zelf bij voor wat jouw huishouden nodig heeft.",
+    "status_add": "Status toevoegen",
+    "status_name": "Naam",
+    "status_exclude": "Wie hem heeft niet meetellen in de \"iedereen\"-kaarten",
+    "status_auto_return": "Automatisch wissen wanneer die persoon thuiskomt",
+    "status_delete": "Verwijderen",
+    "status_holders": "Wie hem heeft",
+    "status_builtin": "Zit in de app",
+    "status_none": "Nog geen eigen statussen.",
+    "status_name_placeholder": "Thuiswerk"
   },
   "log": {
     "app_started": "App gestart.",
@@ -59,7 +72,11 @@
     "err_trigger": "Kon een vakantietrigger niet afvuren: __message__",
     "err_persist": "Kon het bewaren van het logboek niet wijzigen: __message__",
     "not_counted": "telt niet mee",
-    "on_vacation": "op vakantie"
+    "on_vacation": "op vakantie",
+    "status_started": "__name__ heeft nu de status __status__.",
+    "status_ended": "__name__ heeft de status __status__ niet meer.",
+    "auto_return_status": "__name__ is thuisgekomen, dus de status __status__ wordt gewist.",
+    "statuses_saved": "De lijst met statussen is gewijzigd."
   },
   "ui": {
     "yes": "Ja",
@@ -92,5 +109,9 @@
     "names_home": "Namen thuis",
     "names_awake": "Namen wakker",
     "names_vacation": "Namen op vakantie"
+  },
+  "status": {
+    "vacation": "Op vakantie",
+    "dnd": "Niet storen"
   }
 }

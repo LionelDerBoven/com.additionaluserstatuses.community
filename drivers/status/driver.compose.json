@@ -1,0 +1,51 @@
+{
+  "name": {
+    "en": "User status",
+    "nl": "Gebruikersstatus",
+    "fr": "Statut d'utilisateur"
+  },
+  "class": "other",
+  "capabilities": [
+    "onoff"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "title": {
+        "en": "Has this status",
+        "nl": "Heeft deze status",
+        "fr": "A ce statut"
+      },
+      "insightsTitleTrue": {
+        "en": "Took on the status",
+        "nl": "Kreeg de status",
+        "fr": "A pris le statut"
+      },
+      "insightsTitleFalse": {
+        "en": "Lost the status",
+        "nl": "Verloor de status",
+        "fr": "A perdu le statut"
+      }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "/drivers/status/assets/images/small.png",
+    "large": "/drivers/status/assets/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

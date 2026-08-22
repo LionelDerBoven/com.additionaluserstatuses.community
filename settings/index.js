@@ -293,15 +293,193 @@ function setLog24Hour(value) {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Statuses tab
+// ---------------------------------------------------------------------------
+
+let statusData = { statuses: [], users: [] };
+
+function loadStatuses() {
+  Homey.api('GET', '/statuses', null, (err, result) => {
+    if (err) {
+      showError(err.message || String(err));
+      return;
+    }
+    statusData = result;
+    renderStatuses();
+  });
+}
+
+/**
+ * One card per status. The built-in two show who holds them and nothing else to
+ * edit; a custom one is editable in place, because a status is three fields and
+ * a separate edit screen for three fields is worse than the fields themselves.
+ */
+function renderStatuses() {
+  const root = document.getElementById('statuses');
+  root.textContent = '';
+
+  for (const status of statusData.statuses) {
+    root.appendChild(statusCard(status));
+  }
+
+  if (!statusData.statuses.some((status) => !status.builtin)) {
+    const empty = document.createElement('p');
+    empty.className = 'status-holders';
+    empty.textContent = t('status_none', 'No statuses of your own yet.');
+    root.appendChild(empty);
+  }
+}
+
+function statusCard(status) {
+  const card = document.createElement('div');
+  card.className = 'status-card';
+
+  const heading = document.createElement('h3');
+  if (status.builtin) {
+    heading.textContent = `${status.name} `;
+    const note = document.createElement('span');
+    note.className = 'builtin';
+    note.textContent = `— ${t('status_builtin', 'Comes with the app')}`;
+    heading.appendChild(note);
+    card.appendChild(heading);
+  } else {
+    const name = document.createElement('input');
+    name.type = 'text';
+    name.className = 'status-name-input';
+    name.value = status.name;
+    name.placeholder = t('status_name_placeholder', 'Working from home');
+    name.addEventListener('change', () => {
+      status.name = name.value;
+      saveStatuses();
+    });
+    card.appendChild(name);
+  }
+
+  // Vacation's own flags live on the Settings tab, where they always have.
+  if (!status.builtin) {
+    card.appendChild(flagRow(status, 'excludeFromEveryone', 'status_exclude',
+      'Leave holders out of the "everyone" cards'));
+    card.appendChild(flagRow(status, 'autoReturn', 'status_auto_return',
+      'Clear it automatically when that person comes home'));
+  }
+
+  const holders = document.createElement('p');
+  holders.className = 'status-holders';
+  holders.textContent = t('status_holders', 'Who has it');
+  card.appendChild(holders);
+
+  for (const user of statusData.users) {
+    if (!user.enabled) continue;
+    card.appendChild(holderRow(status, user));
+  }
+
+  if (!status.builtin) {
+    const remove = document.createElement('button');
+    remove.className = 'btn-refresh';
+    remove.textContent = t('status_delete', 'Delete');
+    remove.addEventListener('click', () => {
+      statusData.statuses = statusData.statuses.filter((entry) => entry.id !== status.id);
+      saveStatuses();
+    });
+    card.appendChild(remove);
+  }
+
+  return card;
+}
+
+function flagRow(status, field, key, fallback) {
+  const row = document.createElement('label');
+  row.className = 'feature-row';
+
+  const box = document.createElement('input');
+  box.type = 'checkbox';
+  box.checked = status[field] === true;
+  box.addEventListener('change', () => {
+    status[field] = box.checked;
+    saveStatuses();
+  });
+
+  const text = document.createElement('span');
+  text.textContent = t(key, fallback);
+
+  row.appendChild(box);
+  row.appendChild(text);
+  return row;
+}
+
+function holderRow(status, user) {
+  const row = document.createElement('label');
+  row.className = 'feature-row';
+
+  const box = document.createElement('input');
+  box.type = 'checkbox';
+  box.checked = (status.userIds || []).includes(user.id);
+  box.addEventListener('change', () => {
+    Homey.api('POST', '/status', { statusId: status.id, userId: user.id, held: box.checked },
+      (err, result) => {
+        if (err) {
+          box.checked = !box.checked;
+          showError(err.message || String(err));
+          return;
+        }
+        statusData = result;
+        renderStatuses();
+      });
+  });
+
+  const text = document.createElement('span');
+  text.textContent = user.name;
+
+  row.appendChild(box);
+  row.appendChild(text);
+  return row;
+}
+
+function addStatus() {
+  // The id is what the settings key is built from and can never change, so it is
+  // derived once from the name and then left alone however the name is edited.
+  const taken = new Set(statusData.statuses.map((status) => status.id));
+  let id = 'status1';
+  for (let n = 1; taken.has(id); n += 1) id = `status${n}`;
+
+  statusData.statuses.push({
+    id, name: t('status_name_placeholder', 'Working from home'), builtin: false, userIds: [],
+  });
+
+  saveStatuses();
+}
+
+function saveStatuses() {
+  const custom = statusData.statuses
+    .filter((status) => !status.builtin)
+    .map((status) => ({
+      id: status.id,
+      name: status.name,
+      excludeFromEveryone: status.excludeFromEveryone === true,
+      autoReturn: status.autoReturn === true,
+    }));
+
+  Homey.api('POST', '/statuses', { statuses: custom }, (err, result) => {
+    if (err) {
+      showError(err.message || String(err));
+      return;
+    }
+    statusData = result;
+    renderStatuses();
+  });
+}
+
 function showTab(which) {
-  const isLog = which === 'log';
-  document.getElementById('tab-settings').className = isLog ? 'tab-pane' : 'tab-pane active';
-  document.getElementById('tab-log').className = isLog ? 'tab-pane active' : 'tab-pane';
-  document.getElementById('tab-btn-settings').className = isLog ? 'tab-btn' : 'tab-btn active';
-  document.getElementById('tab-btn-log').className = isLog ? 'tab-btn active' : 'tab-btn';
+  for (const name of ['settings', 'statuses', 'log']) {
+    const on = name === which;
+    document.getElementById(`tab-${name}`).className = on ? 'tab-pane active' : 'tab-pane';
+    document.getElementById(`tab-btn-${name}`).className = on ? 'tab-btn active' : 'tab-btn';
+  }
 
   // Fetched on demand rather than polled, so an open settings page costs nothing.
-  if (isLog) loadLog();
+  if (which === 'log') loadLog();
+  if (which === 'statuses') loadStatuses();
 }
 
 function onHomeyReady(homey) {
@@ -322,7 +500,10 @@ function onHomeyReady(homey) {
     }
   });
   document.getElementById('tab-btn-settings').addEventListener('click', () => showTab('settings'));
+  document.getElementById('tab-btn-statuses').addEventListener('click', () => showTab('statuses'));
   document.getElementById('tab-btn-log').addEventListener('click', () => showTab('log'));
+  document.getElementById('status-refresh').addEventListener('click', loadStatuses);
+  document.getElementById('status-add').addEventListener('click', addStatus);
 
   load();
 }

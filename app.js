@@ -4,6 +4,7 @@ const Homey = require('homey');
 const HomeyUsersApi = require('./lib/HomeyUsersApi');
 const UserStatus = require('./lib/UserStatus');
 const VacationStore = require('./lib/VacationStore');
+const StatusRegistry = require('./lib/StatusRegistry');
 const UserWatcher = require('./lib/UserWatcher');
 const EventLog = require('./lib/EventLog');
 const Tokens = require('./lib/Tokens');
@@ -26,17 +27,23 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     this.eventLog = new EventLog({ homey: this.homey });
     this.vacation = new VacationStore({ homey: this.homey });
+    this.statuses = new StatusRegistry({ homey: this.homey, vacation: this.vacation });
+
+    // Which household-wide status edge each status was last on, so 'everyone has
+    // it' fires when it becomes true rather than on every later change.
+    this.statusEdges = new Map();
 
     this.userStatus = new UserStatus({
       homey: this.homey,
       getApi: () => this.getApi(),
       vacation: this.vacation,
+      statuses: this.statuses,
     });
 
     this.tokens = new Tokens({ homey: this.homey, userStatus: this.userStatus });
 
     this.registerFlowCards();
-    this.wireVacationTriggers();
+    this.wireStatusTriggers();
     this.watchLogSettings();
 
     // Not awaited, for the same reason the watcher is not: a slow Homey should
@@ -58,8 +65,8 @@ class AdditionalUserStatusesApp extends Homey.App {
       this.record(this.homey.__('log.err_users', { message: err.message }), 'error');
     });
 
-    this.seedVacationEdges().catch((err) => {
-      this.error(`Could not read the vacation state at startup: ${err.message}`);
+    this.seedStatusEdges().catch((err) => {
+      this.error(`Could not read the status state at startup: ${err.message}`);
     });
 
     // Devices are deliberately not synced from here: at this point Homey has not
@@ -130,7 +137,8 @@ class AdditionalUserStatusesApp extends Homey.App {
     // Someone deleted from Homey while on vacation would otherwise leave their
     // id in settings for ever. Done here rather than on a timer, so a Homey we
     // briefly could not read is never mistaken for "these users are all gone".
-    await this.vacation.pruneUnknown(users.map((user) => user.id));
+    const known = users.map((user) => user.id);
+    for (const store of this.statuses.allStores()) await store.pruneUnknown(known);
     const described = users
       .map((user) => {
         const notes = [];
@@ -210,6 +218,82 @@ class AdditionalUserStatusesApp extends Homey.App {
       card.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query, { includeAny: true }));
     }
 
+    // --- Statuses in general --------------------------------------------------
+    // Vacation keeps its own cards, which are shorter for the one status most
+    // households use. These answer the same questions for any status at all.
+    this.triggerStatusStarted = this.homey.flow.getTriggerCard('status_started');
+    this.triggerStatusEnded = this.homey.flow.getTriggerCard('status_ended');
+    this.triggerEveryoneStatusStarted = this.homey.flow.getTriggerCard('everyone_status_started');
+    this.triggerEveryoneStatusEnded = this.homey.flow.getTriggerCard('everyone_status_ended');
+
+    for (const card of [this.triggerStatusStarted, this.triggerStatusEnded]) {
+      card.registerRunListener(async (args, state) => {
+        if (args.status?.id !== state.statusId) return false;
+
+        const wanted = args.user?.id;
+        return !wanted || wanted === ANY_USER || wanted === state.userId;
+      });
+      card.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+      card.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query, { includeAny: true }));
+    }
+
+    for (const card of [this.triggerEveryoneStatusStarted, this.triggerEveryoneStatusEnded]) {
+      card.registerRunListener(async (args, state) => args.status?.id === state.statusId);
+      card.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+    }
+
+    const userHasStatus = this.homey.flow.getConditionCard('user_has_status');
+    userHasStatus.registerRunListener(async (args) => {
+      if (!args.status?.id) throw new Error('No status selected.');
+      if (!args.user?.id) throw new Error('No user selected.');
+      return this.statuses.has(args.status.id, args.user.id);
+    });
+    userHasStatus.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+    userHasStatus.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
+
+    const everyoneHasStatus = this.homey.flow.getConditionCard('everyone_has_status');
+    everyoneHasStatus.registerRunListener(async (args) => {
+      const { eligible, held } = await this.statusTally(args.status?.id);
+      return eligible > 0 && held === eligible;
+    });
+    everyoneHasStatus.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+
+    const countStatus = this.homey.flow.getConditionCard('count_status');
+    countStatus.registerRunListener(async (args) => {
+      const { held } = await this.statusTally(args.status?.id);
+      const wanted = Number(args.count);
+
+      if (args.operator === 'min') return held >= wanted;
+      if (args.operator === 'max') return held <= wanted;
+      return held === wanted;
+    });
+    countStatus.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+
+    const setStatus = this.homey.flow.getActionCard('set_status');
+    setStatus.registerRunListener(async (args) => {
+      const store = this.storeFor(args.status?.id);
+      if (!args.user?.id) throw new Error('No user selected.');
+
+      const wanted = args.state === 'toggle' ? !store.has(args.user.id) : args.state === 'on';
+      await store.set(args.user.id, wanted);
+
+      return true;
+    });
+    setStatus.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+    setStatus.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
+
+    const setStatusAll = this.homey.flow.getActionCard('set_status_all');
+    setStatusAll.registerRunListener(async (args) => {
+      const store = this.storeFor(args.status?.id);
+      const ids = (await this.userStatus.getEligibleUsers()).map((user) => user.id);
+
+      if (args.state === 'on') await store.setMany(ids, []);
+      else await store.setMany([], ids);
+
+      return true;
+    });
+    setStatusAll.registerArgumentAutocompleteListener('status', async (query) => this.autocompleteStatuses(query));
+
     // --- Actions --------------------------------------------------------------
     const setVacation = this.homey.flow.getActionCard('set_vacation');
     setVacation.registerRunListener(async (args) => {
@@ -256,6 +340,38 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     const needle = query.toLowerCase();
     return items.filter((item) => item.name.toLowerCase().includes(needle));
+  }
+
+  /** Feeds every status-picking argument from the live registry. */
+  async autocompleteStatuses(query) {
+    const items = this.statuses.list().map((status) => ({ id: status.id, name: status.name }));
+
+    if (!query) return items;
+
+    const needle = query.toLowerCase();
+    return items.filter((item) => item.name.toLowerCase().includes(needle));
+  }
+
+  /**
+   * The store for a status a Flow card names, or a plain error.
+   *
+   * A card can outlive the status it points at - somebody deletes 'Working from
+   * home' while a Flow still sets it. Failing here makes that visible in the
+   * Flow's own error, rather than writing into a settings key nobody reads.
+   */
+  storeFor(statusId) {
+    const store = statusId && this.statuses.store(statusId);
+    if (!store) throw new Error(`No such status: ${statusId || 'none selected'}.`);
+
+    return store;
+  }
+
+  /** How many of the users who count hold a status, and how many there are. */
+  async statusTally(statusId) {
+    const store = this.storeFor(statusId);
+    const eligible = await this.userStatus.getEligibleUsers();
+
+    return { eligible: eligible.length, held: eligible.filter((user) => store.has(user.id)).length };
   }
 
   // ---------------------------------------------------------------------------
@@ -314,13 +430,19 @@ class AdditionalUserStatusesApp extends Homey.App {
     });
 
     this.watcher.on('arrived', ({ id, name }) => {
-      // Coming home is taken as evidence the holiday is over. Opt-out, because
-      // some households will want vacation to end only when a Flow says so.
-      if (!this.vacation.isAutoReturnEnabled()) return;
-      if (!this.vacation.isOnVacation(id)) return;
+      // Coming home is taken as evidence the status is over. Opt-out per status,
+      // because some households will want vacation to end only when a Flow says
+      // so - and a status like 'do not disturb' should never end by itself.
+      for (const status of this.statuses.autoReturning()) {
+        const store = this.statuses.store(status.id);
+        if (!store || !store.has(id)) continue;
 
-      this.record(this.homey.__('log.auto_return', { name }));
-      this.vacation.set(id, false).catch((err) => this.error(err.message));
+        this.record(status.id === StatusRegistry.VACATION
+          ? this.homey.__('log.auto_return', { name })
+          : this.homey.__('log.auto_return_status', { name, status: status.name }));
+
+        store.set(id, false).catch((err) => this.error(err.message));
+      }
     });
   }
 
@@ -328,43 +450,73 @@ class AdditionalUserStatusesApp extends Homey.App {
    * Every vacation change - Flow, device, settings page or auto-return - lands
    * here, so the triggers fire exactly once regardless of what caused it.
    */
-  wireVacationTriggers() {
-    this.vacation.on('change', ({ added, removed }) => {
-      this.onVacationChanged({ added, removed }).catch((err) => {
-        this.error(`Vacation triggers failed: ${err.message}`);
+  /**
+   * Every status change - Flow, device, settings page or auto-return - lands
+   * here, so the triggers fire exactly once regardless of what caused it.
+   */
+  wireStatusTriggers() {
+    for (const status of this.statuses.list()) this.subscribeToStatus(status.id);
+
+    // A status the user invents later needs the same wiring. Subscribing is
+    // idempotent, so re-running it for statuses already wired costs nothing.
+    this.statuses.on('statuses-changed', () => {
+      for (const status of this.statuses.list()) this.subscribeToStatus(status.id);
+
+      this.tokens.refresh().catch((err) => this.error(err.message));
+    });
+  }
+
+  subscribeToStatus(statusId) {
+    const store = this.statuses.store(statusId);
+    if (!store || store.listenerCount('change') > 0) return;
+
+    store.on('change', ({ added, removed }) => {
+      this.onStatusChanged(statusId, { added, removed }).catch((err) => {
+        this.error(`Status triggers failed for ${statusId}: ${err.message}`);
       });
     });
   }
 
   /**
-   * Gives the household-wide vacation triggers a 'before' to compare against.
+   * Gives the household-wide status triggers a 'before' to compare against.
    *
-   * Without this they start out undefined, and 'nobody is on vacation any more'
-   * needs a previous value of exactly false to fire. An app that restarted while
-   * somebody was away - which is every Homey reboot and every app update during
-   * a fortnight's holiday - would then swallow that trigger when the holiday
-   * ended. The same gap fires 'everyone is on vacation' a second time for a
-   * household that already was.
+   * Without this they start out unset, and 'nobody has it any more' needs a
+   * previous value of exactly false to fire. An app that restarted while
+   * somebody held the status - which is every Homey reboot and every app update
+   * during a fortnight's holiday - would then swallow that trigger when the
+   * status ended. The same gap fires 'everyone has it' a second time for a
+   * household that already did.
    */
-  async seedVacationEdges() {
-    const everyone = await this.userStatus.isEveryoneOnVacation();
-    const nobody = await this.userStatus.isNobodyOnVacation();
+  async seedStatusEdges() {
+    for (const status of this.statuses.list()) {
+      const { eligible, held } = await this.statusTally(status.id);
 
-    // A change that landed while we were reading has already set these from the
-    // newer state, so it must not be overwritten with the older one.
-    if (this.lastEveryoneOnVacation === undefined) this.lastEveryoneOnVacation = everyone;
-    if (this.lastNobodyOnVacation === undefined) this.lastNobodyOnVacation = nobody;
+      // A change that landed while we were reading has already set this from the
+      // newer state, so it must not be overwritten with the older one.
+      if (this.statusEdges.has(status.id)) continue;
+
+      this.statusEdges.set(status.id, { everyone: eligible > 0 && held === eligible, nobody: held === 0 });
+    }
   }
 
-  async onVacationChanged({ added, removed }) {
-    // Vacation decides who counts, so the tags move with it.
+  /**
+   * @param {string} statusId
+   * @param {{ added: string[], removed: string[] }} change
+   */
+  async onStatusChanged(statusId, { added, removed }) {
+    const status = this.statuses.get(statusId);
+    if (!status) return;
+
+    const isVacation = statusId === StatusRegistry.VACATION;
+
+    // The tags describe who counts, and an excluding status changes that.
     this.tokens.refresh().catch((err) => this.error(err.message));
 
     // Reflect the new state before announcing it. A tile showing the truth must
     // not depend on whether firing a Flow trigger happened to succeed, or the
     // device drifts out of step with the store - the exact failure the device
     // was introduced to prevent.
-    this.syncVacationDevices();
+    this.syncStatusDevices(statusId);
 
     const users = await this.userStatus.fetchUsers();
     const nameOf = (id) => users.find((user) => user.id === id)?.name ?? this.homey.__('unnamed_user');
@@ -379,49 +531,73 @@ class AdditionalUserStatusesApp extends Homey.App {
       }
     };
 
-    for (const id of added) {
-      this.record(this.homey.__('log.vacation_started', { name: nameOf(id) }), 'trigger');
-      await fire(this.triggerVacationStarted, { user: nameOf(id) }, { userId: id });
-    }
-    for (const id of removed) {
-      this.record(this.homey.__('log.vacation_ended', { name: nameOf(id) }), 'trigger');
-      await fire(this.triggerVacationEnded, { user: nameOf(id) }, { userId: id });
+    for (const [ids, generic, legacy, logKey] of [
+      [added, this.triggerStatusStarted, this.triggerVacationStarted, 'log.vacation_started'],
+      [removed, this.triggerStatusEnded, this.triggerVacationEnded, 'log.vacation_ended'],
+    ]) {
+      for (const id of ids) {
+        // Vacation says it in its own words; every other status shares one line,
+        // naming itself. Logging both for vacation would say it twice.
+        this.record(isVacation
+          ? this.homey.__(logKey, { name: nameOf(id) })
+          : this.homey.__(generic === this.triggerStatusStarted ? 'log.status_started' : 'log.status_ended', {
+            name: nameOf(id), status: status.name,
+          }), 'trigger');
+
+        await fire(generic, { user: nameOf(id), status: status.name }, { statusId, userId: id });
+        if (isVacation) await fire(legacy, { user: nameOf(id) }, { userId: id });
+      }
     }
 
-    // Household-wide cards fire on the edge, so "everyone is on vacation" runs
-    // once when the last person leaves rather than on every subsequent change.
-    const everyone = await this.userStatus.isEveryoneOnVacation();
-    const nobody = await this.userStatus.isNobodyOnVacation();
+    // Household-wide cards fire on the edge, so "everyone has it" runs once when
+    // the last person takes it on rather than on every subsequent change.
+    const { eligible, held } = await this.statusTally(statusId);
+    const everyone = eligible > 0 && held === eligible;
+    const nobody = held === 0;
+    const before = this.statusEdges.get(statusId) || {};
 
-    if (everyone && !this.lastEveryoneOnVacation) {
-      await fire(this.triggerEveryoneVacationStarted);
+    if (everyone && before.everyone === false) {
+      await fire(this.triggerEveryoneStatusStarted, { status: status.name }, { statusId });
+      if (isVacation) await fire(this.triggerEveryoneVacationStarted);
     }
-    if (nobody && this.lastNobodyOnVacation === false) {
-      await fire(this.triggerEveryoneVacationEnded);
+    if (nobody && before.nobody === false) {
+      await fire(this.triggerEveryoneStatusEnded, { status: status.name }, { statusId });
+      if (isVacation) await fire(this.triggerEveryoneVacationEnded);
     }
 
-    this.lastEveryoneOnVacation = everyone;
-    this.lastNobodyOnVacation = nobody;
+    this.statusEdges.set(statusId, { everyone, nobody });
   }
 
   /**
-   * Keeps every paired vacation device showing the truth from the store.
+   * Keeps every paired tile for one status showing the truth from its store.
+   *
+   * Two drivers to cover: 'vacation', which predates statuses and whose devices
+   * are all about vacation, and 'status', whose devices each name the status
+   * they belong to. A device of the wrong status is skipped rather than told to
+   * resync, so a household with a dozen tiles does a dozen no-ops at most.
    *
    * Also called once at startup: a device can initialise before this app does,
    * and a device that lost that race would otherwise sit showing no value at all.
+   *
+   * @param {string} statusId
    */
-  syncVacationDevices() {
-    try {
-      const driver = this.homey.drivers.getDriver('vacation');
-      if (!driver) return;
+  syncStatusDevices(statusId) {
+    for (const driverId of ['vacation', 'status']) {
+      if (driverId === 'vacation' && statusId !== StatusRegistry.VACATION) continue;
 
-      for (const device of driver.getDevices()) {
-        if (typeof device.syncFromStore === 'function') {
+      try {
+        const driver = this.homey.drivers.getDriver(driverId);
+        if (!driver) continue;
+
+        for (const device of driver.getDevices()) {
+          if (typeof device.syncFromStore !== 'function') continue;
+          if (driverId === 'status' && device.statusId !== statusId) continue;
+
           device.syncFromStore().catch((err) => this.error(`Device sync failed: ${err.message}`));
         }
+      } catch (err) {
+        this.error(`Could not reach the ${driverId} devices: ${err.message}`);
       }
-    } catch (err) {
-      this.error(`Could not reach the vacation devices: ${err.message}`);
     }
   }
 
@@ -464,6 +640,37 @@ class AdditionalUserStatusesApp extends Homey.App {
   async setVacation(userId, onVacation) {
     await this.vacation.set(userId, Boolean(onVacation));
     return this.getOverview();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Statuses, for the settings page
+  // ---------------------------------------------------------------------------
+
+  /** Every status with who holds it, in one round trip. */
+  async getStatuses() {
+    const users = await this.userStatus.fetchUsers();
+
+    return {
+      statuses: this.statuses.list().map((status) => ({
+        ...status,
+        userIds: this.statuses.store(status.id).getIds().filter((id) => users.some((user) => user.id === id)),
+      })),
+      users: users.map((user) => ({ id: user.id, name: user.name, enabled: user.enabled })),
+    };
+  }
+
+  async setStatus(statusId, userId, held) {
+    const store = this.storeFor(statusId);
+    await store.set(userId, Boolean(held));
+
+    return this.getStatuses();
+  }
+
+  async saveStatuses(list) {
+    await this.statuses.saveCustom(list);
+    this.record(this.homey.__('log.statuses_saved'));
+
+    return this.getStatuses();
   }
 
 }

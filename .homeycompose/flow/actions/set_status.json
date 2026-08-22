@@ -1,0 +1,42 @@
+{
+  "id": "set_status",
+  "title": {
+    "en": "Set a status for a user",
+    "nl": "Een status voor een gebruiker zetten",
+    "fr": "Définir un statut pour un utilisateur"
+  },
+  "titleFormatted": {
+    "en": "Set [[status]] for [[user]] to [[state]]",
+    "nl": "Zet [[status]] voor [[user]] op [[state]]",
+    "fr": "Définir [[status]] pour [[user]] sur [[state]]"
+  },
+  "hint": {
+    "en": "Gives one user a status, takes it away, or flips whichever it is now. Every route to a status - this card, the settings page, a device tile - writes to the same place, so nothing can drift out of step.",
+    "nl": "Geeft één gebruiker een status, neemt hem weg, of wisselt om wat hij nu is. Elke weg naar een status - deze kaart, de instellingenpagina, een apparaattegel - schrijft naar dezelfde plek, dus er kan niets uit de pas lopen.",
+    "fr": "Donne un statut à un utilisateur, le retire, ou inverse l'état actuel. Toutes les voies vers un statut - cette carte, la page de réglages, une tuile d'appareil - écrivent au même endroit : rien ne peut se désynchroniser."
+  },
+  "args": [
+    {
+      "name": "status",
+      "type": "autocomplete",
+      "title": { "en": "Status", "nl": "Status", "fr": "Statut" },
+      "placeholder": { "en": "Choose a status…", "nl": "Kies een status…", "fr": "Choisissez un statut…" }
+    },
+    {
+      "name": "user",
+      "type": "autocomplete",
+      "title": { "en": "User", "nl": "Gebruiker", "fr": "Utilisateur" },
+      "placeholder": { "en": "Choose a user…", "nl": "Kies een gebruiker…", "fr": "Choisissez un utilisateur…" }
+    },
+    {
+      "name": "state",
+      "type": "dropdown",
+      "title": { "en": "Set to", "nl": "Zetten op", "fr": "Définir sur" },
+      "values": [
+        { "id": "on", "title": { "en": "on", "nl": "aan", "fr": "activé" } },
+        { "id": "off", "title": { "en": "off", "nl": "uit", "fr": "désactivé" } },
+        { "id": "toggle", "title": { "en": "the other way round", "nl": "omgewisseld", "fr": "inversé" } }
+      ]
+    }
+  ]
+}

@@ -193,6 +193,33 @@
       display: none;
     }
 
+    .status-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .status-card h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+    .status-card .builtin {
+      font-size: 12px;
+      opacity: 0.65;
+      font-weight: normal;
+    }
+    .status-name-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 7px 9px;
+      margin-bottom: 8px;
+      font: inherit;
+    }
+    .status-holders {
+      margin: 8px 0 0;
+      font-size: 13px;
+      opacity: 0.75;
+    }
     .tab-pane.active {
       display: block;
     }
@@ -333,6 +360,7 @@
 
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-btn-settings" data-i18n="settings.tab_settings">Settings</button>
+    <button class="tab-btn" id="tab-btn-statuses" data-i18n="settings.tab_statuses">Statuses</button>
     <button class="tab-btn" id="tab-btn-log" data-i18n="settings.tab_log">Log</button>
   </div>
 
@@ -395,6 +423,22 @@
   </div>
 
   </div><!-- /tab-settings -->
+
+  <div class="tab-pane" id="tab-statuses">
+    <h2 data-i18n="settings.statuses_title">Statuses beyond vacation</h2>
+    <p class="intro" data-i18n="settings.statuses_intro">
+      A status is a label you put on a person, and every status gets the same Flow cards: a
+      trigger for taking it on or losing it, a condition, and an action to set it. Vacation and
+      Do not disturb come with the app. Add your own for whatever your household needs.
+    </p>
+
+    <div id="statuses"></div>
+
+    <div class="button-group">
+      <button class="btn-refresh" id="status-add" data-i18n="settings.status_add">Add a status</button>
+      <button class="btn-refresh" id="status-refresh" data-i18n="settings.refresh">Refresh</button>
+    </div>
+  </div><!-- /tab-statuses -->
 
   <div class="tab-pane" id="tab-log">
     <h2 data-i18n="settings.log_title">What the app has been doing</h2>

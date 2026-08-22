@@ -3,7 +3,8 @@
   "any_user": "Any user",
   "device": {
     "name_prefix": "Vacation",
-    "user_gone": "This Homey user no longer exists."
+    "user_gone": "This Homey user no longer exists.",
+    "status_gone": "This status no longer exists."
   },
   "settings": {
     "title": "Which users count as \"everyone\"?",
@@ -29,7 +30,19 @@
     "log_filter": "Show",
     "log_filter_all": "All events",
     "log_filter_special": "Only triggers and errors",
-    "disabled_note": "An account that is disabled in Homey is never counted, whatever is ticked here — it cannot report where it is."
+    "disabled_note": "An account that is disabled in Homey is never counted, whatever is ticked here — it cannot report where it is.",
+    "tab_statuses": "Statuses",
+    "statuses_title": "Statuses beyond vacation",
+    "statuses_intro": "A status is a label you put on a person, and every status gets the same Flow cards: a trigger for taking it on or losing it, a condition, and an action to set it. Vacation and Do not disturb come with the app. Add your own for whatever your household needs.",
+    "status_add": "Add a status",
+    "status_name": "Name",
+    "status_exclude": "Leave holders out of the \"everyone\" cards",
+    "status_auto_return": "Clear it automatically when that person comes home",
+    "status_delete": "Delete",
+    "status_holders": "Who has it",
+    "status_builtin": "Comes with the app",
+    "status_none": "No statuses of your own yet.",
+    "status_name_placeholder": "Working from home"
   },
   "log": {
     "app_started": "App started.",
@@ -59,7 +72,11 @@
     "err_trigger": "Could not fire a vacation trigger: __message__",
     "err_persist": "Could not change log persistence: __message__",
     "not_counted": "not counted",
-    "on_vacation": "on vacation"
+    "on_vacation": "on vacation",
+    "status_started": "__name__ now has the status __status__.",
+    "status_ended": "__name__ no longer has the status __status__.",
+    "auto_return_status": "__name__ came home, so the status __status__ is cleared.",
+    "statuses_saved": "The list of statuses was changed."
   },
   "ui": {
     "yes": "Yes",
@@ -92,5 +109,9 @@
     "names_home": "Names at home",
     "names_awake": "Names awake",
     "names_vacation": "Names on vacation"
+  },
+  "status": {
+    "vacation": "On vacation",
+    "dnd": "Do not disturb"
   }
 }
