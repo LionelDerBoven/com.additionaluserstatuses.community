@@ -58,6 +58,14 @@ function makeWatcher(users, counted = null) {
       const all = this.counted || this.users;
       return all.length > 0 && all.every((u) => u.asleep);
     },
+    async isEveryoneHome() {
+      const all = this.counted || this.users;
+      return all.length > 0 && all.every((u) => u.present);
+    },
+    async isNobodyHome() {
+      const all = this.counted || this.users;
+      return all.length > 0 && all.every((u) => !u.present);
+    },
   };
 
   const homey = {

@@ -36,6 +36,12 @@ function fakeStatus(initialUsers) {
     async isEveryoneAsleep() {
       return this.users.length > 0 && this.users.every((u) => u.asleep);
     },
+    async isEveryoneHome() {
+      return this.users.length > 0 && this.users.every((u) => u.present);
+    },
+    async isNobodyHome() {
+      return this.users.length > 0 && this.users.every((u) => !u.present);
+    },
   };
 }
 
@@ -65,6 +71,10 @@ function makeWatcher(status) {
     firstAnyAwake: [],
     everyoneAsleep: 0,
     everyoneAsleepWho: [],
+    everyoneHomeAwake: [],
+    everyoneAwake: [],
+    everyoneHome: 0,
+    everyoneLeft: 0,
   };
   watcher.on('arrived', (user) => events.arrived.push(user.id));
   watcher.on('everyone-home-asleep', (user) => {
@@ -78,6 +88,14 @@ function makeWatcher(status) {
   watcher.on('everyone-asleep', (user) => {
     events.everyoneAsleep += 1;
     events.everyoneAsleepWho.push(user.id);
+  });
+  watcher.on('everyone-home-awake', (user) => events.everyoneHomeAwake.push(user.id));
+  watcher.on('everyone-awake', (user) => events.everyoneAwake.push(user.id));
+  watcher.on('everyone-home', () => {
+    events.everyoneHome += 1;
+  });
+  watcher.on('everyone-left', () => {
+    events.everyoneLeft += 1;
   });
 
   return { watcher, events };
@@ -619,4 +637,110 @@ test('it stays silent when the last awake person drops out of the count', async 
   await watcher.check();
 
   assert.strictEqual(events.everyoneAsleep, 0, 'nobody went to bed, the count just shrank');
+});
+
+// ---------------------------------------------------------------------------
+// The last person to wake up — the end of the night
+// ---------------------------------------------------------------------------
+
+test('the last sleeper at home waking is named', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+  assert.deepStrictEqual(events.everyoneHomeAwake, [], 'b is still asleep');
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+  assert.deepStrictEqual(events.everyoneHomeAwake, ['b'], 'b was last up');
+});
+
+test('the last sleeper leaving the house is not a waking', async () => {
+  // a is up, b is asleep at home, then b goes out awake. "Everyone at home is
+  // asleep" flips true->false, but nobody woke up in this house.
+  const status = fakeStatus([user('a', true, false), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.everyoneHomeAwake, [], 'leaving is not waking');
+});
+
+test('the at-home waking does not fire again while everyone stays up', async () => {
+  const status = fakeStatus([user('a', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false)];
+  await watcher.check();
+  await watcher.check();
+  await watcher.check();
+
+  assert.deepStrictEqual(events.everyoneHomeAwake, ['a'], 'level, not edge, would fire every poll');
+});
+
+test('somebody sleeping elsewhere holds the household waking back', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', false, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', false, true)];
+  await watcher.check();
+  assert.deepStrictEqual(events.everyoneHomeAwake, ['a'], 'at home everyone is up');
+  assert.deepStrictEqual(events.everyoneAwake, [], 'but b is still asleep at the hotel');
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+  assert.deepStrictEqual(events.everyoneAwake, ['b']);
+});
+
+// ---------------------------------------------------------------------------
+// Everyone in, everyone out
+// ---------------------------------------------------------------------------
+
+test('everyone at home fires when the last one who counts arrives', async () => {
+  const status = fakeStatus([user('a', true), user('b', false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true), user('b', true)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneHome, 1);
+
+  await watcher.check();
+  assert.strictEqual(events.everyoneHome, 1, 'staying in is not arriving');
+});
+
+test('everyone out fires when the last one who counts leaves', async () => {
+  const status = fakeStatus([user('a', true), user('b', true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', false), user('b', true)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneLeft, 0, 'b is still in');
+
+  status.users = [user('a', false), user('b', false)];
+  await watcher.check();
+  assert.strictEqual(events.everyoneLeft, 1);
+});
+
+test('the two presence cards can each fire again after the other', async () => {
+  const status = fakeStatus([user('a', true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', false)];
+  await watcher.check();
+  status.users = [user('a', true)];
+  await watcher.check();
+  status.users = [user('a', false)];
+  await watcher.check();
+
+  assert.strictEqual(events.everyoneLeft, 2);
+  assert.strictEqual(events.everyoneHome, 1);
 });

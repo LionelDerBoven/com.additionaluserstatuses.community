@@ -54,6 +54,14 @@
             "nl": "terug",
             "fr": "de retour"
           }
+        },
+        {
+          "id": "toggle",
+          "title": {
+            "en": "the other way round",
+            "nl": "omgewisseld",
+            "fr": "inversé"
+          }
         }
       ]
     }

@@ -7,7 +7,7 @@
   },
   "settings": {
     "title": "Quels utilisateurs comptent comme « tout le monde » ?",
-    "intro": "Les cartes « tout le monde » consultent en direct les utilisateurs cochés ci-dessous, à chaque exécution d'un Flow. Un nouvel utilisateur Homey est pris en compte automatiquement : vous n'avez donc jamais à modifier un Flow lorsque quelqu'un rejoint le foyer. Décochez toute personne qui ne doit pas bloquer toute la maison — un compte invité, ou un téléphone qui ne signale jamais sa présence. Les comptes désactivés dans Homey sont toujours ignorés.",
+    "intro": "Les cartes « tout le monde » consultent en direct les utilisateurs cochés ci-dessous, à chaque exécution d'un Flow. Un nouvel utilisateur Homey est pris en compte automatiquement : vous n'avez donc jamais à modifier un Flow lorsque quelqu'un rejoint le foyer. Décochez toute personne qui ne doit pas bloquer toute la maison — un compte invité, ou un téléphone qui ne signale jamais sa présence.",
     "everyone_home": "Tout le monde est à la maison",
     "everyone_asleep": "Tout le monde dort",
     "everyone_home_asleep": "Tout le monde à la maison dort",
@@ -28,13 +28,18 @@
     "log_24h": "Afficher les heures au format 24 heures",
     "log_filter": "Afficher",
     "log_filter_all": "Tous les événements",
-    "log_filter_special": "Uniquement déclencheurs et erreurs"
+    "log_filter_special": "Uniquement déclencheurs et erreurs",
+    "disabled_note": "Un compte désactivé dans Homey n'est jamais pris en compte, quoi que vous cochiez ici — il ne peut pas signaler où il se trouve."
   },
   "log": {
     "app_started": "App démarrée.",
     "users_found": "__count__ utilisateur(s) Homey trouvé(s), __counted__ pris en compte : __list__",
     "last_asleep": "__name__ est la dernière personne à la maison à s’être endormie.",
     "last_asleep_any": "__name__ est la dernière personne à s'endormir.",
+    "last_awake": "__name__ est la dernière personne à la maison à s'être réveillée.",
+    "last_awake_any": "__name__ est la dernière personne à s'être réveillée.",
+    "everyone_home": "Tout le monde qui compte est maintenant à la maison.",
+    "everyone_left": "Tout le monde qui compte est maintenant parti.",
     "first_awake": "__name__ est la première personne à la maison à s’être réveillée.",
     "first_home_asleep": "__name__ est la première personne à la maison à s'endormir.",
     "first_asleep": "__name__ est la première personne à s'endormir.",
@@ -77,5 +82,15 @@
     "role_manager": "gestionnaire",
     "role_user": "utilisateur",
     "role_guest": "invité"
+  },
+  "token": {
+    "count_home": "Utilisateurs à la maison",
+    "count_away": "Utilisateurs absents",
+    "count_awake": "Utilisateurs éveillés",
+    "count_asleep": "Utilisateurs endormis",
+    "count_vacation": "Utilisateurs en vacances",
+    "names_home": "Noms à la maison",
+    "names_awake": "Noms éveillés",
+    "names_vacation": "Noms en vacances"
   }
 }

@@ -6,6 +6,7 @@ const UserStatus = require('./lib/UserStatus');
 const VacationStore = require('./lib/VacationStore');
 const UserWatcher = require('./lib/UserWatcher');
 const EventLog = require('./lib/EventLog');
+const Tokens = require('./lib/Tokens');
 
 // Sentinel id for the "Any user" entry in trigger autocompletes.
 const ANY_USER = '*';
@@ -32,9 +33,17 @@ class AdditionalUserStatusesApp extends Homey.App {
       vacation: this.vacation,
     });
 
+    this.tokens = new Tokens({ homey: this.homey, userStatus: this.userStatus });
+
     this.registerFlowCards();
     this.wireVacationTriggers();
     this.watchLogSettings();
+
+    // Not awaited, for the same reason the watcher is not: a slow Homey should
+    // delay the tag values, not hold up the app.
+    this.tokens.start().catch((err) => {
+      this.error(`Could not create the Flow tags: ${err.message}`);
+    });
 
     this.watcher = new UserWatcher({ homey: this.homey, userStatus: this.userStatus });
     this.wireWatcher();
@@ -152,6 +161,16 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.homey.flow.getConditionCard('one_home_awake')
       .registerRunListener(async () => this.userStatus.isExactlyOneHomeAwake());
 
+    this.homey.flow.getConditionCard('count_users')
+      .registerRunListener(async (args) => {
+        const actual = await this.userStatus.countUsers(args.state);
+        const wanted = Number(args.count);
+
+        if (args.operator === 'min') return actual >= wanted;
+        if (args.operator === 'max') return actual <= wanted;
+        return actual === wanted;
+      });
+
     this.homey.flow.getConditionCard('everyone_on_vacation')
       .registerRunListener(async () => this.userStatus.isEveryoneOnVacation());
 
@@ -172,6 +191,10 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.triggerFirstHomeAsleep = this.homey.flow.getTriggerCard('first_home_asleep');
     this.triggerFirstAsleep = this.homey.flow.getTriggerCard('first_asleep');
     this.triggerFirstAwake = this.homey.flow.getTriggerCard('first_awake');
+    this.triggerEveryoneHomeAwake = this.homey.flow.getTriggerCard('everyone_home_awake');
+    this.triggerEveryoneAwake = this.homey.flow.getTriggerCard('everyone_awake');
+    this.triggerEveryoneHomeArrived = this.homey.flow.getTriggerCard('everyone_home_arrived');
+    this.triggerEveryoneLeft = this.homey.flow.getTriggerCard('everyone_left');
     this.triggerEveryoneVacationStarted = this.homey.flow.getTriggerCard('everyone_vacation_started');
     this.triggerEveryoneVacationEnded = this.homey.flow.getTriggerCard('everyone_vacation_ended');
 
@@ -191,10 +214,27 @@ class AdditionalUserStatusesApp extends Homey.App {
     const setVacation = this.homey.flow.getActionCard('set_vacation');
     setVacation.registerRunListener(async (args) => {
       if (!args.user?.id) throw new Error('No user selected.');
-      await this.vacation.set(args.user.id, args.state === 'on');
+
+      const wanted = args.state === 'toggle'
+        ? !this.vacation.isOnVacation(args.user.id)
+        : args.state === 'on';
+
+      await this.vacation.set(args.user.id, wanted);
       return true;
     });
     setVacation.registerArgumentAutocompleteListener('user', async (query) => this.autocompleteUsers(query));
+
+    // Everyone at once, as a single write: the store collapses it into one
+    // 'change' event, so the household cards fire once rather than per person.
+    this.homey.flow.getActionCard('set_vacation_all')
+      .registerRunListener(async (args) => {
+        const ids = (await this.userStatus.getEligibleUsers()).map((user) => user.id);
+
+        if (args.state === 'on') await this.vacation.setMany(ids, []);
+        else await this.vacation.setMany([], ids);
+
+        return true;
+      });
   }
 
   /**
@@ -233,12 +273,28 @@ class AdditionalUserStatusesApp extends Homey.App {
       { event: 'first-home-asleep', logKey: 'log.first_home_asleep', card: () => this.triggerFirstHomeAsleep },
       { event: 'first-asleep', logKey: 'log.first_asleep', card: () => this.triggerFirstAsleep },
       { event: 'first-awake', logKey: 'log.first_awake_any', card: () => this.triggerFirstAwake },
+      { event: 'everyone-home-awake', logKey: 'log.last_awake', card: () => this.triggerEveryoneHomeAwake },
+      { event: 'everyone-awake', logKey: 'log.last_awake_any', card: () => this.triggerEveryoneAwake },
     ];
 
     for (const { event, logKey, card } of sleepCards) {
       this.watcher.on(event, ({ name }) => {
         this.record(this.homey.__(logKey, { name }), 'trigger');
         card().trigger({ user: name }).catch((err) => this.error(err.message));
+      });
+    }
+
+    // The two household cards that name nobody. They take no tokens, so they
+    // cannot ride along in the table above.
+    const householdCards = [
+      { event: 'everyone-home', logKey: 'log.everyone_home', card: () => this.triggerEveryoneHomeArrived },
+      { event: 'everyone-left', logKey: 'log.everyone_left', card: () => this.triggerEveryoneLeft },
+    ];
+
+    for (const { event, logKey, card } of householdCards) {
+      this.watcher.on(event, () => {
+        this.record(this.homey.__(logKey), 'trigger');
+        card().trigger().catch((err) => this.error(err.message));
       });
     }
 
@@ -252,6 +308,9 @@ class AdditionalUserStatusesApp extends Homey.App {
       }[`${field}:${value}`];
 
       this.record(this.homey.__(key, { name }));
+
+      // The tags describe the household, so every change to it moves them.
+      this.tokens.refresh().catch((err) => this.error(err.message));
     });
 
     this.watcher.on('arrived', ({ id, name }) => {
@@ -298,6 +357,9 @@ class AdditionalUserStatusesApp extends Homey.App {
   }
 
   async onVacationChanged({ added, removed }) {
+    // Vacation decides who counts, so the tags move with it.
+    this.tokens.refresh().catch((err) => this.error(err.message));
+
     // Reflect the new state before announcing it. A tile showing the truth must
     // not depend on whether firing a Flow trigger happened to succeed, or the
     // device drifts out of step with the store - the exact failure the device

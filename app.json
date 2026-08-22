@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -55,6 +55,31 @@
   "flow": {
     "triggers": [
       {
+        "id": "everyone_awake",
+        "title": {
+          "en": "The last person wakes up",
+          "nl": "De laatste persoon werd wakker",
+          "fr": "La dernière personne se réveille"
+        },
+        "hint": {
+          "en": "Fires when the last person in the household wakes up, so nobody who counts is asleep any more, wherever they are. Unlike 'The last person at home wakes up' it also counts somebody who was sleeping elsewhere. It fires again the next morning. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who was last to wake.",
+          "nl": "Gaat af wanneer de laatste persoon van het huishouden wakker wordt, zodat er niemand die meetelt nog slaapt, waar diegene ook is. Anders dan 'De laatste persoon thuis werd wakker' telt deze ook iemand mee die elders lag te slapen. Gaat de volgende ochtend opnieuw af. Gebruikers die op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. De tag Gebruiker zegt wie als laatste wakker werd.",
+          "fr": "Se déclenche lorsque la dernière personne du foyer se réveille, si bien que plus personne qui compte ne dort, où qu'elle soit. Contrairement à « La dernière personne à la maison se réveille », il tient aussi compte de quelqu'un qui dormait ailleurs. Il se déclenche à nouveau le lendemain matin. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est réveillé en dernier."
+        },
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          }
+        ]
+      },
+      {
         "id": "everyone_became_asleep",
         "title": {
           "en": "The last person goes to the status asleep",
@@ -65,6 +90,44 @@
           "en": "Fires when the last person in the household goes to the status asleep, so everybody counted is asleep, wherever they are. Unlike 'The last person at home goes to the status asleep' it does not ignore anyone who is out - so somebody away for the evening who never reports being asleep will hold this card back all night. Put that person on vacation, or switch them off in this app's settings, and the card fires again. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who was last to fall asleep.",
           "nl": "Gaat af wanneer de laatste persoon van het huishouden naar de status slaapt gaat, zodat iedereen die meetelt slaapt, waar diegene ook is. Anders dan 'De laatste persoon thuis ging slapen' laat deze niemand buiten beschouwing die weg is - iemand die een avondje weg is en nooit doorgeeft dat hij slaapt, houdt deze kaart dus de hele nacht tegen. Zet die persoon op vakantie of vink hem uit in de instellingen van deze app, en de kaart gaat weer af. Gebruikers die op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. De tag Gebruiker zegt wie als laatste in slaap viel.",
           "fr": "Se déclenche lorsque la dernière personne du foyer passe au statut endormi, si bien que tous ceux qui comptent dorment, où qu'ils soient. Contrairement à « La dernière personne à la maison s'endort », il ne fait abstraction de personne d'absent : quelqu'un sorti pour la soirée et qui ne signale jamais qu'il dort retient donc cette carte toute la nuit. Mettez cette personne en vacances, ou désactivez-la dans les réglages de cette app, et la carte se déclenche de nouveau. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est endormi en dernier."
+        },
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          }
+        ]
+      },
+      {
+        "id": "everyone_home_arrived",
+        "title": {
+          "en": "Everyone is at home",
+          "nl": "Iedereen is thuis",
+          "fr": "Tout le monde est à la maison"
+        },
+        "hint": {
+          "en": "Fires the moment the last person who counts comes home, so the whole household is in. Homey's own 'the first person comes home' is about an empty house filling up; this is about a full one. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored, so somebody away for a fortnight no longer holds this back. It carries no tag: reaching this state is the household's doing, not one person's.",
+          "nl": "Gaat af op het moment dat de laatste persoon die meetelt thuiskomt, zodat het hele huishouden binnen is. Homey's eigen 'de eerste persoon komt thuis' gaat over een leeg huis dat vol loopt; deze gaat over een vol huis. Gebruikers die op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd, dus wie veertien dagen weg is houdt dit niet langer tegen. Draagt geen tag: dat deze toestand bereikt wordt is het werk van het huishouden, niet van één persoon.",
+          "fr": "Se déclenche au moment où la dernière personne qui compte rentre, si bien que tout le foyer est présent. Le « la première personne rentre » de Homey concerne une maison vide qui se remplit ; celle-ci concerne une maison pleine. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés : quelqu'un parti quinze jours ne bloque donc plus cette carte. Elle ne porte pas de tag : atteindre cet état est l'affaire du foyer, pas d'une personne."
+        }
+      },
+      {
+        "id": "everyone_home_awake",
+        "title": {
+          "en": "The last person at home wakes up",
+          "nl": "De laatste persoon thuis werd wakker",
+          "fr": "La dernière personne à la maison se réveille"
+        },
+        "hint": {
+          "en": "Fires when the last sleeper at home wakes up, so nobody at home is asleep any more - the end of the night. It does not fire when the last sleeper simply leaves the house, because nobody woke up there. It fires again the next morning. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who was last to wake.",
+          "nl": "Gaat af wanneer de laatste slaper thuis wakker wordt, zodat er thuis niemand meer slaapt - het einde van de nacht. Gaat niet af wanneer de laatste slaper gewoon het huis verlaat, want dan is er niemand wakker geworden. Gaat de volgende ochtend opnieuw af. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. De tag Gebruiker zegt wie als laatste wakker werd.",
+          "fr": "Se déclenche lorsque le dernier dormeur à la maison se réveille, si bien que plus personne n'y dort - la fin de la nuit. Ne se déclenche pas lorsque le dernier dormeur quitte simplement la maison, car personne ne s'est réveillé. Il se déclenche à nouveau le lendemain matin. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est réveillé en dernier."
         },
         "tokens": [
           {
@@ -103,6 +166,19 @@
             "example": "Alex"
           }
         ]
+      },
+      {
+        "id": "everyone_left",
+        "title": {
+          "en": "Everyone is out",
+          "nl": "Iedereen is weg",
+          "fr": "Tout le monde est parti"
+        },
+        "hint": {
+          "en": "Fires the moment the last person who counts leaves, so the house is empty. Homey's own 'the last person leaves' counts every Homey user, including a guest account that never reports presence; this one counts the household you ticked. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. It carries no tag.",
+          "nl": "Gaat af op het moment dat de laatste persoon die meetelt vertrekt, zodat het huis leeg is. Homey's eigen 'de laatste persoon gaat weg' telt élke Homey-gebruiker mee, ook een gastaccount dat nooit aanwezigheid doorgeeft; deze telt het huishouden dat jij hebt aangevinkt. Gebruikers die op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. Draagt geen tag.",
+          "fr": "Se déclenche au moment où la dernière personne qui compte s'en va, si bien que la maison est vide. Le « la dernière personne part » de Homey tient compte de chaque utilisateur Homey, y compris un compte invité qui ne signale jamais sa présence ; celle-ci tient compte du foyer que vous avez coché. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Elle ne porte pas de tag."
+        }
       },
       {
         "id": "everyone_vacation_ended",
@@ -325,6 +401,136 @@
     ],
     "conditions": [
       {
+        "id": "count_users",
+        "title": {
+          "en": "The number of users at home, awake or asleep",
+          "nl": "Het aantal gebruikers thuis, wakker of slapend",
+          "fr": "Le nombre d'utilisateurs à la maison, éveillés ou endormis"
+        },
+        "titleFormatted": {
+          "en": "There !{{are|are not}} [[operator]] [[count]] users [[state]]",
+          "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers [[state]]",
+          "fr": "Il y !{{a|n'y a pas}} [[operator]] [[count]] utilisateurs [[state]]"
+        },
+        "hint": {
+          "en": "Counts the users this app is told to count and compares that number. Anyone on vacation, switched off in this app's settings, or disabled in Homey is left out. Use it where a plain yes-or-no card is too blunt: 'at least two people at home', 'exactly one awake', 'no one asleep at home'.",
+          "nl": "Telt de gebruikers die volgens deze app meetellen en vergelijkt dat aantal. Wie op vakantie is, in de instellingen is uitgezet of in Homey is uitgeschakeld telt niet mee. Handig waar een gewone ja-of-nee-kaart te grof is: 'minstens twee mensen thuis', 'precies één wakker', 'niemand thuis aan het slapen'.",
+          "fr": "Compte les utilisateurs que cette app doit prendre en compte et compare ce nombre. Les personnes en vacances, désactivées dans les réglages de cette app ou désactivées dans Homey sont exclues. Utile là où une carte oui-ou-non est trop grossière : « au moins deux personnes à la maison », « exactement une éveillée », « personne endormi à la maison »."
+        },
+        "args": [
+          {
+            "name": "operator",
+            "type": "dropdown",
+            "title": {
+              "en": "Comparison",
+              "nl": "Vergelijking",
+              "fr": "Comparaison"
+            },
+            "values": [
+              {
+                "id": "min",
+                "title": {
+                  "en": "at least",
+                  "nl": "minstens",
+                  "fr": "au moins"
+                }
+              },
+              {
+                "id": "exact",
+                "title": {
+                  "en": "exactly",
+                  "nl": "precies",
+                  "fr": "exactement"
+                }
+              },
+              {
+                "id": "max",
+                "title": {
+                  "en": "at most",
+                  "nl": "hoogstens",
+                  "fr": "au plus"
+                }
+              }
+            ]
+          },
+          {
+            "name": "count",
+            "type": "number",
+            "min": 0,
+            "step": 1,
+            "title": {
+              "en": "Number",
+              "nl": "Aantal",
+              "fr": "Nombre"
+            },
+            "placeholder": {
+              "en": "2",
+              "nl": "2",
+              "fr": "2"
+            }
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "title": {
+              "en": "Who",
+              "nl": "Wie",
+              "fr": "Qui"
+            },
+            "values": [
+              {
+                "id": "home",
+                "title": {
+                  "en": "at home",
+                  "nl": "thuis",
+                  "fr": "à la maison"
+                }
+              },
+              {
+                "id": "away",
+                "title": {
+                  "en": "away",
+                  "nl": "weg",
+                  "fr": "absents"
+                }
+              },
+              {
+                "id": "awake",
+                "title": {
+                  "en": "awake",
+                  "nl": "wakker",
+                  "fr": "éveillés"
+                }
+              },
+              {
+                "id": "asleep",
+                "title": {
+                  "en": "asleep",
+                  "nl": "slapend",
+                  "fr": "endormis"
+                }
+              },
+              {
+                "id": "home_awake",
+                "title": {
+                  "en": "at home and awake",
+                  "nl": "thuis en wakker",
+                  "fr": "à la maison et éveillés"
+                }
+              },
+              {
+                "id": "home_asleep",
+                "title": {
+                  "en": "at home and asleep",
+                  "nl": "thuis en slapend",
+                  "fr": "à la maison et endormis"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "everyone_asleep",
         "title": {
           "en": "!{{Everyone is asleep|Not everyone is asleep}}",
@@ -470,6 +676,61 @@
               "fr": "Choisissez un utilisateur…"
             }
           },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "title": {
+              "en": "Status",
+              "nl": "Status",
+              "fr": "Statut"
+            },
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on vacation",
+                  "nl": "op vakantie",
+                  "fr": "en vacances"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "returned",
+                  "nl": "terug",
+                  "fr": "de retour"
+                }
+              },
+              {
+                "id": "toggle",
+                "title": {
+                  "en": "the other way round",
+                  "nl": "omgewisseld",
+                  "fr": "inversé"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "set_vacation_all",
+        "title": {
+          "en": "Set the vacation status for everyone",
+          "nl": "Vakantiestatus voor iedereen zetten",
+          "fr": "Définir le statut de vacances pour tout le monde"
+        },
+        "titleFormatted": {
+          "en": "Mark everyone as [[state]]",
+          "nl": "Markeer iedereen als [[state]]",
+          "fr": "Marquer tout le monde comme [[state]]"
+        },
+        "hint": {
+          "en": "Puts every user on vacation at once, or brings them all back. Applied as a single change, so the household cards 'Everyone is on vacation' and 'Nobody is on vacation any more' fire once rather than once per person. Accounts disabled in Homey are left alone.",
+          "nl": "Zet iedereen in één keer op vakantie, of haalt iedereen terug. Wordt als één wijziging doorgevoerd, zodat de huishoudkaarten 'Iedereen is op vakantie' en 'Niemand is nog op vakantie' één keer afgaan in plaats van één keer per persoon. Accounts die in Homey zijn uitgeschakeld blijven ongemoeid.",
+          "fr": "Met tout le monde en vacances d'un coup, ou fait revenir tout le monde. Appliqué comme une seule modification, si bien que les cartes « Tout le monde est en vacances » et « Plus personne n'est en vacances » se déclenchent une fois au lieu d'une fois par personne. Les comptes désactivés dans Homey ne sont pas touchés."
+        },
+        "args": [
           {
             "name": "state",
             "type": "dropdown",

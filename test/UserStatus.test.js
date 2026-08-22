@@ -166,3 +166,60 @@ test('a failed read is not cached, so the next evaluation retries', async () => 
   assert.strictEqual(await status.isEveryoneHome(), true, 'the retry should succeed');
   assert.strictEqual(calls, 2);
 });
+
+// ---------------------------------------------------------------------------
+// The empty house, and counting
+// ---------------------------------------------------------------------------
+
+test('nobody home is true only when every counted user is out', async () => {
+  const { status } = makeStatus(users({ present: false }, { present: false }));
+  assert.strictEqual(await status.isNobodyHome(), true);
+});
+
+test('one person still in makes nobody-home false', async () => {
+  const { status } = makeStatus(users({ present: false }, { present: true }));
+  assert.strictEqual(await status.isNobodyHome(), false);
+});
+
+test('a presence Homey never set counts as out', async () => {
+  const { status } = makeStatus(users({ present: null }));
+  assert.strictEqual(await status.isNobodyHome(), true, 'not present is not present');
+});
+
+test('nobody home and everyone home are both false for an empty count', async () => {
+  // Every user unticked: saying "the house is empty" would fire away-automations
+  // at a full house, so both questions fail closed.
+  const { status } = makeStatus(users({ id: 'a', present: false }), ['a']);
+  assert.strictEqual(await status.isNobodyHome(), false);
+  assert.strictEqual(await status.isEveryoneHome(), false);
+});
+
+test('counting covers each state a Flow can pick', async () => {
+  const { status } = makeStatus(users(
+    { present: true, asleep: true },
+    { present: true, asleep: false },
+    { present: false, asleep: false },
+  ));
+
+  assert.strictEqual(await status.countUsers('home'), 2);
+  assert.strictEqual(await status.countUsers('away'), 1);
+  assert.strictEqual(await status.countUsers('asleep'), 1);
+  assert.strictEqual(await status.countUsers('awake'), 2);
+  assert.strictEqual(await status.countUsers('home_awake'), 1);
+  assert.strictEqual(await status.countUsers('home_asleep'), 1);
+});
+
+test('counting leaves out anyone who does not count', async () => {
+  const { status } = makeStatus(users(
+    { id: 'a', present: true },
+    { id: 'b', present: true },
+    { id: 'c', present: true, enabled: false },
+  ), ['b']);
+
+  assert.strictEqual(await status.countUsers('home'), 1, 'b is unticked, c is disabled');
+});
+
+test('an unknown state is a mistake worth reporting, not a zero', async () => {
+  const { status } = makeStatus(users({ present: true }));
+  await assert.rejects(() => status.countUsers('elsewhere'), /Unknown user state/);
+});
