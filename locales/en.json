@@ -54,6 +54,7 @@
     "everyone_home": "Everyone who counts is now at home.",
     "everyone_left": "Everyone who counts has now gone out.",
     "first_awake": "__name__ is the first person at home to wake up.",
+    "someone_home_awake": "__name__ woke up at home.",
     "first_home_asleep": "__name__ is the first person at home to go to sleep.",
     "first_asleep": "__name__ is the first person to go to sleep.",
     "first_awake_any": "__name__ is the first person to wake up.",

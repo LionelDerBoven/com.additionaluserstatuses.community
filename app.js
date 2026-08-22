@@ -199,6 +199,7 @@ class AdditionalUserStatusesApp extends Homey.App {
     this.triggerFirstHomeAsleep = this.homey.flow.getTriggerCard('first_home_asleep');
     this.triggerFirstAsleep = this.homey.flow.getTriggerCard('first_asleep');
     this.triggerFirstAwake = this.homey.flow.getTriggerCard('first_awake');
+    this.triggerSomeoneHomeAwake = this.homey.flow.getTriggerCard('someone_home_awake');
     this.triggerEveryoneHomeAwake = this.homey.flow.getTriggerCard('everyone_home_awake');
     this.triggerEveryoneAwake = this.homey.flow.getTriggerCard('everyone_awake');
     this.triggerEveryoneHomeArrived = this.homey.flow.getTriggerCard('everyone_home_arrived');
@@ -386,6 +387,7 @@ class AdditionalUserStatusesApp extends Homey.App {
       { event: 'everyone-home-asleep', logKey: 'log.last_asleep', card: () => this.triggerEveryoneHomeAsleep },
       { event: 'everyone-asleep', logKey: 'log.last_asleep_any', card: () => this.triggerEveryoneAsleep },
       { event: 'first-home-awake', logKey: 'log.first_awake', card: () => this.triggerFirstHomeAwake },
+      { event: 'someone-home-awake', logKey: 'log.someone_home_awake', card: () => this.triggerSomeoneHomeAwake },
       { event: 'first-home-asleep', logKey: 'log.first_home_asleep', card: () => this.triggerFirstHomeAsleep },
       { event: 'first-asleep', logKey: 'log.first_asleep', card: () => this.triggerFirstAsleep },
       { event: 'first-awake', logKey: 'log.first_awake_any', card: () => this.triggerFirstAwake },

@@ -54,6 +54,7 @@
     "everyone_home": "Tout le monde qui compte est maintenant à la maison.",
     "everyone_left": "Tout le monde qui compte est maintenant parti.",
     "first_awake": "__name__ est la première personne à la maison à s’être réveillée.",
+    "someone_home_awake": "__name__ s'est réveillé à la maison.",
     "first_home_asleep": "__name__ est la première personne à la maison à s'endormir.",
     "first_asleep": "__name__ est la première personne à s'endormir.",
     "first_awake_any": "__name__ est la première personne à se réveiller.",

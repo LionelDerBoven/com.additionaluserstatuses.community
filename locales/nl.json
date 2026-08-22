@@ -54,6 +54,7 @@
     "everyone_home": "Iedereen die meetelt is nu thuis.",
     "everyone_left": "Iedereen die meetelt is nu weg.",
     "first_awake": "__name__ werd als eerste thuis wakker.",
+    "someone_home_awake": "__name__ is thuis wakker geworden.",
     "first_home_asleep": "__name__ ging als eerste thuis slapen.",
     "first_asleep": "__name__ ging als eerste slapen.",
     "first_awake_any": "__name__ werd als eerste wakker.",

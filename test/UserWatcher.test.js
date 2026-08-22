@@ -72,6 +72,7 @@ function makeWatcher(status) {
     everyoneAsleep: 0,
     everyoneAsleepWho: [],
     everyoneHomeAwake: [],
+    someoneHomeAwake: [],
     everyoneAwake: [],
     everyoneHome: 0,
     everyoneLeft: 0,
@@ -90,6 +91,7 @@ function makeWatcher(status) {
     events.everyoneAsleepWho.push(user.id);
   });
   watcher.on('everyone-home-awake', (user) => events.everyoneHomeAwake.push(user.id));
+  watcher.on('someone-home-awake', (user) => events.someoneHomeAwake.push(user.id));
   watcher.on('everyone-awake', (user) => events.everyoneAwake.push(user.id));
   watcher.on('everyone-home', () => {
     events.everyoneHome += 1;
@@ -784,4 +786,68 @@ test('somebody coming home from vacation still counts as arriving', async () => 
   await watcher.check();
 
   assert.strictEqual(events.everyoneHome, 1, 'b really did arrive');
+});
+
+// ---------------------------------------------------------------------------
+// Anyone at home waking — the second and third riser too
+// ---------------------------------------------------------------------------
+
+test('every riser at home is reported, not just the first', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, true)];
+  await watcher.check();
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, ['a', 'b'], 'both mornings, in order');
+  assert.deepStrictEqual(events.firstAwake, ['a'], 'while the first-riser card fires once');
+});
+
+test('two waking in one poll is two people, not one household', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, ['a', 'b'], 'the card names a person, so it fires per person');
+});
+
+test('somebody waking elsewhere is not somebody waking at home', async () => {
+  const status = fakeStatus([user('a', true, false), user('b', false, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, false), user('b', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, [], 'b woke at the hotel');
+});
+
+test('arriving home awake is not waking up at home', async () => {
+  const status = fakeStatus([user('a', true, true), user('b', false, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  status.users = [user('a', true, true), user('b', true, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, [], 'b walked in, nobody woke');
+});
+
+test('an empty house cannot report a waking', async () => {
+  const status = fakeStatus([user('a', true, true)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  // The last sleeper leaves and wakes up outside - the case the cooldown in the
+  // Goedemorgen Flow was built to paper over.
+  status.users = [user('a', false, false)];
+  await watcher.check();
+
+  assert.deepStrictEqual(events.someoneHomeAwake, [], 'waking outside is not waking here');
 });

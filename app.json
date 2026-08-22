@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -396,6 +396,31 @@
           "en": "Fires when somebody who was at home and asleep wakes up while everyone else at home is still asleep, so they are the only one awake. It does not fire for the second person to wake, nor in the evening when someone goes to bed leaving one person awake, nor when somebody arrives home awake. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who woke up.",
           "nl": "Gaat af wanneer iemand die thuis lag te slapen wakker wordt terwijl de rest thuis nog slaapt, zodat diegene de enige wakkere is. Gaat niet af voor de tweede die wakker wordt, niet 's avonds wanneer er iemand gaat slapen en er één wakker overblijft, en niet wanneer er iemand wakker thuiskomt. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgezet of in Homey zijn uitgeschakeld worden genegeerd. De tag Gebruiker zegt wie er wakker werd.",
           "fr": "Se déclenche lorsqu'une personne qui dormait à la maison se réveille alors que tous les autres présents dorment encore, ce qui en fait la seule personne éveillée. Ne se déclenche pas pour la deuxième personne qui se réveille, ni le soir lorsque quelqu'un va se coucher en laissant une personne éveillée, ni lorsque quelqu'un rentre déjà éveillé. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est réveillé."
+        },
+        "tokens": [
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User",
+              "nl": "Gebruiker",
+              "fr": "Utilisateur"
+            },
+            "example": "Alex"
+          }
+        ]
+      },
+      {
+        "id": "someone_home_awake",
+        "title": {
+          "en": "Someone at home wakes up",
+          "nl": "Iemand thuis wordt wakker",
+          "fr": "Quelqu'un à la maison se réveille"
+        },
+        "hint": {
+          "en": "Fires every time somebody who was asleep at home wakes up - the second and third person too, unlike 'The first person at home wakes up'. Homey's own 'Someone wakes up' fires for anyone anywhere, including a housemate asleep at a hotel and a guest account that never reports where it is; this one only fires for users who count and who are actually at home, so an empty house can never set it off. The User tag says who woke up.",
+          "nl": "Gaat af telkens wanneer iemand die thuis lag te slapen wakker wordt - ook de tweede en de derde, anders dan bij 'De eerste persoon thuis wakker werd'. Homey's eigen 'Iemand wordt wakker' gaat af voor iedereen waar dan ook, ook voor een huisgenoot die op hotel ligt en voor een gastaccount dat nooit doorgeeft waar het is; deze gaat alleen af voor gebruikers die meetellen en die echt thuis zijn, zodat een leeg huis hem nooit kan afzetten. De tag Gebruiker zegt wie er wakker werd.",
+          "fr": "Se déclenche chaque fois qu'une personne qui dormait à la maison se réveille - la deuxième et la troisième aussi, contrairement à « La première personne à la maison se réveille ». Le « Quelqu'un se réveille » de Homey se déclenche pour n'importe qui n'importe où, y compris un colocataire endormi à l'hôtel et un compte invité qui ne signale jamais où il est ; celui-ci ne se déclenche que pour les utilisateurs qui comptent et qui sont réellement à la maison, si bien qu'une maison vide ne peut jamais le déclencher. Le tag Utilisateur indique qui s'est réveillé."
         },
         "tokens": [
           {
