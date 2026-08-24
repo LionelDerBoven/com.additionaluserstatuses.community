@@ -258,13 +258,18 @@ test('a user seen for the first time is not treated as an arrival', async () => 
   assert.deepStrictEqual(events.arrived, [], 'no previous state means no transition');
 });
 
-test('a missing realtime channel is survivable', async () => {
+test('starting needs no realtime channel', async () => {
   const status = fakeStatus([user('a', true)]);
   const { watcher } = makeWatcher(status);
 
-  // getApi throws in this harness; subscribing must swallow it rather than
-  // taking the app down, because polling alone is a complete fallback.
-  assert.doesNotThrow(() => watcher.subscribeRealtime());
+  // getApi throws in this harness, the way it is useless on a real Homey:
+  // hasApi() answers false for every manager that could carry a presence
+  // event, and none of them ever emits one. Starting must not touch it at all -
+  // an app that reached for a channel like that on boot would take the whole
+  // household's triggers down with it the moment the call threw.
+  await watcher.start();
+
+  assert.equal(watcher.lastPresent.get('a'), true, 'the seed read still happened');
 });
 
 // ---------------------------------------------------------------------------

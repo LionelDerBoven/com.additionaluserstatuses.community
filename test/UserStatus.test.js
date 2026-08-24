@@ -144,6 +144,42 @@ test('concurrent evaluations share a single API call', async () => {
   assert.strictEqual(calls, 1, `expected 1 API call, got ${calls}`);
 });
 
+test('the watcher gets a fresh list, however recently one was read', async () => {
+  // The whole response time of every trigger card rests on this. The watcher
+  // polls faster than the list cache lives, so a cached answer would mean it
+  // spent half its passes diffing a list it had already seen - detection would
+  // silently run at the cache's speed rather than the poll's, and the fix for
+  // the slow cards would be undone without a single test going red.
+  let calls = 0;
+  const homey = {
+    settings: { get: () => [] },
+    app: { log: () => {} },
+    __: (key) => key,
+  };
+  const api = {
+    users: {
+      getUsers: async () => {
+        calls += 1;
+        return users({ present: true });
+      },
+    },
+  };
+
+  const status = new UserStatus({ homey, getApi: async () => api });
+
+  // A condition card has just asked, so the cache is warm and well inside its TTL.
+  await status.isEveryoneHome();
+  assert.strictEqual(calls, 1);
+
+  await status.snapshot({ fresh: true });
+  assert.strictEqual(calls, 2, 'the watcher must not be handed the cached list');
+
+  // And the poll refills the cache on its way past, so the condition cards that
+  // follow it are both cheap and no more than one poll behind.
+  await status.isEveryoneHome();
+  assert.strictEqual(calls, 2, 'the fresh read should have refreshed the cache');
+});
+
 test('a failed read is not cached, so the next evaluation retries', async () => {
   let calls = 0;
   const homey = {
