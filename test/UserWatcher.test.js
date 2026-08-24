@@ -1268,3 +1268,132 @@ test('an arrival that leaves again before counting is forgotten', async () => {
   assert.deepStrictEqual(events.firstArrived, []);
   assert.strictEqual(events.everyoneHome, 0);
 });
+
+// ---------------------------------------------------------------------------
+// Surviving the things a real household does over months
+//
+// Four faults an audit of the one-second poll turned up. Every one of them was
+// invisible to the suite as it stood: all 192 tests passed with all four live.
+// ---------------------------------------------------------------------------
+
+test('a pass already running when the app stops fires nothing', async () => {
+  // The window is the read, so at one pass a second it is open on every app
+  // update and restart. A bedtime Flow running while the app is being torn down
+  // is the household's lights going out because a new version installed.
+  const status = fakeStatus([user('a', true, false)]);
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  let release;
+  const stalled = new Promise((resolve) => {
+    release = resolve;
+  });
+  status.fetchUsers = async function stall() {
+    await stalled;
+    return this.users;
+  };
+
+  status.users = [user('a', true, true)];
+  const pass = watcher.check();
+
+  watcher.stop();
+  release();
+  await pass;
+
+  assert.strictEqual(events.asleep, 0, 'no card may fire after stop()');
+  assert.deepStrictEqual(events.firstAsleep, [], 'nor any per-person card');
+});
+
+test('the household wake-up card survives a sleep flag that never clears', async () => {
+  // 'The first person wakes up' opens a new night when somebody goes to bed. It
+  // used to open one when the count of sleepers left zero, which never happens
+  // again if a single counted user is stuck asleep - a housemate whose bedtime
+  // Flow has a wake-up counterpart conditioned on being at home does exactly
+  // that by waking up somewhere else. The card then went silent for good.
+  const stuck = (asleep) => [user('stuck', false, true), user('owner', true, asleep)];
+
+  const status = fakeStatus(stuck(false));
+  const { watcher, events } = makeWatcher(status);
+  await watcher.check({ silent: true });
+
+  for (let night = 0; night < 3; night += 1) {
+    status.users = stuck(true);
+    await watcher.check();
+    status.users = stuck(false);
+    await watcher.check();
+  }
+
+  assert.deepStrictEqual(
+    events.firstAnyAwake,
+    ['owner', 'owner', 'owner'],
+    'every morning should be reported, not only the first',
+  );
+});
+
+test('an arrival is forgotten once it is too old to explain anything', async () => {
+  // recentArrivals bridges the poll between coming home and auto-return letting
+  // you count again. Somebody present but held out of the count by a status
+  // that never auto-returns is in neither of the states that clear it, so the
+  // arrival used to be remembered indefinitely - and firing the welcome scene
+  // weeks later, when the status was finally cleared, is the precise thing the
+  // 'somebody must actually have arrived' guard exists to prevent.
+  const status = fakeStatus([user('sam', true, false), user('other', true, false)]);
+  status.getCountedUsers = async function counted() {
+    return this.users.filter((u) => u.id !== 'sam');
+  };
+
+  const { watcher, events } = makeWatcher(status);
+  status.users = [user('sam', false, false), user('other', true, false)];
+  await watcher.check({ silent: true });
+
+  status.users = [user('sam', true, false), user('other', true, false)];
+  await watcher.check();
+  assert.strictEqual(watcher.recentArrivals.has('sam'), true, 'the bridge should hold at first');
+
+  // Long enough ago that no guard could still be asking about it.
+  watcher.recentArrivals.set('sam', Date.now() - (10 * 60 * 1000));
+  await watcher.check();
+
+  assert.strictEqual(watcher.recentArrivals.has('sam'), false, 'a stale arrival must be dropped');
+
+  // And now that it is gone, rejoining the count is not an arrival.
+  status.getCountedUsers = async function counted() {
+    return this.users;
+  };
+  await watcher.check();
+
+  assert.deepStrictEqual(events.firstArrived, [], 'nobody walked through a door');
+});
+
+test('a run of failed reads backs off and reports once, not every second', async () => {
+  const status = fakeStatus([user('a', true, false)]);
+  const { watcher } = makeWatcher(status);
+
+  const errors = [];
+  watcher.homey.app.error = (message) => errors.push(message);
+
+  status.fetchUsers = async () => {
+    throw new Error('Homey not ready');
+  };
+
+  for (let i = 0; i < 12; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await watcher.check().catch((err) => watcher.reportFailure(err));
+  }
+
+  assert.strictEqual(errors.length, 1, 'a failing Homey must not fill the log');
+  assert.ok(watcher.nextAttemptAt > Date.now(), 'the next attempt should be deferred');
+  assert.ok(
+    watcher.nextAttemptAt - Date.now() <= 30000,
+    'and never deferred beyond the cap',
+  );
+
+  // Recovery is immediate: one good read and the watcher is back at full rate.
+  status.fetchUsers = async function ok() {
+    return this.users;
+  };
+  await watcher.check();
+
+  assert.strictEqual(watcher.failureStreak, 0);
+  assert.strictEqual(watcher.nextAttemptAt, 0);
+});
