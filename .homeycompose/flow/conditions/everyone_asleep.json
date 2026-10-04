@@ -6,8 +6,8 @@
     "fr": "!{{Tout le monde dort|Quelqu'un est encore éveillé}}"
   },
   "hint": {
-    "en": "True when every counted Homey user is marked as asleep. Users you switched off in this app's settings are ignored, and so are disabled accounts. A user whose sleep status has never been set counts as awake, because Homey does not know. If no users are counted at all, this card is false.",
-    "nl": "Waar wanneer elke meegetelde Homey-gebruiker als slapend is gemarkeerd. Gebruikers die je in de instellingen van deze app hebt uitgevinkt worden genegeerd, net als uitgeschakelde accounts. Een gebruiker van wie de slaapstatus nooit is ingesteld telt als wakker, omdat Homey het niet weet. Als er helemaal geen gebruikers meetellen, is deze kaart onwaar.",
-    "fr": "Vrai lorsque chaque utilisateur Homey pris en compte est marqué comme endormi. Les utilisateurs désactivés dans les réglages de cette app sont ignorés, tout comme les comptes désactivés dans Homey. Un utilisateur dont le statut de sommeil n'a jamais été défini compte comme éveillé, car Homey l'ignore. Si aucun utilisateur n'est pris en compte, cette carte est fausse."
+    "en": "True when every counted user is asleep; false if nobody counts. Ignores users on vacation, unticked in the settings or disabled in Homey; a sleep status never set counts as awake.",
+    "nl": "Waar wanneer elke meegetelde gebruiker slaapt; onwaar als niemand meetelt. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld; een nooit ingestelde slaapstatus telt als wakker.",
+    "fr": "Vrai si chaque utilisateur pris en compte dort ; faux si personne ne compte. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey ; un statut de sommeil jamais défini compte comme éveillé."
   }
 }

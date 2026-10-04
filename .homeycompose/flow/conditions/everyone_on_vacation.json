@@ -6,8 +6,8 @@
     "fr": "!{{Tout le monde est en vacances|Quelqu'un n'est pas en vacances}}"
   },
   "hint": {
-    "en": "True when every counted Homey user is marked as on vacation. Users switched off in this app's settings and accounts disabled in Homey are ignored. If there are no counted users at all this card is false.",
-    "nl": "Waar wanneer elke meegetelde Homey-gebruiker als op vakantie is gemarkeerd. Gebruikers die je in de instellingen hebt uitgevinkt en in Homey uitgeschakelde accounts worden genegeerd. Als er helemaal geen gebruikers meetellen, is deze kaart onwaar.",
-    "fr": "Vrai lorsque chaque utilisateur Homey pris en compte est marqué comme en vacances. Les utilisateurs désactivés dans les réglages de cette app et les comptes désactivés dans Homey sont ignorés. Si aucun utilisateur n'est pris en compte, cette carte est fausse."
+    "en": "True when every counted user is on vacation, false when nobody counts. Ignores users unticked in the settings or disabled in Homey.",
+    "nl": "Waar wanneer elke meegetelde gebruiker op vakantie is, onwaar als niemand meetelt. Negeert wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Vrai si chaque utilisateur pris en compte est en vacances, faux si personne ne compte. Ignore les utilisateurs décochés dans les réglages ou désactivés dans Homey."
   }
 }

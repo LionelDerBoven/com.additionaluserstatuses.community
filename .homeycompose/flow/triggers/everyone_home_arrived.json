@@ -6,8 +6,8 @@
     "fr": "Tout le monde est à la maison"
   },
   "hint": {
-    "en": "Fires the moment the last person who counts comes home, so the whole household is in. Homey's own 'the first person comes home' is about an empty house filling up; this is about a full one. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored, so somebody away for a fortnight no longer holds this back. It carries no tag: reaching this state is the household's doing, not one person's.",
-    "nl": "Gaat af op het moment dat de laatste persoon die meetelt thuiskomt, zodat het hele huishouden binnen is. Homey's eigen 'de eerste persoon komt thuis' gaat over een leeg huis dat volloopt; deze gaat over een vol huis. Gebruikers die op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd, dus wie veertien dagen weg is houdt dit niet langer tegen. Draagt geen tag: dat deze toestand bereikt wordt, is het werk van het huishouden, niet van één persoon.",
-    "fr": "Se déclenche au moment où la dernière personne qui compte rentre, si bien que tout le foyer est présent. La carte « La première personne rentre » de Homey concerne une maison vide qui se remplit ; celle-ci concerne une maison pleine. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés : quelqu'un parti quinze jours ne bloque donc plus cette carte. Elle ne porte pas de tag : atteindre cet état est l'affaire du foyer, pas d'une personne."
+    "en": "Fires when the last person who counts comes home, so the whole household is in. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer de laatste persoon die meetelt thuiskomt, zodat het hele huishouden binnen is. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque la dernière personne qui compte rentre, si bien que tout le foyer est présent. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   }
 }

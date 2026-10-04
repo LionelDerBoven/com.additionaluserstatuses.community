@@ -1,9 +1,9 @@
 {
   "id": "set_vacation_all",
   "title": {
-    "en": "Set the vacation status for everyone",
-    "nl": "Vakantiestatus voor iedereen zetten",
-    "fr": "Définir le statut de vacances pour tout le monde"
+    "en": "Mark everyone as …",
+    "nl": "Markeer iedereen als …",
+    "fr": "Marquer tout le monde comme …"
   },
   "titleFormatted": {
     "en": "Mark everyone as [[state]]",
@@ -11,9 +11,9 @@
     "fr": "Marquer tout le monde comme [[state]]"
   },
   "hint": {
-    "en": "Puts every user on vacation at once, or brings them all back. Applied as a single change, so the household cards 'Everyone is on vacation' and 'Nobody is on vacation any more' fire once rather than once per person. Accounts disabled in Homey are left alone.",
-    "nl": "Zet iedereen in één keer op vakantie, of haalt iedereen terug. Wordt als één wijziging doorgevoerd, zodat de huishoudkaarten 'Iedereen is op vakantie' en 'Niemand is nog op vakantie' één keer afgaan in plaats van één keer per persoon. Accounts die in Homey zijn uitgeschakeld blijven ongemoeid.",
-    "fr": "Met tout le monde en vacances d'un coup, ou fait revenir tout le monde. Appliqué comme une seule modification, si bien que les cartes « Tout le monde est en vacances » et « Plus personne n'est en vacances » se déclenchent une fois au lieu d'une fois par personne. Les comptes désactivés dans Homey ne sont pas touchés."
+    "en": "Puts every user on vacation or brings them all back in one change, so 'Everyone is on vacation' and 'Nobody is on vacation any more' fire once. Skips accounts disabled in Homey.",
+    "nl": "Zet iedereen op vakantie of haalt iedereen terug in één wijziging, zodat 'Iedereen is op vakantie' en 'Niemand is nog op vakantie' één keer afgaan. Slaat in Homey uitgeschakelde accounts over.",
+    "fr": "Met tout le monde en vacances ou le fait revenir en une fois : « Tout le monde est en vacances » et « Plus personne n'est en vacances » se déclenchent une seule fois. Ignore les comptes désactivés dans Homey."
   },
   "args": [
     {

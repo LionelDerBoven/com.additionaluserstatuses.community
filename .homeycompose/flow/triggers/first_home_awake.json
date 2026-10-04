@@ -6,9 +6,9 @@
     "fr": "La première personne à la maison se réveille"
   },
   "hint": {
-    "en": "Fires when somebody who was at home and asleep wakes up while everyone else at home is still asleep, so they are the only one awake. It does not fire for the second person to wake, nor in the evening when someone goes to bed leaving one person awake, nor when somebody arrives home awake. Users who are away, on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who woke up.",
-    "nl": "Gaat af wanneer iemand die thuis lag te slapen wakker wordt terwijl de rest thuis nog slaapt, zodat diegene de enige wakkere is. Gaat niet af voor de tweede die wakker wordt, niet 's avonds wanneer er iemand gaat slapen en er één wakker overblijft, en niet wanneer er iemand wakker thuiskomt. Gebruikers die weg zijn, op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd. De tag Gebruiker zegt wie er wakker werd.",
-    "fr": "Se déclenche lorsqu'une personne qui dormait à la maison se réveille alors que tous les autres présents dorment encore, ce qui en fait la seule personne éveillée. Ne se déclenche pas pour la deuxième personne qui se réveille, ni le soir lorsque quelqu'un va se coucher en laissant une personne éveillée, ni lorsque quelqu'un rentre déjà éveillé. Les utilisateurs absents, en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est réveillé."
+    "en": "Fires when someone at home wakes up while the rest at home still sleep; not for the second to wake. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer iemand thuis wakker wordt terwijl de rest thuis nog slaapt; niet voor de tweede die wakker wordt. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque quelqu'un se réveille à la maison alors que les autres dorment encore ; pas la deuxième personne. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   },
   "tokens": [
     {

@@ -6,8 +6,8 @@
     "fr": "!{{Personne n'est en vacances|Quelqu'un est en vacances}}"
   },
   "hint": {
-    "en": "True when no counted Homey user is on vacation. Invert it to ask whether at least one person is away on vacation.",
-    "nl": "Waar wanneer geen enkele meegetelde Homey-gebruiker op vakantie is. Draai de kaart om als je wilt weten of er minstens één persoon op vakantie is.",
-    "fr": "Vrai lorsqu'aucun utilisateur Homey pris en compte n'est en vacances. Inversez la carte pour savoir si au moins une personne est en vacances."
+    "en": "True when no counted user is on vacation. Ignores users unticked in the settings or disabled in Homey; invert the card to ask whether anyone is away.",
+    "nl": "Waar wanneer geen enkele meegetelde gebruiker op vakantie is. Negeert wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld; draai de kaart om om te vragen of iemand weg is.",
+    "fr": "Vrai si aucun utilisateur pris en compte n'est en vacances. Ignore les utilisateurs décochés dans les réglages ou désactivés dans Homey ; inversez la carte pour savoir si quelqu'un est parti."
   }
 }

@@ -1,19 +1,19 @@
 {
   "id": "count_status",
   "title": {
-    "en": "The number of users with a status",
-    "nl": "Het aantal gebruikers met een status",
-    "fr": "Le nombre d'utilisateurs avec un statut"
+    "en": "The number of users with the status … !{{is|is not}} … …",
+    "nl": "Het aantal gebruikers met de status … !{{is|is niet}} … …",
+    "fr": "Le nombre d'utilisateurs avec le statut … !{{est|n'est pas}} … …"
   },
   "titleFormatted": {
-    "en": "There !{{are|are not}} [[operator]] [[count]] users with the status [[status]]",
-    "nl": "Er !{{zijn|zijn niet}} [[operator]] [[count]] gebruikers met de status [[status]]",
-    "fr": "Il !{{y a|n'y a pas}} [[operator]] [[count]] utilisateurs avec le statut [[status]]"
+    "en": "The number of users with the status [[status]] !{{is|is not}} [[operator]] [[count]]",
+    "nl": "Het aantal gebruikers met de status [[status]] !{{is|is niet}} [[operator]] [[count]]",
+    "fr": "Le nombre d'utilisateurs avec le statut [[status]] !{{est|n'est pas}} [[operator]] [[count]]"
   },
   "hint": {
-    "en": "Counts the users who count and hold the chosen status. Use 'at most 0' for 'nobody has it'.",
-    "nl": "Telt de gebruikers die meetellen en de gekozen status hebben. Gebruik 'hoogstens 0' voor 'niemand heeft hem'.",
-    "fr": "Compte les utilisateurs qui comptent et ont le statut choisi. Utilisez « au plus 0 » pour « personne ne l'a »."
+    "en": "Counts the users with the status, ignoring those unticked in the settings or disabled in Homey. Choose 'exactly' and 0 to ask whether nobody has it.",
+    "nl": "Telt de gebruikers met de status, zonder wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld. Kies 'precies' en 0 om te vragen of niemand hem heeft.",
+    "fr": "Compte les utilisateurs ayant le statut, sans ceux décochés dans les réglages ou désactivés dans Homey. Choisissez « égal à » et 0 pour savoir si personne ne l'a."
   },
   "args": [
     {
@@ -44,7 +44,7 @@
           "title": {
             "en": "at least",
             "nl": "minstens",
-            "fr": "au moins"
+            "fr": "supérieur ou égal à"
           }
         },
         {
@@ -52,7 +52,7 @@
           "title": {
             "en": "exactly",
             "nl": "precies",
-            "fr": "exactement"
+            "fr": "égal à"
           }
         },
         {
@@ -60,7 +60,7 @@
           "title": {
             "en": "at most",
             "nl": "hoogstens",
-            "fr": "au plus"
+            "fr": "inférieur ou égal à"
           }
         }
       ]

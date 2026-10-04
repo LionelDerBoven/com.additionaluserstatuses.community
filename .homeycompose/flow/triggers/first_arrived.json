@@ -6,9 +6,9 @@
     "fr": "La première personne rentre à la maison"
   },
   "hint": {
-    "en": "Fires the moment an empty house stops being empty, so it runs once for the first person through the door and stays quiet for everybody after them. The mirror of 'Everyone is out', counting the same household: users on vacation, switched off in this app's settings, or disabled in Homey are ignored. Homey's own 'the first person comes home' counts every Homey user instead, including a guest account that never reports presence. The tag names who it was.",
-    "nl": "Gaat af op het moment dat een leeg huis niet langer leeg is, dus één keer voor de eerste die binnenkomt, en blijft stil voor iedereen daarna. De tegenhanger van 'Iedereen is weg', en telt hetzelfde huishouden: gebruikers die op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd. Homey's eigen 'de eerste persoon komt thuis' telt élke Homey-gebruiker mee, ook een gastaccount dat nooit aanwezigheid doorgeeft. De tag zegt wie het was.",
-    "fr": "Se déclenche au moment où une maison vide cesse de l'être : elle s'exécute donc une fois pour la première personne qui franchit la porte et reste silencieuse pour toutes les suivantes. Le pendant de « Tout le monde est parti », comptant le même foyer : les utilisateurs en vacances, décochés dans les réglages de cette app ou désactivés dans Homey sont ignorés. La carte « La première personne rentre » de Homey compte chaque utilisateur Homey, y compris un compte invité qui ne signale jamais sa présence. Le tag indique de qui il s'agit."
+    "en": "Fires when the first person comes home to an empty house, not for those who follow. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer de eerste persoon thuiskomt in een leeg huis, niet voor wie volgt. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque la première personne rentre dans une maison vide, pas pour les suivantes. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   },
   "tokens": [
     {

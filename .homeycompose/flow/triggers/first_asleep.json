@@ -6,9 +6,9 @@
     "fr": "La première personne s'endort"
   },
   "hint": {
-    "en": "Fires when somebody goes to the status asleep while nobody in the household was asleep yet, wherever they are. Unlike 'The first person at home goes to the status asleep' it also counts somebody sleeping elsewhere - at a hotel, or staying over with family. It does not fire for the second person to go to sleep, and is ready again the next evening, once everybody is awake. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who went to sleep first.",
-    "nl": "Gaat af wanneer iemand naar de status slapend gaat terwijl er in het huishouden nog niemand sliep, waar diegene ook is. Anders dan 'De eerste persoon thuis gaat slapen' telt deze ook iemand mee die elders slaapt - op hotel, of logerend bij familie. Gaat niet af voor de tweede die gaat slapen, en staat de volgende avond weer klaar zodra iedereen wakker is. Gebruikers die op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd. De tag Gebruiker zegt wie als eerste ging slapen.",
-    "fr": "Se déclenche lorsqu'une personne passe au statut endormi alors que personne dans le foyer ne dormait encore, où qu'elle se trouve. Contrairement à « La première personne à la maison s'endort », elle tient aussi compte de quelqu'un qui dort ailleurs - à l'hôtel, ou chez de la famille. Ne se déclenche pas pour la deuxième personne qui va dormir, et elle est de nouveau prête le lendemain soir, dès que tout le monde est éveillé. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est endormi en premier."
+    "en": "Fires once per night, when the first person goes to sleep, wherever they are. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat één keer per nacht af wanneer de eerste persoon gaat slapen, waar diegene ook is. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche une fois par nuit, lorsque la première personne s'endort, où qu'elle soit. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   },
   "tokens": [
     {

@@ -6,8 +6,8 @@
     "fr": "Tout le monde est en vacances"
   },
   "hint": {
-    "en": "Fires at the moment the last counted user is marked as on vacation, so the whole household is away. Use it for holiday mode: heating down, presence simulation on.",
-    "nl": "Gaat af op het moment dat de laatste meegetelde gebruiker als op vakantie wordt gemarkeerd, zodat het hele huishouden weg is. Handig voor vakantiemodus: verwarming lager, aanwezigheidssimulatie aan.",
-    "fr": "Se déclenche au moment où le dernier utilisateur pris en compte est marqué comme en vacances, donc tout le foyer est absent. Pratique pour un mode vacances : chauffage réduit, simulation de présence activée."
+    "en": "Fires when the last counted user is marked as on vacation, so the whole household is away. Ignores users unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer de laatste meegetelde gebruiker als op vakantie wordt gemarkeerd, zodat het hele huishouden weg is. Negeert wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque le dernier utilisateur pris en compte part en vacances, si bien que tout le foyer est absent. Ignore les utilisateurs décochés dans les réglages ou désactivés dans Homey."
   }
 }

@@ -1,9 +1,9 @@
 {
   "id": "set_status_all",
   "title": {
-    "en": "Set a status for everyone",
-    "nl": "Een status voor iedereen zetten",
-    "fr": "Définir un statut pour tout le monde"
+    "en": "Set … for everyone to …",
+    "nl": "Zet … voor iedereen op …",
+    "fr": "Définir … pour tout le monde sur …"
   },
   "titleFormatted": {
     "en": "Set [[status]] for everyone to [[state]]",
@@ -11,9 +11,9 @@
     "fr": "Définir [[status]] pour tout le monde sur [[state]]"
   },
   "hint": {
-    "en": "Gives every user the status at once, or takes it from all of them. Applied as a single change, so 'Everyone has a status' and 'Nobody has a status any more' fire once rather than once per person. Accounts disabled in Homey are left alone.",
-    "nl": "Geeft iedereen in één keer de status, of neemt hem van iedereen af. Wordt als één wijziging doorgevoerd, zodat 'Iedereen heeft een status' en 'Niemand heeft nog een status' één keer afgaan in plaats van één keer per persoon. Accounts die in Homey zijn uitgeschakeld blijven ongemoeid.",
-    "fr": "Donne le statut à tout le monde d'un coup, ou le retire à tous. Appliqué comme une seule modification : « Tout le monde a un statut » et « Plus personne n'a de statut » se déclenchent une fois au lieu d'une fois par personne. Les comptes désactivés dans Homey ne sont pas touchés."
+    "en": "Gives every user the status or takes it from all of them in one change, so cards like 'Everyone has the status …' fire once. Skips accounts disabled in Homey.",
+    "nl": "Geeft iedereen de status of neemt hem van iedereen af in één wijziging, zodat kaarten als 'Iedereen heeft de status …' één keer afgaan. Slaat in Homey uitgeschakelde accounts over.",
+    "fr": "Donne le statut à tout le monde ou le retire à tous en une seule modification : des cartes comme « Tout le monde a le statut … » se déclenchent une fois. Ignore les comptes désactivés dans Homey."
   },
   "args": [
     {

@@ -1,9 +1,9 @@
 {
   "id": "status_ended",
   "title": {
-    "en": "A user loses a status",
-    "nl": "Een gebruiker verliest een status",
-    "fr": "Un utilisateur perd un statut"
+    "en": "A user loses the status …",
+    "nl": "Een gebruiker verliest de status …",
+    "fr": "Un utilisateur perd le statut …"
   },
   "titleFormatted": {
     "en": "[[user]] loses the status [[status]]",
@@ -11,9 +11,9 @@
     "fr": "[[user]] perd le statut [[status]]"
   },
   "hint": {
-    "en": "Fires when the chosen user no longer has the chosen status. Leave the user on 'Any user' to fire for the whole household. The tags name who it was and which status.",
-    "nl": "Gaat af wanneer de gekozen gebruiker de gekozen status niet meer heeft. Laat de gebruiker op 'Elke gebruiker' staan om voor het hele huishouden af te gaan. De tags zeggen wie het was en welke status.",
-    "fr": "Se déclenche lorsque l'utilisateur choisi n'a plus le statut choisi. Laissez « Tout utilisateur » pour que la carte se déclenche pour tout le foyer. Les tags indiquent de qui il s'agit et quel statut."
+    "en": "Fires when the chosen user loses the status. 'Any user' fires for everyone; the User tag says who.",
+    "nl": "Gaat af wanneer de gekozen gebruiker de status verliest. 'Elke gebruiker' gaat af voor iedereen; de tag Gebruiker zegt wie.",
+    "fr": "Se déclenche lorsque l'utilisateur choisi perd le statut. « Tout utilisateur » se déclenche pour tout le monde ; le tag Utilisateur indique qui."
   },
   "args": [{
       "name": "status",

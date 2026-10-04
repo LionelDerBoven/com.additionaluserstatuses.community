@@ -6,8 +6,8 @@
     "fr": "!{{Tout le monde à la maison dort|Quelqu'un est encore éveillé à la maison}}"
   },
   "hint": {
-    "en": "True when every counted user who is currently at home also has the status asleep. Users who are away are ignored, which is the difference from 'Everyone is asleep': this card can still be true while somebody is out. Users on vacation, users switched off in this app's settings, and accounts disabled in Homey are ignored. If nobody is at home this card is false, because there is no one whose sleep it could describe.",
-    "nl": "Waar wanneer elke meegetelde gebruiker die op dit moment thuis is ook de status slapend heeft. Gebruikers die weg zijn worden genegeerd, en dat is het verschil met 'Iedereen slaapt': deze kaart kan waar zijn terwijl er iemand weg is. Gebruikers op vakantie, gebruikers die je in de instellingen hebt uitgevinkt en in Homey uitgeschakelde accounts worden genegeerd. Als er niemand thuis is, is deze kaart onwaar, want er is dan niemand over wiens slaap ze iets kan zeggen.",
-    "fr": "Vrai lorsque chaque utilisateur pris en compte actuellement à la maison a également le statut endormi. Les utilisateurs absents sont ignorés, et c'est la différence avec « Tout le monde dort » : cette carte peut être vraie alors que quelqu'un est sorti. Les utilisateurs en vacances, ceux désactivés dans les réglages de cette app et les comptes désactivés dans Homey sont ignorés. Si personne n'est à la maison, cette carte est fausse, car il n'y a alors personne dont elle pourrait décrire le sommeil."
+    "en": "True when everyone at home is asleep, even while others are out; false if nobody is home. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Waar wanneer iedereen thuis slaapt, ook als anderen weg zijn; onwaar als er niemand thuis is. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Vrai si tous ceux à la maison dorment, même si d'autres sont sortis ; faux si personne n'est là. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   }
 }

@@ -6,8 +6,8 @@
     "fr": "Plus personne n'est en vacances"
   },
   "hint": {
-    "en": "Fires when the last person on vacation returns, so nobody in the household is away any longer. The counterpart to 'Everyone is on vacation'.",
-    "nl": "Gaat af wanneer de laatste persoon die op vakantie was terugkomt, zodat er niemand in het huishouden nog weg is. De tegenhanger van 'Iedereen is op vakantie'.",
-    "fr": "Se déclenche lorsque la dernière personne en vacances revient, donc plus personne du foyer n'est absent. Le pendant de « Tout le monde est en vacances »."
+    "en": "Fires when the last person on vacation returns, so nobody in the household is away any more.",
+    "nl": "Gaat af wanneer de laatste persoon op vakantie terugkomt, zodat niemand van het huishouden nog weg is.",
+    "fr": "Se déclenche lorsque la dernière personne en vacances revient, si bien que plus personne du foyer n'est absent."
   }
 }

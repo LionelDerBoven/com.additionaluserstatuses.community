@@ -6,9 +6,9 @@
     "fr": "La dernière personne se réveille"
   },
   "hint": {
-    "en": "Fires when the last person in the household wakes up, so nobody who counts is asleep any more, wherever they are. Unlike 'The last person at home wakes up' it also counts somebody who was sleeping elsewhere. It fires again the next morning. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. The User tag says who was last to wake.",
-    "nl": "Gaat af wanneer de laatste persoon van het huishouden wakker wordt, zodat er niemand die meetelt nog slaapt, waar diegene ook is. Anders dan 'De laatste persoon thuis wordt wakker' telt deze ook iemand mee die elders lag te slapen. Gaat de volgende ochtend opnieuw af. Gebruikers die op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd. De tag Gebruiker zegt wie als laatste wakker werd.",
-    "fr": "Se déclenche lorsque la dernière personne du foyer se réveille, si bien que plus personne qui compte ne dort, où qu'elle soit. Contrairement à « La dernière personne à la maison se réveille », elle tient aussi compte de quelqu'un qui dormait ailleurs. Elle se déclenche à nouveau le lendemain matin. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Le tag Utilisateur indique qui s'est réveillé en dernier."
+    "en": "Fires when the last sleeper wakes up, wherever they are. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer de laatste slaper wakker wordt, waar diegene ook is. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque le dernier dormeur se réveille, où qu'il soit. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   },
   "tokens": [
     {

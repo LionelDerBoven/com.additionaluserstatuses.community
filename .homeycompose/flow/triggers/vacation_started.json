@@ -11,9 +11,9 @@
     "fr": "[[user]] part en vacances"
   },
   "hint": {
-    "en": "Fires when a user is marked as on vacation, by a Flow, their vacation device, or the app's settings page. Choose 'Any user' to fire for everybody and read the User tag to tell who.",
-    "nl": "Gaat af wanneer een gebruiker als op vakantie wordt gemarkeerd, via een Flow, via het vakantie-apparaat van die gebruiker of via de instellingenpagina van de app. Kies 'Elke gebruiker' om voor iedereen af te gaan en lees de tag Gebruiker om te zien wie het was.",
-    "fr": "Se déclenche lorsqu'un utilisateur est marqué comme en vacances, via un Flow, via son appareil de vacances ou depuis la page de réglages de l'app. Choisissez « Tout utilisateur » pour qu'elle se déclenche pour chacun et lisez le tag Utilisateur pour savoir de qui il s'agit."
+    "en": "Fires when a user is marked as on vacation, however it was set. 'Any user' fires for everyone; the User tag says who.",
+    "nl": "Gaat af wanneer een gebruiker als op vakantie wordt gemarkeerd, hoe dat ook is ingesteld. 'Elke gebruiker' gaat af voor iedereen; de tag Gebruiker zegt wie.",
+    "fr": "Se déclenche lorsqu'un utilisateur est marqué comme en vacances, quelle que soit la façon. « Tout utilisateur » se déclenche pour tout le monde ; le tag Utilisateur indique qui."
   },
   "args": [
     {

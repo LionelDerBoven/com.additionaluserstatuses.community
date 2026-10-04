@@ -1,9 +1,9 @@
 {
   "id": "everyone_has_status",
   "title": {
-    "en": "Everyone has a status",
-    "nl": "Iedereen heeft een status",
-    "fr": "Tout le monde a un statut"
+    "en": "Everyone !{{has|does not have}} the status …",
+    "nl": "Iedereen !{{heeft|heeft niet}} de status …",
+    "fr": "Tout le monde !{{a|n'a pas}} le statut …"
   },
   "titleFormatted": {
     "en": "Everyone !{{has|does not have}} the status [[status]]",
@@ -11,9 +11,9 @@
     "fr": "Tout le monde !{{a|n'a pas}} le statut [[status]]"
   },
   "hint": {
-    "en": "True when every user who counts holds the chosen status. Accounts disabled in Homey are left out. False for an empty household, so a misconfigured app never says 'everyone' about nobody.",
-    "nl": "Waar wanneer elke gebruiker die meetelt de gekozen status heeft. Accounts die in Homey zijn uitgeschakeld tellen niet mee. Onwaar bij een leeg huishouden, zodat een verkeerd ingestelde app nooit 'iedereen' zegt over niemand.",
-    "fr": "Vrai lorsque chaque utilisateur qui compte a le statut choisi. Les comptes désactivés dans Homey sont exclus. Faux pour un foyer vide : une app mal configurée ne dit donc jamais « tout le monde » à propos de personne."
+    "en": "True when every counted user has the status, false when nobody counts. Ignores users unticked in the settings or disabled in Homey.",
+    "nl": "Waar wanneer elke meegetelde gebruiker de status heeft, onwaar als niemand meetelt. Negeert wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Vrai si chaque utilisateur pris en compte a le statut, faux si personne ne compte. Ignore les utilisateurs décochés dans les réglages ou désactivés dans Homey."
   },
   "args": [{
       "name": "status",

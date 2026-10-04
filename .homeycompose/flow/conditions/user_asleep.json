@@ -11,9 +11,9 @@
     "fr": "[[user]] !{{dort|ne dort pas}}"
   },
   "hint": {
-    "en": "True when the chosen Homey user is marked as asleep. Where they are plays no part: somebody asleep at a hotel is still asleep. A user whose sleep status has never been set counts as awake.",
-    "nl": "Waar wanneer de gekozen Homey-gebruiker als slapend is gemarkeerd. Waar diegene is speelt geen rol: wie op hotel slaapt, slaapt nog steeds. Een gebruiker van wie de slaapstatus nooit is ingesteld telt als wakker.",
-    "fr": "Vrai lorsque l'utilisateur Homey choisi est marqué comme endormi. Peu importe où il se trouve : quelqu'un qui dort à l'hôtel dort quand même. Un utilisateur dont le statut de sommeil n'a jamais été défini compte comme éveillé."
+    "en": "True when the chosen user is asleep, wherever they are. A sleep status never set counts as awake.",
+    "nl": "Waar wanneer de gekozen gebruiker slaapt, waar diegene ook is. Een nooit ingestelde slaapstatus telt als wakker.",
+    "fr": "Vrai si l'utilisateur choisi dort, où qu'il soit. Un statut de sommeil jamais défini compte comme éveillé."
   },
   "args": [
     {

@@ -6,8 +6,8 @@
     "fr": "Tout le monde est parti"
   },
   "hint": {
-    "en": "Fires the moment the last person who counts leaves, so the house is empty. Homey's own 'the last person leaves' counts every Homey user, including a guest account that never reports presence; this one counts the household you ticked. Users on vacation, switched off in this app's settings, or disabled in Homey are ignored. It carries no tag.",
-    "nl": "Gaat af op het moment dat de laatste persoon die meetelt vertrekt, zodat het huis leeg is. Homey's eigen 'de laatste persoon gaat weg' telt élke Homey-gebruiker mee, ook een gastaccount dat nooit aanwezigheid doorgeeft; deze telt het huishouden dat jij hebt aangevinkt. Gebruikers die op vakantie zijn, in de instellingen zijn uitgevinkt of in Homey zijn uitgeschakeld, worden genegeerd. Draagt geen tag.",
-    "fr": "Se déclenche au moment où la dernière personne qui compte s'en va, si bien que la maison est vide. La carte « La dernière personne part » de Homey compte chaque utilisateur Homey, y compris un compte invité qui ne signale jamais sa présence ; celle-ci tient compte du foyer que vous avez coché. Les utilisateurs en vacances, désactivés dans les réglages de cette app ou désactivés dans Homey sont ignorés. Elle ne porte pas de tag."
+    "en": "Fires when the last person who counts leaves, so the house is empty. Ignores users on vacation, unticked in the settings or disabled in Homey.",
+    "nl": "Gaat af wanneer de laatste persoon die meetelt vertrekt, zodat het huis leeg is. Negeert wie op vakantie is, in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche lorsque la dernière personne qui compte s'en va, si bien que la maison est vide. Ignore les utilisateurs en vacances, décochés dans les réglages ou désactivés dans Homey."
   }
 }

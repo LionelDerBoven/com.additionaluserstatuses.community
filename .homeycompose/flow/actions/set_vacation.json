@@ -1,19 +1,19 @@
 {
   "id": "set_vacation",
   "title": {
-    "en": "Set user status to vacation",
-    "nl": "Gebruikersstatus op vakantie zetten",
-    "fr": "Définir le statut d'un utilisateur sur vacances"
+    "en": "Set the status of … to …",
+    "nl": "Zet de status van … op …",
+    "fr": "Définir le statut de … sur …"
   },
   "titleFormatted": {
-    "en": "Set [[user]] status to [[state]]",
+    "en": "Set the status of [[user]] to [[state]]",
     "nl": "Zet de status van [[user]] op [[state]]",
     "fr": "Définir le statut de [[user]] sur [[state]]"
   },
   "hint": {
-    "en": "Marks a user as on vacation, or clears it. While a user is on vacation they are left out of the 'everyone' cards, so those keep working for whoever is still around.",
-    "nl": "Markeert een gebruiker als op vakantie, of wist dat weer. Zolang iemand op vakantie is telt die niet mee in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is.",
-    "fr": "Marque un utilisateur comme en vacances, ou efface ce statut. Tant qu'une personne est en vacances, elle n'est pas prise en compte dans les cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là."
+    "en": "Puts the chosen user on vacation, brings them back or flips it. Users on vacation are left out of the 'everyone' cards.",
+    "nl": "Zet de gekozen gebruiker op vakantie, haalt hem terug of keert de stand om. Wie op vakantie is, telt niet mee in de 'iedereen'-kaarten.",
+    "fr": "Met l'utilisateur choisi en vacances, le fait revenir ou inverse l'état. Une personne en vacances n'est pas prise en compte dans les cartes « tout le monde »."
   },
   "args": [
     {

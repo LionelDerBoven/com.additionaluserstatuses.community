@@ -1,9 +1,9 @@
 {
   "id": "everyone_status_ended",
   "title": {
-    "en": "Nobody has a status any more",
-    "nl": "Niemand heeft nog een status",
-    "fr": "Plus personne n'a de statut"
+    "en": "Nobody has the status … any more",
+    "nl": "Niemand heeft nog de status …",
+    "fr": "Plus personne n'a le statut …"
   },
   "titleFormatted": {
     "en": "Nobody has the status [[status]] any more",
@@ -11,9 +11,9 @@
     "fr": "Plus personne n'a le statut [[status]]"
   },
   "hint": {
-    "en": "Fires once, when the last person holding the chosen status loses it. It does not fire again while nobody has it.",
-    "nl": "Gaat één keer af, wanneer de laatste persoon die de gekozen status had hem verliest. Gaat niet opnieuw af zolang niemand hem heeft.",
-    "fr": "Se déclenche une fois, lorsque la dernière personne ayant le statut choisi le perd. Ne se déclenche plus tant que personne ne l'a."
+    "en": "Fires once, when the last person with the status loses it, and not again while nobody has it. Ignores users unticked in the settings or disabled in Homey.",
+    "nl": "Gaat één keer af wanneer de laatste persoon met de status hem verliest, en niet opnieuw zolang niemand hem heeft. Negeert wie in de instellingen is uitgevinkt of in Homey is uitgeschakeld.",
+    "fr": "Se déclenche une fois, lorsque la dernière personne ayant le statut le perd, et pas à nouveau tant que personne ne l'a. Ignore les utilisateurs décochés dans les réglages ou désactivés dans Homey."
   },
   "args": [
     {
