@@ -1,0 +1,3 @@
+Homey knows whether each person in your home is present or asleep, but its own Flows only ask about one person at a time. This app looks at the whole household: start a Flow when everyone has left, when the first person comes home, when the last one goes to bed or the first one wakes up, or only when everyone is home and asleep. Statuses of your own, such as vacation or do not disturb, work the same way, and you choose whether someone who holds one still counts towards everyone.
+
+The settings page lists every Homey user, lets you leave out guests or accounts that never report presence, and shows what each card would answer right now. The app reads presence and sleep through the Homey API, so it runs on Homey Pro only.

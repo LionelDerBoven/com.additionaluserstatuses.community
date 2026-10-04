@@ -1,0 +1,3 @@
+Homey weet of elke huisgenoot thuis is of slaapt, maar de eigen Flows vragen dat alleen per persoon. Deze app kijkt naar het hele huishouden: start een Flow wanneer iedereen vertrokken is, wanneer de eerste thuiskomt, wanneer de laatste gaat slapen of de eerste wakker wordt, of alleen wanneer iedereen thuis is en slaapt. Eigen statussen, zoals vakantie of niet storen, werken op dezelfde manier, en je kiest zelf of wie zo'n status heeft nog meetelt voor iedereen.
+
+De instellingenpagina toont alle Homey-gebruikers, laat je gasten of accounts die nooit hun aanwezigheid doorgeven buiten beschouwing laten, en laat zien wat elke kaart op dit moment zou antwoorden. De app leest aanwezigheid en slaap via de Homey API en werkt daarom alleen op Homey Pro.

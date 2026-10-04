@@ -1,88 +1,61 @@
 # Additional User Statuses
 
-A Homey Pro app that adds the two household-wide Flow condition cards Homey does
-not have:
+**A Homey Pro app with the household-wide presence and sleep Flow cards Homey lacks, plus statuses of your own.**
 
-- **Everyone is at home**
-- **Everyone is asleep**
+Homey's presence and sleep cards ask about one user at a time. This app answers for the whole household — everyone
+home, everyone asleep, the first and last to leave, arrive, go to bed or wake up — counting only the users that
+should count.
 
-Homey ships presence and sleep cards per user — *"John is at home"*, *"John is
-asleep"* — plus a *"Nobody is asleep"* condition. There is no *everyone* variant,
-and inverting *"Nobody is asleep"* gives you *"someone is asleep"*, which is not
-the same thing. The usual workarounds are stacking one card per housemate (which
-breaks the moment somebody joins) or writing a HomeyScript.
+## Usage
 
-Both cards read your Homey user list **live, every time a Flow runs**, so adding
-or removing a housemate never means editing a Flow.
+Install the app, open its settings page, and tick the users who count towards "everyone". New Homey users are counted
+automatically; disabled accounts never are. The page shows what each card would answer right now.
 
-## Requirements
+| Cards | What they cover |
+|---|---|
+| Household triggers and conditions | Everyone at home / out / asleep / awake, everyone at home asleep, exactly one at home awake, the first or last person to arrive, leave, sleep or wake. Each trigger carries a *User* tag. |
+| Per-user triggers and conditions | A user goes out, comes home, falls asleep or wakes up; is one named person at home or asleep. They fire only for users that count, unlike Homey's own. |
+| Statuses | *Vacation* and *Do not disturb* come with the app; add any other on the **Statuses** tab. Every status gets a trigger for taking it on or losing it, conditions, an action for one person or the whole household, and a device per user. A status can leave its holders out of the "everyone" cards, or clear itself when that person comes home. |
+| Flow tags | Counts and names of users at home, away, awake, asleep and on vacation. |
 
-- **Homey Pro.** The app needs the `homey:manager:api` permission to read the
-  user list, and that permission is not available on Homey Cloud / Homey Bridge.
-- Homey firmware 12.4.0 or newer.
+The **Log** tab shows the triggers that fired, status changes and errors.
 
-That permission is not a read-only grant: `getOwnerApiToken()` opens a Web API
-session on behalf of the Homey owner. What is read-only is this app's use of it.
-It makes exactly one call, `GET /api/manager/users/user`, and never writes — it
-does not change a user, a device or a Flow. Setting a user's presence or sleep
-state is not something a Homey app can do at all; use Homey's own *Mark as at
-home* / *Mark as asleep* action cards for that.
+## Limits
 
-It ships with **no runtime dependencies**. That one call is made in
-`lib/HomeyUsersApi.js` over `node:http`, rather than pulling in the `homey-api`
-package and its socket.io stack for realtime events this app never subscribes
-to, or Node's global `fetch`, whose undici connection pools and native buffers
-cost far more on a Homey Pro than the V8 heap suggests.
-
-## Settings
-
-The app settings page lists every Homey user with a tick box. Ticked users count
-towards "everyone". Untick anyone who should not be able to hold the whole house
-back — a guest account, or a phone that never reports presence. New Homey users
-are counted automatically.
-
-The page also shows what both cards would answer right now, which is the quickest
-way to find out why one of them is unexpectedly false.
-
-## How the edge cases are decided
-
-- **A user whose presence has never been set** counts as *not* at home. Homey
-  reports `null` rather than `false` for these, and "we don't know where they
-  are" is not grounds to claim everyone is home. The settings page flags these
-  users, since they are the usual reason a card is unexpectedly false.
-- **Accounts disabled in Homey** are always ignored, whatever the settings say.
-  A disabled account can never come home or fall asleep, so counting one would
-  pin both cards to false forever.
-- **If no users are counted at all** — every user unticked, or a brand new Homey
-  — both cards return **false**, not true. "Every member of an empty set" is
-  vacuously true, which here would silently fire *everyone is asleep*
-  automations in an empty house.
+- **Homey Pro only.** The app needs `homey:manager:api` to read the user list; Homey Cloud and Homey Bridge do not
+  offer that permission. It reads `GET /api/manager/users/user` and never writes to Homey's users, devices or Flows.
+  Setting presence or sleep stays Homey's own job (*Mark as at home* / *Mark as asleep*).
+- **Polling, once a second.** The Apps SDK gives an app no presence events, and every realtime channel was tested
+  and found silent (firmware 13.4.1). One read is about 4 KB and 8–15 ms, so a second-by-second poll costs roughly
+  1 % of one core and keeps the cards within a second of Homey's own. Three failed reads in a row back off to at
+  most 30 s.
+- **A user whose presence was never set** counts as not at home, and **an empty set** of counted users makes every
+  "everyone" card false, so nothing fires in an empty house.
 
 ## Development
 
 ```bash
-git clone https://github.com/LionelDerBoven/com.additionaluserstatuses.community.git
-cd com.additionaluserstatuses.community
 npm install
-npm test               # logic checks, no Homey or network needed
+npm test                                 # logic checks, no Homey or network needed
 npm run lint
 homey app validate --level publish
-homey app run --remote # live on your Homey Pro, logs the user list at startup
+homey app run --remote                   # live on a Homey Pro
+python3 tools/genassets.py               # driver images from each driver's icon.svg
+python3 tools/genassets.py --photo SRC   # app images, cropped from a photo
 ```
 
-`npm test` covers the parts worth getting right: null statuses, disabled
-accounts, the settings exclusions, the empty set, and the request caching.
+- `lib/UserWatcher.js` — the poll, and the edge detection behind every trigger.
+- `lib/UserStatus.js`, `lib/StatusRegistry.js`, `lib/StatusStore.js` — who counts, and the statuses.
+- `lib/HomeyUsersApi.js` — the one Web API call, over `node:http` with a keep-alive socket; no runtime dependencies.
+- `tools/scanflows.js` — run in HomeyScript before and after a release to see which Flows use this app's cards.
 
-Store images are generated from the same geometry as `assets/icon.svg`:
+This is an unofficial community app, not affiliated with or endorsed by Athom B.V. "Homey" is a trademark of
+Athom B.V. All artwork is original.
 
-```bash
-python3 tools/genassets.py
-```
+## Credits
 
-## Affiliation
+Built by LDB Technology, with [Claude](https://claude.com/claude-code) (Anthropic) as co-author.
 
-This is an unofficial community app. It is not affiliated with, authorised by, or
-endorsed by Athom B.V. "Homey" is a trademark of Athom B.V., used here only to
-describe which system this app is for, which is nominative fair use. No Athom
-artwork, branding, logo or icon is included or reproduced. All artwork in this
-app is original work created for it.
+## License
+
+[GPL-3.0-or-later](LICENSE)

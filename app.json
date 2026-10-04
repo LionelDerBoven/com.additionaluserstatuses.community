@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -14,9 +14,9 @@
     "fr": "Statuts d'utilisateur supplémentaires"
   },
   "description": {
-    "en": "Adds the household-wide presence and sleep cards Homey does not have - everyone at home, everyone asleep, the first and last person to go to bed or wake up - each carrying a User tag. Adds statuses of your own on top of that: vacation and do not disturb come with the app, and you can define any other your household needs, each with its own triggers, conditions, action and device. A status can be told to leave its holders out of the 'everyone' cards, so those keep working for whoever is still around. Eight Flow tags count who is home, awake or away. It replaces Homey's own per-user presence and sleep cards too, with ones that count the same household: a user goes out, comes home, falls asleep or wakes up, and conditions for whether one named person is at home or asleep. Unofficial community app.",
-    "nl": "Voegt de huishoudbrede kaarten voor aanwezigheid en slaap toe die Homey zelf niet heeft - iedereen thuis, iedereen slaapt, de eerste en laatste die gaat slapen of wakker wordt - elk met een Gebruiker-tag. Daarbovenop komen eigen statussen: vakantie en niet storen zitten in de app, en je maakt er zelf bij wat je huishouden nodig heeft, elk met eigen triggers, voorwaarden, actie en apparaat. Van een status kun je zeggen dat wie hem heeft niet meetelt in de 'iedereen'-kaarten, zodat die blijven werken voor wie er nog wel is. Acht Flow-tags tellen wie thuis, wakker of weg is. Het vervangt ook Homey's eigen kaarten per gebruiker voor aanwezigheid en slaap door versies die hetzelfde huishouden tellen: een gebruiker vertrekt, komt thuis, gaat slapen of wordt wakker, en voorwaarden die nagaan of één genoemde persoon thuis is of slaapt. Onofficiële community-app.",
-    "fr": "Ajoute les cartes de présence et de sommeil à l'échelle du foyer que Homey ne propose pas - tout le monde à la maison, tout le monde dort, la première et la dernière personne à se coucher ou se réveiller - chacune avec un tag Utilisateur. S'y ajoutent vos propres statuts : vacances et ne pas déranger sont fournis, et vous définissez ceux dont votre foyer a besoin, chacun avec ses déclencheurs, conditions, action et appareil. Un statut peut exclure ceux qui le portent des cartes « tout le monde », qui continuent donc de fonctionner pour ceux qui sont encore là. Huit tags de Flow comptent qui est à la maison, éveillé ou absent. Elle prend aussi la relève des cartes de présence et de sommeil par utilisateur de Homey, avec des cartes qui comptent le même foyer : un utilisateur s'en va, rentre, s'endort ou se réveille, et des conditions indiquant si une personne nommée est à la maison ou dort. App communautaire non officielle."
+    "en": "Presence and sleep cards for the whole household, plus statuses of your own",
+    "nl": "Aanwezigheids- en slaapkaarten voor het hele huishouden, plus eigen statussen",
+    "fr": "Cartes de présence et de sommeil pour tout le foyer, et vos propres statuts"
   },
   "brandColor": "#3D5A96",
   "category": [
@@ -26,13 +26,18 @@
     "homey:manager:api"
   ],
   "images": {
-    "small": "assets/images/small.png",
-    "large": "assets/images/large.png",
-    "xlarge": "assets/images/xlarge.png"
+    "small": "assets/images/small.jpg",
+    "large": "assets/images/large.jpg",
+    "xlarge": "assets/images/xlarge.jpg"
   },
   "author": {
     "name": "LDB Technology",
     "email": "homey@ldbtechnology.be"
+  },
+  "support": "mailto:support@ldbtechnology.be",
+  "source": "https://github.com/LionelDerBoven/com.additionaluserstatuses.community",
+  "bugs": {
+    "url": "https://github.com/LionelDerBoven/com.additionaluserstatuses.community/issues"
   },
   "api": {
     "getUsers": {
@@ -1655,7 +1660,8 @@
       "connectivity": [],
       "images": {
         "small": "/drivers/status/assets/images/small.png",
-        "large": "/drivers/status/assets/images/large.png"
+        "large": "/drivers/status/assets/images/large.png",
+        "xlarge": "/drivers/status/assets/images/xlarge.png"
       },
       "pair": [
         {
@@ -1707,7 +1713,8 @@
       "connectivity": [],
       "images": {
         "small": "/drivers/vacation/assets/images/small.png",
-        "large": "/drivers/vacation/assets/images/large.png"
+        "large": "/drivers/vacation/assets/images/large.png",
+        "xlarge": "/drivers/vacation/assets/images/xlarge.png"
       },
       "pair": [
         {

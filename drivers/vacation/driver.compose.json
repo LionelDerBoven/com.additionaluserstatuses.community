@@ -33,7 +33,8 @@
   "connectivity": [],
   "images": {
     "small": "/drivers/vacation/assets/images/small.png",
-    "large": "/drivers/vacation/assets/images/large.png"
+    "large": "/drivers/vacation/assets/images/large.png",
+    "xlarge": "/drivers/vacation/assets/images/xlarge.png"
   },
   "pair": [
     {

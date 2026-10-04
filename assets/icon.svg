@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960" width="100%" height="100%">
   <!-- Original mark: a house with two people cut out of it - the whole household,
-       which is what the "everyone" condition cards are about. -->
+       which is what the "everyone" cards are about. -->
   <!-- Transparent background; Homey applies the brandColor circle. -->
   <path fill="#FFFFFF" fill-rule="evenodd" d="
-    M 256 48 L 480 250 L 424 250 L 424 464 L 88 464 L 88 250 L 32 250 Z
-    M 228 318 A 32 32 0 1 1 164 318 A 32 32 0 1 1 228 318 Z
-    M 348 318 A 32 32 0 1 1 284 318 A 32 32 0 1 1 348 318 Z
-    M 146 444 A 50 50 0 0 1 246 444 Z
-    M 266 444 A 50 50 0 0 1 366 444 Z
+    M 480 90 L 900 468.75 L 795 468.75 L 795 870 L 165 870 L 165 468.75 L 60 468.75 Z
+    M 427.5 596.25 A 60 60 0 1 1 307.5 596.25 A 60 60 0 1 1 427.5 596.25 Z
+    M 652.5 596.25 A 60 60 0 1 1 532.5 596.25 A 60 60 0 1 1 652.5 596.25 Z
+    M 273.75 832.5 A 93.75 93.75 0 0 1 461.25 832.5 Z
+    M 498.75 832.5 A 93.75 93.75 0 0 1 686.25 832.5 Z
   " />
 </svg>

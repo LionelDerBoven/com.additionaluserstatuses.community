@@ -33,7 +33,8 @@
   "connectivity": [],
   "images": {
     "small": "/drivers/status/assets/images/small.png",
-    "large": "/drivers/status/assets/images/large.png"
+    "large": "/drivers/status/assets/images/large.png",
+    "xlarge": "/drivers/status/assets/images/xlarge.png"
   },
   "pair": [
     {

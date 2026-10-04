@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <!-- Original mark: a suitcase - the vacation status of one household member. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960" width="100%" height="100%">
+  <!-- Original mark: a person with a ticked badge - one household member holding a status. -->
   <path fill="#FFFFFF" fill-rule="evenodd" d="
-    M 176 120 L 176 168 L 216 168 L 216 144 L 296 144 L 296 168 L 336 168 L 336 120 Z
-    M 72 192 L 440 192 L 440 424 L 72 424 Z
-    M 200 240 L 232 240 L 232 376 L 200 376 Z
-    M 280 240 L 312 240 L 312 376 L 280 376 Z
+    M 470 290 A 130 130 0 1 1 210 290 A 130 130 0 1 1 470 290 Z
+    M 80 810 A 260 260 0 0 1 600 810 Z
+    M 890 690 A 130 130 0 1 1 630 690 A 130 130 0 1 1 890 690 Z
+    M 685 685 L 730 730 L 815 645 L 840 670 L 730 780 L 660 710 Z
   " />
 </svg>
