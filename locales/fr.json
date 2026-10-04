@@ -72,6 +72,7 @@
     "statuses_saved": "La liste des statuts a été modifiée."
   },
   "ui": {
+    "action_failed": "Une erreur s'est produite : __message__",
     "asleep": "endormi",
     "awake": "éveillé",
     "away": "absent",
@@ -96,6 +97,7 @@
     "status_delete": "Supprimer",
     "status_exclude": "Exclure ceux qui l'ont des cartes « tout le monde »",
     "status_holders": "Qui l'a",
+    "status_limit": "Limite atteinte : vous pouvez avoir au plus __max__ statuts personnalisés.",
     "status_name_placeholder": "Télétravail",
     "status_none": "Pas encore de statuts personnels.",
     "yes": "Oui"
@@ -115,9 +117,20 @@
     "dnd": "Ne pas déranger"
   },
   "error": {
+    "api_closed": "Homey a fermé la connexion prématurément.",
+    "api_session": "Impossible de se connecter à Homey : __message__",
+    "api_status": "Homey a répondu par l'erreur __status__ en lisant les utilisateurs.",
+    "api_timeout": "Homey n'a pas répondu à temps.",
+    "api_unreadable": "Homey a envoyé une liste d'utilisateurs illisible.",
+    "app_not_ready": "L'app n'est pas encore prête. Réessayez dans un instant.",
+    "invalid_request": "La requête n'est pas valide.",
     "no_status": "Aucun statut sélectionné.",
     "no_such_status": "Le statut __name__ n'existe plus.",
     "no_such_user": "__name__ n'est plus un utilisateur Homey.",
-    "no_user": "Aucun utilisateur sélectionné."
+    "no_user": "Aucun utilisateur sélectionné.",
+    "status_name_missing": "Chaque statut doit avoir un nom.",
+    "status_name_too_long": "Ce nom est trop long (__max__ caractères au plus).",
+    "too_many_statuses": "Vous pouvez avoir au plus __max__ statuts personnalisés.",
+    "unknown_user": "Cet utilisateur n'existe pas dans Homey."
   }
 }

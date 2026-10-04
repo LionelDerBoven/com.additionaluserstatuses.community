@@ -12,7 +12,7 @@ class VacationDevice extends Homey.Device {
       // emits, the app calls syncFromStore() on every device, and the tile
       // settles on the truth - including when something else changed it.
       const store = await this.getStore();
-      if (!store) throw new Error('The app is not ready yet; try again in a moment.');
+      if (!store) throw new Error(this.homey.__('error.app_not_ready'));
 
       await store.set(this.userId, value);
     });

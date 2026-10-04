@@ -101,12 +101,20 @@ class AdditionalUserStatusesApp extends Homey.App {
    * Say it once, to both places: Homey's own app log for `homey app run`, and
    * the in-memory log the settings page shows.
    *
-   * @param {string} message
+   * The two are not the same audience. Homey's app log is a diagnostic log: it
+   * outlives the app, it is what a bug report carries, and a line naming who
+   * came home or went to sleep makes it a timeline of the household's presence.
+   * The in-app log is the household's own view, so names belong there and only
+   * there. Whenever `message` names a person, pass a `diagnostic` line that does
+   * not; it defaults to the message itself for the ones that never do.
+   *
+   * @param {string} message What the settings page shows.
    * @param {'info'|'trigger'|'error'} [level]
+   * @param {string} [diagnostic] What Homey's app log gets, if `message` names someone.
    */
-  record(message, level = 'info') {
-    if (level === 'error') this.error(message);
-    else this.log(message);
+  record(message, level = 'info', diagnostic = message) {
+    if (level === 'error') this.error(diagnostic);
+    else this.log(diagnostic);
 
     this.eventLog.add(message, level);
   }
@@ -150,7 +158,11 @@ class AdditionalUserStatusesApp extends Homey.App {
       })
       .join(', ');
 
-    this.record(this.homey.__('log.users_found', { count: users.length, counted: countedCount, list: described }));
+    this.record(
+      this.homey.__('log.users_found', { count: users.length, counted: countedCount, list: described }),
+      'info',
+      `Found ${users.length} Homey user(s), counting ${countedCount}.`,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -173,8 +185,8 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     this.homey.flow.getConditionCard('count_users')
       .registerRunListener(async (args) => {
+        const wanted = this.requireCount(args.count);
         const actual = await this.userStatus.countUsers(args.state);
-        const wanted = Number(args.count);
 
         if (args.operator === 'min') return actual >= wanted;
         if (args.operator === 'max') return actual <= wanted;
@@ -281,8 +293,8 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     const countStatus = this.homey.flow.getConditionCard('count_status');
     countStatus.registerRunListener(async (args) => {
+      const wanted = this.requireCount(args.count);
       const { held } = await this.statusTally(args.status?.id);
-      const wanted = Number(args.count);
 
       if (args.operator === 'min') return held >= wanted;
       if (args.operator === 'max') return held <= wanted;
@@ -381,6 +393,24 @@ class AdditionalUserStatusesApp extends Homey.App {
   }
 
   /**
+   * The number a counting card compares against, or a plain error.
+   *
+   * Number() of anything that is not a number is NaN, and every comparison with
+   * NaN is false. These cards are invertible, so "if fewer than NaN are home"
+   * would quietly answer the same way for ever instead of saying the Flow's
+   * argument is broken.
+   *
+   * @param {unknown} value The card's count argument.
+   * @returns {number}
+   */
+  requireCount(value) {
+    const count = Number(value);
+    if (!Number.isFinite(count)) throw new Error(this.homey.__('error.invalid_request'));
+
+    return count;
+  }
+
+  /**
    * Feeds every user-picking argument from the live Homey user list, so a new
    * housemate shows up without the app being touched.
    */
@@ -461,7 +491,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
     for (const { event, logKey, card } of namedCards) {
       this.watcher.on(event, ({ name }) => {
-        this.record(this.homey.__(logKey, { name }), 'trigger');
+        this.record(this.homey.__(logKey, { name }), 'trigger', `Trigger fired: ${event}.`);
         card().trigger({ user: name }).catch((err) => this.error(err.message));
       });
     }
@@ -513,7 +543,7 @@ class AdditionalUserStatusesApp extends Homey.App {
         'asleep:false': 'log.woke_up',
       }[`${field}:${value}`];
 
-      this.record(this.homey.__(key, { name }));
+      this.record(this.homey.__(key, { name }), 'info', `A user's ${field} changed to ${value}.`);
 
       // The tags describe the household, so every change to it moves them.
       this.tokens.refresh().catch((err) => this.error(err.message));
@@ -527,9 +557,13 @@ class AdditionalUserStatusesApp extends Homey.App {
         const store = this.statuses.store(status.id);
         if (!store || !store.has(id)) continue;
 
-        this.record(status.id === StatusRegistry.VACATION
-          ? this.homey.__('log.auto_return', { name })
-          : this.homey.__('log.auto_return_status', { name, status: status.name }));
+        this.record(
+          status.id === StatusRegistry.VACATION
+            ? this.homey.__('log.auto_return', { name })
+            : this.homey.__('log.auto_return_status', { name, status: status.name }),
+          'info',
+          `A user came home, so the status ${status.id} was cleared.`,
+        );
 
         store.set(id, false).catch((err) => this.error(err.message));
       }
@@ -546,7 +580,22 @@ class AdditionalUserStatusesApp extends Homey.App {
     // A status the user invents later needs the same wiring. Subscribing is
     // idempotent, so re-running it for statuses already wired costs nothing.
     this.statuses.on('statuses-changed', () => {
-      for (const status of this.statuses.list()) this.subscribeToStatus(status.id);
+      const live = new Set();
+      for (const status of this.statuses.list()) {
+        live.add(status.id);
+        this.subscribeToStatus(status.id);
+      }
+
+      // A deleted status leaves its household-wide edge behind otherwise, and
+      // the id can be reused: the new status would then inherit the old one's
+      // 'everyone had it' and fire - or swallow - a trigger on that basis.
+      for (const id of [...this.statusEdges.keys()]) {
+        if (!live.has(id)) this.statusEdges.delete(id);
+      }
+
+      // Nothing else tells a tile its status is gone. The store only emits for
+      // changes to who holds a status, and a deleted status is not one.
+      this.checkStatusDevices();
 
       this.tokens.refresh().catch((err) => this.error(err.message));
     });
@@ -624,11 +673,16 @@ class AdditionalUserStatusesApp extends Homey.App {
       for (const id of ids) {
         // Vacation says it in its own words; every other status shares one line,
         // naming itself. Logging both for vacation would say it twice.
-        this.record(isVacation
-          ? this.homey.__(logKey, { name: nameOf(id) })
-          : this.homey.__(generic === this.triggerStatusStarted ? 'log.status_started' : 'log.status_ended', {
-            name: nameOf(id), status: status.name,
-          }), 'trigger');
+        const started = generic === this.triggerStatusStarted;
+        this.record(
+          isVacation
+            ? this.homey.__(logKey, { name: nameOf(id) })
+            : this.homey.__(started ? 'log.status_started' : 'log.status_ended', {
+              name: nameOf(id), status: status.name,
+            }),
+          'trigger',
+          `The status ${statusId} ${started ? 'started' : 'ended'} for a user.`,
+        );
 
         await fire(generic, { user: nameOf(id), status: status.name }, { statusId, userId: id });
         if (isVacation) await fire(legacy, { user: nameOf(id) }, { userId: id });
@@ -687,6 +741,26 @@ class AdditionalUserStatusesApp extends Homey.App {
     }
   }
 
+  /**
+   * Has every status tile re-check that its status and user still exist, so a
+   * tile whose status was just deleted goes unavailable straight away instead of
+   * at the next app start.
+   */
+  checkStatusDevices() {
+    try {
+      const driver = this.homey.drivers.getDriver('status');
+      if (!driver) return;
+
+      for (const device of driver.getDevices()) {
+        if (typeof device.checkStillValid !== 'function') continue;
+
+        device.checkStillValid().catch((err) => this.error(`Device check failed: ${err.message}`));
+      }
+    } catch (err) {
+      this.error(`Could not reach the status devices: ${err.message}`);
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Settings page API (see api.js)
   // ---------------------------------------------------------------------------
@@ -714,6 +788,10 @@ class AdditionalUserStatusesApp extends Homey.App {
       persist: this.homey.settings.get('log_persist') === true,
       use24Hour: typeof stored === 'boolean' ? stored : language !== 'en',
       language,
+      // The settings page runs in the browser of whoever opens it, which may be
+      // in another timezone than the house. The log should read as the house's
+      // clock does.
+      timezone: this.homey.clock.getTimezone(),
     };
   }
 
@@ -723,7 +801,21 @@ class AdditionalUserStatusesApp extends Homey.App {
     return this.getLog();
   }
 
+  /**
+   * The second half of the door api.js guards: an id of the right shape that no
+   * Homey user has would otherwise be stored, and then sit in settings until the
+   * next start prunes it.
+   *
+   * @param {string} userId
+   */
+  async requireKnownUser(userId) {
+    if (!(await this.userStatus.getUser(userId))) {
+      throw new Error(this.homey.__('error.unknown_user'));
+    }
+  }
+
   async setVacation(userId, onVacation) {
+    await this.requireKnownUser(userId);
     await this.vacation.set(userId, Boolean(onVacation));
     return this.getOverview();
   }
@@ -737,6 +829,9 @@ class AdditionalUserStatusesApp extends Homey.App {
     const users = await this.userStatus.fetchUsers();
 
     return {
+      // The settings page enforces the same limits the registry does, so it is
+      // told them rather than keeping a second copy that could drift.
+      limits: { maxStatuses: StatusRegistry.MAX_CUSTOM, maxNameLength: StatusRegistry.MAX_NAME },
       statuses: this.statuses.list().map((status) => ({
         ...status,
         userIds: this.statuses.store(status.id).getIds().filter((id) => users.some((user) => user.id === id)),
@@ -747,6 +842,7 @@ class AdditionalUserStatusesApp extends Homey.App {
 
   async setStatus(statusId, userId, held) {
     const store = this.storeFor(statusId);
+    await this.requireKnownUser(userId);
     await store.set(userId, Boolean(held));
 
     return this.getStatuses();

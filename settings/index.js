@@ -34,6 +34,17 @@ function showError(message) {
   el.style.display = 'block';
 }
 
+/**
+ * For a save, a switch or a clear. showError() says the Homey users could not be
+ * read, which is a misleading thing to read after ticking a box that failed to
+ * save.
+ */
+function showActionError(message) {
+  const el = document.getElementById('error');
+  el.textContent = t('action_failed', 'Something went wrong: __message__', { message });
+  el.style.display = 'block';
+}
+
 function hideError() {
   document.getElementById('error').style.display = 'none';
 }
@@ -76,7 +87,7 @@ function apply(overview) {
 function setVacation(userId, onVacation) {
   Homey.api('POST', '/vacation', { userId, onVacation }, (err, overview) => {
     if (err) {
-      showError(err.message || String(err));
+      showActionError(err.message || String(err));
       return;
     }
     apply(overview);
@@ -167,11 +178,16 @@ function save() {
 
   Homey.set('excluded_user_ids', excluded, (err) => {
     if (err) {
-      showError(err.message || String(err));
+      showActionError(err.message || String(err));
       return;
     }
 
-    Homey.set('vacation_auto_return', autoReturn, () => {
+    Homey.set('vacation_auto_return', autoReturn, (autoReturnErr) => {
+      if (autoReturnErr) {
+        showActionError(autoReturnErr.message || String(autoReturnErr));
+        return;
+      }
+
       const note = document.getElementById('saved-note');
       note.style.display = 'inline';
       setTimeout(() => {
@@ -189,13 +205,28 @@ function save() {
 
 // Remembered from the last fetch, so re-rendering does not need a round trip.
 let use24Hour = true;
+// The Homey's own timezone, so the log reads in the house's time wherever this
+// page happens to be opened. Empty until the first fetch answers, and then the
+// browser's own is the best there is.
+let logTimeZone = '';
 let logEntries = [];
 let logFilter = 'all';
 
 function formatTime(ms) {
   const d = new Date(ms);
   // hour12 false gives 24-hour; true gives the locale's 12-hour form.
-  return d.toLocaleTimeString([], { hour12: !use24Hour });
+  const options = { hour12: !use24Hour };
+
+  if (logTimeZone) {
+    try {
+      return d.toLocaleTimeString([], { ...options, timeZone: logTimeZone });
+    } catch (err) {
+      // A timezone name this browser does not know throws a RangeError. A time
+      // in the wrong zone beats a log that will not render.
+    }
+  }
+
+  return d.toLocaleTimeString([], options);
 }
 
 /** 'special' keeps the moments a Flow could act on, and anything that broke. */
@@ -229,7 +260,7 @@ function renderLog() {
 
     const time = document.createElement('span');
     time.className = 'log-time';
-    // Local time only: the date is rarely useful for a log this short-lived.
+    // Time of day only: the date is rarely useful for a log this short-lived.
     time.textContent = formatTime(entry.at);
     li.appendChild(time);
 
@@ -244,6 +275,7 @@ function renderLog() {
 function applyLog(payload) {
   hideError();
   use24Hour = payload.use24Hour !== false;
+  logTimeZone = typeof payload.timezone === 'string' ? payload.timezone : '';
   logEntries = payload.entries || [];
   document.getElementById('log-24h').checked = use24Hour;
   document.getElementById('log-persist').checked = payload.persist === true;
@@ -270,7 +302,7 @@ function loadLog() {
 function clearLog() {
   Homey.api('POST', '/log/clear', null, (err, payload) => {
     if (err) {
-      showError(err.message || String(err));
+      showActionError(err.message || String(err));
       return;
     }
     applyLog(payload);
@@ -281,14 +313,14 @@ function clearLog() {
 // and the app reacts to the persistence one the moment it changes.
 function setLogPersist(value) {
   Homey.set('log_persist', value, (err) => {
-    if (err) showError(err.message || String(err));
+    if (err) showActionError(err.message || String(err));
   });
 }
 
 function setLog24Hour(value) {
   use24Hour = value;
   Homey.set('log_24h', value, (err) => {
-    if (err) showError(err.message || String(err));
+    if (err) showActionError(err.message || String(err));
     else loadLog();
   });
 }
@@ -298,6 +330,18 @@ function setLog24Hour(value) {
 // ---------------------------------------------------------------------------
 
 let statusData = { statuses: [], users: [] };
+
+// What the app will accept, as it reports them with the statuses. These
+// defaults only matter for the instant before the first answer arrives.
+const DEFAULT_LIMITS = { maxStatuses: 20, maxNameLength: 64 };
+
+function statusLimits() {
+  return { ...DEFAULT_LIMITS, ...(statusData.limits || {}) };
+}
+
+function ownStatusCount() {
+  return statusData.statuses.filter((status) => !status.builtin).length;
+}
 
 function loadStatuses() {
   Homey.api('GET', '/statuses', null, (err, result) => {
@@ -323,11 +367,25 @@ function renderStatuses() {
     root.appendChild(statusCard(status));
   }
 
-  if (!statusData.statuses.some((status) => !status.builtin)) {
+  if (ownStatusCount() === 0) {
     const empty = document.createElement('p');
     empty.className = 'status-holders';
     empty.textContent = t('status_none', 'No statuses of your own yet.');
     root.appendChild(empty);
+  }
+
+  // Saying no here beats letting the click through to an error from the app.
+  const { maxStatuses } = statusLimits();
+  const full = ownStatusCount() >= maxStatuses;
+  document.getElementById('status-add').disabled = full;
+
+  if (full) {
+    const note = document.createElement('p');
+    note.className = 'status-holders';
+    note.textContent = t('status_limit', 'Limit reached: you can have at most __max__ statuses of your own.', {
+      max: maxStatuses,
+    });
+    root.appendChild(note);
   }
 }
 
@@ -347,6 +405,7 @@ function statusCard(status) {
     const name = document.createElement('input');
     name.type = 'text';
     name.className = 'status-name-input';
+    name.maxLength = statusLimits().maxNameLength;
     name.value = status.name;
     name.placeholder = t('status_name_placeholder', 'Working from home');
     name.addEventListener('change', () => {
@@ -420,7 +479,7 @@ function holderRow(status, user) {
       (err, result) => {
         if (err) {
           box.checked = !box.checked;
-          showError(err.message || String(err));
+          showActionError(err.message || String(err));
           return;
         }
         statusData = result;
@@ -437,6 +496,8 @@ function holderRow(status, user) {
 }
 
 function addStatus() {
+  if (ownStatusCount() >= statusLimits().maxStatuses) return;
+
   // The id is what the settings key is built from and can never change, so it is
   // derived once from the name and then left alone however the name is edited.
   const taken = new Set(statusData.statuses.map((status) => status.id));
@@ -462,7 +523,7 @@ function saveStatuses() {
 
   Homey.api('POST', '/statuses', { statuses: custom }, (err, result) => {
     if (err) {
-      showError(err.message || String(err));
+      showActionError(err.message || String(err));
       return;
     }
     statusData = result;

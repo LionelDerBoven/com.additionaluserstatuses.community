@@ -72,6 +72,7 @@
     "statuses_saved": "De lijst met statussen is gewijzigd."
   },
   "ui": {
+    "action_failed": "Er ging iets mis: __message__",
     "asleep": "slaapt",
     "awake": "wakker",
     "away": "weg",
@@ -96,6 +97,7 @@
     "status_delete": "Verwijderen",
     "status_exclude": "Wie hem heeft niet meetellen in de \"iedereen\"-kaarten",
     "status_holders": "Wie hem heeft",
+    "status_limit": "Limiet bereikt: je kunt maximaal __max__ eigen statussen hebben.",
     "status_name_placeholder": "Thuiswerk",
     "status_none": "Nog geen eigen statussen.",
     "yes": "Ja"
@@ -115,9 +117,20 @@
     "dnd": "Niet storen"
   },
   "error": {
+    "api_closed": "Homey verbrak de verbinding te vroeg.",
+    "api_session": "Kon geen verbinding maken met Homey: __message__",
+    "api_status": "Homey antwoordde met fout __status__ bij het lezen van de gebruikers.",
+    "api_timeout": "Homey antwoordde niet op tijd.",
+    "api_unreadable": "Homey stuurde een onleesbare gebruikerslijst.",
+    "app_not_ready": "De app is nog niet klaar. Probeer het zo opnieuw.",
+    "invalid_request": "Het verzoek was ongeldig.",
     "no_status": "Geen status gekozen.",
     "no_such_status": "Er bestaat geen status __name__ meer.",
     "no_such_user": "__name__ is geen Homey-gebruiker meer.",
-    "no_user": "Geen gebruiker gekozen."
+    "no_user": "Geen gebruiker gekozen.",
+    "status_name_missing": "Elke status heeft een naam nodig.",
+    "status_name_too_long": "Die naam is te lang (maximaal __max__ tekens).",
+    "too_many_statuses": "Je kunt maximaal __max__ eigen statussen hebben.",
+    "unknown_user": "Die gebruiker bestaat niet in Homey."
   }
 }

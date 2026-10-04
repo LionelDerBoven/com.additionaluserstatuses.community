@@ -141,10 +141,34 @@ test('deleting a status forgets who held it', async () => {
 test('a status cannot be defined twice, or steal a built-in id', async () => {
   const { registry } = makeRegistry();
 
-  await assert.rejects(() => registry.saveCustom([{ id: 'a', name: 'A' }, { id: 'a', name: 'B' }]), /twice/);
-  await assert.rejects(() => registry.saveCustom([{ id: 'vacation', name: 'X' }]), /built-in/);
-  await assert.rejects(() => registry.saveCustom([{ id: 'no spaces', name: 'X' }]), /not a usable/);
-  await assert.rejects(() => registry.saveCustom([{ id: 'ok', name: '  ' }]), /needs a name/);
+  const invalid = /^Error: error\.invalid_request$/;
+
+  await assert.rejects(() => registry.saveCustom([{ id: 'a', name: 'A' }, { id: 'a', name: 'B' }]), invalid);
+  await assert.rejects(() => registry.saveCustom([{ id: 'vacation', name: 'X' }]), invalid);
+  await assert.rejects(() => registry.saveCustom([{ id: 'no spaces', name: 'X' }]), invalid);
+  await assert.rejects(() => registry.saveCustom('not a list'), invalid);
+});
+
+test('the limits on a custom status come back as translated errors that name the limit', async () => {
+  // __ echoes the key here, so the placeholders are checked through a fake
+  // that appends them.
+  const { homey, registry } = makeRegistry();
+  homey.__ = (key, tokens) => (tokens ? `${key} ${JSON.stringify(tokens)}` : key);
+
+  await assert.rejects(() => registry.saveCustom([{ id: 'ok', name: '  ' }]), /^Error: error\.status_name_missing$/);
+  await assert.rejects(
+    () => registry.saveCustom([{ id: 'ok', name: 'x'.repeat(StatusRegistry.MAX_NAME + 1) }]),
+    new RegExp(`^Error: error\\.status_name_too_long \\{"max":${StatusRegistry.MAX_NAME}\\}$`),
+  );
+
+  const tooMany = Array.from({ length: StatusRegistry.MAX_CUSTOM + 1 }, (_, i) => ({ id: `s${i}`, name: `S${i}` }));
+  await assert.rejects(
+    () => registry.saveCustom(tooMany),
+    new RegExp(`^Error: error\\.too_many_statuses \\{"max":${StatusRegistry.MAX_CUSTOM}\\}$`),
+  );
+
+  // Exactly at the limit is fine.
+  await registry.saveCustom(tooMany.slice(0, StatusRegistry.MAX_CUSTOM));
 });
 
 test('saving announces itself, so tokens and devices can follow', async () => {

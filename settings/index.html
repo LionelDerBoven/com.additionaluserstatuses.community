@@ -368,8 +368,7 @@
 
   <h2 data-i18n="settings.title">Which users count as "everyone"?</h2>
   <p class="intro" data-i18n="settings.intro">
-    The "Everyone is at home" and "Everyone is asleep" Flow cards look at the users ticked below,
-    live, every time a Flow runs. A new Homey user is counted automatically, so you never have to
+    The "everyone" Flow cards look at the users ticked below, live, every time a Flow runs. A new Homey user is counted automatically, so you never have to
     edit a Flow after someone joins the household. Untick anyone who should not hold the whole house
     back &mdash; a guest account, or a phone that never reports presence.
   </p>
@@ -443,9 +442,10 @@
   <div class="tab-pane" id="tab-log">
     <h2 data-i18n="settings.log_title">What the app has been doing</h2>
     <p class="intro" data-i18n="settings.log_intro">
-      The most recent events, newest first &mdash; triggers that fired, vacation changes and any
-      errors. Kept in memory only, so it is cleared whenever the app restarts and nothing is
-      written to your Homey&rsquo;s storage.
+      The most recent events, newest first &mdash; triggers that fired, status changes and any
+      errors. Kept in memory, so it clears when the app restarts. Switch on &ldquo;Keep the log
+      across app restarts&rdquo; below to write it to your Homey's storage instead, where it
+      stays until you clear it or switch that off again.
     </p>
 
     <div class="feature-toggles">

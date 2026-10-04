@@ -72,6 +72,7 @@
     "statuses_saved": "The list of statuses was changed."
   },
   "ui": {
+    "action_failed": "Something went wrong: __message__",
     "asleep": "asleep",
     "awake": "awake",
     "away": "away",
@@ -96,6 +97,7 @@
     "status_delete": "Delete",
     "status_exclude": "Leave holders out of the \"everyone\" cards",
     "status_holders": "Who has it",
+    "status_limit": "Limit reached: you can have at most __max__ statuses of your own.",
     "status_name_placeholder": "Working from home",
     "status_none": "No statuses of your own yet.",
     "yes": "Yes"
@@ -115,9 +117,20 @@
     "dnd": "Do not disturb"
   },
   "error": {
+    "api_closed": "Homey closed the connection early.",
+    "api_session": "Could not connect to Homey: __message__",
+    "api_status": "Homey answered with error __status__ when reading the users.",
+    "api_timeout": "Homey did not answer in time.",
+    "api_unreadable": "Homey sent a user list that could not be read.",
+    "app_not_ready": "The app is not ready yet. Try again in a moment.",
+    "invalid_request": "The request was not valid.",
     "no_status": "No status selected.",
     "no_such_status": "There is no status called __name__ any more.",
     "no_such_user": "__name__ is no longer a Homey user.",
-    "no_user": "No user selected."
+    "no_user": "No user selected.",
+    "status_name_missing": "Every status needs a name.",
+    "status_name_too_long": "That name is too long (at most __max__ characters).",
+    "too_many_statuses": "You can have at most __max__ statuses of your own.",
+    "unknown_user": "That user does not exist in Homey."
   }
 }

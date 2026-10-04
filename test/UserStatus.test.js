@@ -257,7 +257,17 @@ test('counting leaves out anyone who does not count', async () => {
 
 test('an unknown state is a mistake worth reporting, not a zero', async () => {
   const { status } = makeStatus(users({ present: true }));
-  await assert.rejects(() => status.countUsers('elsewhere'), /Unknown user state/);
+  await assert.rejects(() => status.countUsers('elsewhere'), /^Error: error\.invalid_request$/);
+});
+
+test('a state name that is only on the prototype is not a state', async () => {
+  // A plain object lookup resolves these to functions, and filter() would then
+  // happily count with Object's own methods.
+  const { status } = makeStatus(users({ present: true }));
+
+  for (const name of ['constructor', 'toString', 'hasOwnProperty', '__proto__']) {
+    await assert.rejects(() => status.countUsers(name), /^Error: error\.invalid_request$/, name);
+  }
 });
 
 // ---------------------------------------------------------------------------

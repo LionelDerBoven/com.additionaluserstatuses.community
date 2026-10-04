@@ -15,6 +15,10 @@ const http = require('node:http');
 
 const HomeyUsersApi = require('../lib/HomeyUsersApi');
 
+// Echoes the key and its placeholders, so a test can tell which translated
+// message an error carries without depending on the English wording.
+const translate = (key, tokens) => (tokens ? `${key} ${JSON.stringify(tokens)}` : key);
+
 const USERS = {
   u1: {
     id: 'u1', name: 'Ann', present: true, asleep: false,
@@ -31,6 +35,7 @@ function harness(responses, { tokenFails = false } = {}) {
   const remaining = [...responses];
 
   const homey = {
+    __: translate,
     api: {
       getOwnerApiToken: async () => {
         calls.token += 1;
@@ -100,19 +105,19 @@ test('a 403 is treated the same as a 401', async () => {
 
 test('it does not retry forever when the refresh also fails', async () => {
   const { api, calls } = harness([response(401, {}), response(401, {})]);
-  await assert.rejects(() => api.getUsers(), /401/);
+  await assert.rejects(() => api.getUsers(), /error\.api_status \{"status":401\}/);
   assert.strictEqual(calls.fetch, 2, 'exactly one retry, not a loop');
 });
 
 test('a server error is reported, not retried', async () => {
   const { api, calls } = harness([response(500, {})]);
-  await assert.rejects(() => api.getUsers(), /500/);
+  await assert.rejects(() => api.getUsers(), /error\.api_status \{"status":500\}/);
   assert.strictEqual(calls.fetch, 1);
 });
 
 test('a malformed body is reported clearly rather than crashing the card', async () => {
   const { api } = harness([{ status: 200, body: '<html>not json</html>' }]);
-  await assert.rejects(() => api.getUsers(), /unreadable user list/);
+  await assert.rejects(() => api.getUsers(), /^Error: error\.api_unreadable$/);
 });
 
 test('the token is fetched once and reused across calls', async () => {
@@ -146,6 +151,7 @@ test('the real request presents the token as a Bearer credential', async () => {
 
   try {
     const homey = {
+      __: translate,
       api: {
         getOwnerApiToken: async () => 'abc123',
         getLocalUrl: async () => `http://127.0.0.1:${port}`,
@@ -174,13 +180,14 @@ test('the real request surfaces a non-2xx status from the server', async () => {
   try {
     const api = new HomeyUsersApi({
       homey: {
+        __: translate,
         api: {
           getOwnerApiToken: async () => 'abc123',
           getLocalUrl: async () => `http://127.0.0.1:${port}`,
         },
       },
     });
-    await assert.rejects(() => api.getUsers(), /500/);
+    await assert.rejects(() => api.getUsers(), /error\.api_status \{"status":500\}/);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -188,6 +195,7 @@ test('the real request surfaces a non-2xx status from the server', async () => {
 
 test('a failed session is not cached, so the next call retries', async () => {
   const homey = {
+    __: translate,
     api: {
       getOwnerApiToken: async () => {
         throw new Error('Homey not ready');
@@ -197,8 +205,54 @@ test('a failed session is not cached, so the next call retries', async () => {
   };
   const api = new HomeyUsersApi({ homey });
 
-  await assert.rejects(() => api.getUsers(), /Could not start a Homey API session/);
+  await assert.rejects(() => api.getUsers(), /error\.api_session \{"message":"Homey not ready"\}/);
   // If the rejected promise had been cached, this would reject with the same
   // error forever, and the app would never recover from a slow boot.
   assert.strictEqual(api.session, null, 'the failed session was discarded');
+});
+
+test('an oversized answer is refused as unreadable, in the user\'s language', async () => {
+  const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('x'.repeat(600 * 1024));
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address();
+
+  try {
+    const api = new HomeyUsersApi({
+      homey: {
+        __: translate,
+        api: {
+          getOwnerApiToken: async () => 'abc123',
+          getLocalUrl: async () => `http://127.0.0.1:${port}`,
+        },
+      },
+    });
+    await assert.rejects(() => api.getUsers(), /^Error: error\.api_unreadable$/);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('the pooled-socket retry still matches on the error code, not on any message', async () => {
+  // The messages are translated now, so a retry keyed on wording would have
+  // stopped working in every language but English. It keys on code and flag.
+  const api = new HomeyUsersApi({ homey: { __: translate } });
+  let attempts = 0;
+
+  api.attempt = async () => {
+    attempts += 1;
+    if (attempts === 1) {
+      const err = new Error('socket hang up');
+      err.code = 'ECONNRESET';
+      err.reusedSocket = true;
+      throw err;
+    }
+    return { status: 200, body: '{}' };
+  };
+
+  assert.deepStrictEqual(await api.request(), { status: 200, body: '{}' });
+  assert.strictEqual(attempts, 2);
 });
