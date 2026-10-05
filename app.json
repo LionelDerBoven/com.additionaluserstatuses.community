@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.additionaluserstatuses.community",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -99,7 +99,7 @@
       {
         "id": "everyone_became_asleep",
         "title": {
-          "en": "The last person goes to the status asleep",
+          "en": "The last person goes to sleep",
           "nl": "De laatste persoon gaat slapen",
           "fr": "La dernière personne s'endort"
         },
@@ -162,7 +162,7 @@
       {
         "id": "everyone_home_became_asleep",
         "title": {
-          "en": "The last person at home goes to the status asleep",
+          "en": "The last person at home goes to sleep",
           "nl": "De laatste persoon thuis gaat slapen",
           "fr": "La dernière personne à la maison s'endort"
         },
@@ -343,7 +343,7 @@
       {
         "id": "first_asleep",
         "title": {
-          "en": "The first person goes to the status asleep",
+          "en": "The first person goes to sleep",
           "nl": "De eerste persoon gaat slapen",
           "fr": "La première personne s'endort"
         },
@@ -393,7 +393,7 @@
       {
         "id": "first_home_asleep",
         "title": {
-          "en": "The first person at home goes to the status asleep",
+          "en": "The first person at home goes to sleep",
           "nl": "De eerste persoon thuis gaat slapen",
           "fr": "La première personne à la maison s'endort"
         },

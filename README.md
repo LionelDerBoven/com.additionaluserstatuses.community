@@ -2,6 +2,8 @@
 
 **A Homey Pro app with the household-wide presence and sleep Flow cards Homey lacks, plus statuses of your own.**
 
+Install it from the [Homey App Store](https://homey.app/a/com.additionaluserstatuses.community).
+
 Homey's presence and sleep cards ask about one user at a time. This app answers for the whole household — everyone
 home, everyone asleep, the first and last to leave, arrive, go to bed or wake up — counting only the users that
 should count.
